@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ChevronDown, X } from "lucide-react";
 import Link from "next/link";
+import { ChevronDown, X } from "lucide-react";
 import { categories } from "@/lib/constants";
 
 interface DropdownOption {
@@ -115,25 +115,17 @@ function FilterDropdown({ config }: { config: FilterConfig }) {
 
   const toggle = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    // Remove all existing values for this param
     params.delete(config.param);
-    // If it's a multi filter, re-add all existing except the toggled one
     if (config.multi) {
       const current = selectedValues.filter((v) => v !== value);
-      // If the value wasn't in current, add it
       if (selectedValues.includes(value)) {
-        // Removing it — current already has everything except value
         current.forEach((v) => params.append(config.param, v));
       } else {
-        // Adding it — add current + value
         current.forEach((v) => params.append(config.param, v));
         params.append(config.param, value);
       }
     } else {
-      // Single select — toggle on/off
-      if (selectedValues[0] === value) {
-        // Deselect
-      } else {
+      if (selectedValues[0] !== value) {
         params.set(config.param, value);
       }
     }
@@ -222,21 +214,19 @@ export default function FilterBar() {
 
   return (
     <div className="w-full">
-      {/* Filter pill dropdowns */}
       <div className="relative flex gap-2 overflow-x-auto scrollbar-hide pb-2">
         {filterConfigs.map((config) => (
           <FilterDropdown key={config.param} config={config} />
         ))}
       </div>
 
-      {/* Category icon links */}
       <div className="relative mt-4 flex gap-3 overflow-x-auto scrollbar-hide pb-2">
         {categories.map((cat) => {
           const isActive = activeCategory === cat.slug;
           return (
             <Link
               key={cat.id}
-              href={`/category/${cat.slug}`}
+              href={`/browse?category=${cat.slug}`}
               className={`flex shrink-0 flex-col items-center gap-1.5 rounded-lg px-3 py-2 transition-colors ${
                 isActive ? "bg-ilali-50" : "hover:bg-slate-50"
               }`}

@@ -63,14 +63,18 @@ export default function HomePage() {
                 View all
               </Link>
             </div>
-            <div className="mt-8 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4">
+            {/* Mobile carousel */}
+            <div className="mt-8 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
               {newProviders.map((provider) => (
-                <div
-                  key={provider.id}
-                  className="min-w-[280px] shrink-0 snap-start sm:min-w-0 sm:w-1/2 lg:w-1/4"
-                >
+                <div key={provider.id} className="w-[280px] shrink-0 snap-start">
                   <ProviderCard provider={provider} />
                 </div>
+              ))}
+            </div>
+            {/* Desktop grid */}
+            <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-8">
+              {newProviders.map((provider) => (
+                <ProviderCard key={provider.id} provider={provider} />
               ))}
             </div>
           </div>
@@ -90,14 +94,18 @@ export default function HomePage() {
                 View all
               </Link>
             </div>
-            <div className="mt-8 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4">
+            {/* Mobile carousel */}
+            <div className="mt-8 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
               {popularProviders.map((provider) => (
-                <div
-                  key={provider.id}
-                  className="min-w-[280px] shrink-0 snap-start sm:min-w-0 sm:w-1/2 lg:w-1/4"
-                >
+                <div key={provider.id} className="w-[280px] shrink-0 snap-start">
                   <ProviderCard provider={provider} />
                 </div>
+              ))}
+            </div>
+            {/* Desktop grid */}
+            <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-8">
+              {popularProviders.map((provider) => (
+                <ProviderCard key={provider.id} provider={provider} />
               ))}
             </div>
           </div>

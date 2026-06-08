@@ -127,7 +127,7 @@ export default function Footer() {
           <div className="flex gap-5">
             {bottomLinks.map((link) => (
               <Link
-                key={link.href}
+                key={link.label}
                 href={link.href}
                 className="text-xs text-slate-500 hover:text-white transition-colors"
               >

@@ -10,8 +10,9 @@ export function generateStaticParams() {
   return venues.map((v: Venue) => ({ slug: v.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const venue = venues.find((v: Venue) => v.slug === params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const venue = venues.find((v: Venue) => v.slug === slug);
   if (!venue) return { title: "Venue Not Found — ILALI" };
   return {
     title: `${venue.name} — ILALI Venues`,
@@ -19,8 +20,9 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   };
 }
 
-export default function VenuePage({ params }: { params: { slug: string } }) {
-  const venue = venues.find((v: Venue) => v.slug === params.slug);
+export default async function VenuePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const venue = venues.find((v: Venue) => v.slug === slug);
   if (!venue) notFound();
 
   return (

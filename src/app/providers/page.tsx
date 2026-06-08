@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Browse trusted children's activity providers in Cape Town. All providers are background-checked and vetted for your peace of mind.",
 };
 
-export default function ProvidersPage() {
+export default async function ProvidersPage() {
   return (
     <>
       <Header />

@@ -10,8 +10,9 @@ export function generateStaticParams() {
   return providers.map((p) => ({ slug: p.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }) {
-  const provider = providers.find((p: Provider) => p.slug === params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const provider = providers.find((p: Provider) => p.slug === slug);
   if (!provider) return { title: "Activity Not Found — ILALI" };
   return {
     title: `${provider.name} — ILALI`,
@@ -19,8 +20,9 @@ export function generateMetadata({ params }: { params: { slug: string } }) {
   };
 }
 
-export default function ActivityPage({ params }: { params: { slug: string } }) {
-  const provider = providers.find((p: Provider) => p.slug === params.slug);
+export default async function ActivityPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const provider = providers.find((p: Provider) => p.slug === slug);
   if (!provider) notFound();
 
   return (

@@ -17,7 +17,6 @@ function filterProviders(
 ) {
   let filtered = [...all];
 
-  // Search query filter
   const q = typeof params.q === "string" ? params.q.toLowerCase().trim() : "";
   if (q) {
     filtered = filtered.filter(
@@ -30,7 +29,6 @@ function filterProviders(
     );
   }
 
-  // Category filter (multi)
   const catSlugs = params.category;
   if (catSlugs) {
     const slugs = Array.isArray(catSlugs) ? catSlugs : [catSlugs];
@@ -39,7 +37,6 @@ function filterProviders(
     }
   }
 
-  // Age filter
   const age = typeof params.age === "string" ? params.age : "";
   if (age) {
     const ageMap: Record<string, [number, number]> = {
@@ -57,7 +54,6 @@ function filterProviders(
     }
   }
 
-  // Price filter
   const price = typeof params.price === "string" ? params.price : "";
   if (price) {
     const priceMap: Record<string, [number, number]> = {
@@ -76,7 +72,6 @@ function filterProviders(
     }
   }
 
-  // Distance filter
   const distance = typeof params.distance === "string" ? params.distance : "";
   if (distance) {
     const distNum = parseInt(distance, 10);
@@ -96,17 +91,13 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
   const q = typeof params.q === "string" ? params.q : "";
   const activeCategory = typeof params.category === "string" ? params.category : "";
 
-  // Get the new providers (from this week)
   const newProviders = providers.slice(0, 4);
-  // Get local favourites
   const localFavourites = providers.slice(0, 4);
 
-  // If there's an active filter, show only filtered results
   const hasActiveFilters = q || params.category || params.age || params.price || params.distance;
 
   return (
     <>
-      {/* Search Section */}
       <section className="py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -129,7 +120,6 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
         </div>
       </section>
 
-      {/* Filters */}
       <section className="pb-6">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Suspense fallback={<div className="h-24 w-full" />}>
@@ -138,7 +128,6 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
         </div>
       </section>
 
-      {/* Active filter results or default sections */}
       {hasActiveFilters ? (
         <section className="py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -155,8 +144,7 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
                   No activities match your filters
                 </h3>
                 <p className="mt-2 text-sm text-slate-500">
-                  Try adjusting your search or clearing filters to see more
-                  options.
+                  Try adjusting your search or clearing filters to see more options.
                 </p>
               </div>
             )}
@@ -164,7 +152,6 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
         </section>
       ) : (
         <>
-          {/* New providers */}
           <section className="py-10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
@@ -173,20 +160,21 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
               <p className="mt-1 text-sm text-slate-500">
                 Fresh activities added this week
               </p>
-              <div className="mt-6 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4">
+              <div className="mt-6 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
                 {newProviders.map((provider) => (
-                  <div
-                    key={provider.id}
-                    className="min-w-[280px] shrink-0 snap-start sm:min-w-0 sm:w-1/2 lg:w-1/4"
-                  >
+                  <div key={provider.id} className="w-[280px] shrink-0 snap-start">
                     <ProviderCard provider={provider} />
                   </div>
+                ))}
+              </div>
+              <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
+                {newProviders.map((provider) => (
+                  <ProviderCard key={provider.id} provider={provider} />
                 ))}
               </div>
             </div>
           </section>
 
-          {/* Local favourites */}
           <section className="py-10 bg-slate-50">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
@@ -195,14 +183,16 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
               <p className="mt-1 text-sm text-slate-500">
                 Most popular activities in your area
               </p>
-              <div className="mt-6 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4">
+              <div className="mt-6 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
                 {localFavourites.map((provider) => (
-                  <div
-                    key={provider.id}
-                    className="min-w-[280px] shrink-0 snap-start sm:min-w-0 sm:w-1/2 lg:w-1/4"
-                  >
+                  <div key={provider.id} className="w-[280px] shrink-0 snap-start">
                     <ProviderCard provider={provider} />
                   </div>
+                ))}
+              </div>
+              <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
+                {localFavourites.map((provider) => (
+                  <ProviderCard key={provider.id} provider={provider} />
                 ))}
               </div>
             </div>

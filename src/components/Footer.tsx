@@ -71,7 +71,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6 lg:gap-8">
           {/* Brand Column */}
           <div className="col-span-2 sm:col-span-3 lg:col-span-2">
-            <Link href="/home" className="inline-block hover:opacity-90 transition-opacity">
+            <Link href="/" className="inline-block hover:opacity-90 transition-opacity">
               <img
                 src="/images/brand/ilali-logo-38.png"
                 alt="ILALI"

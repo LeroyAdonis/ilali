@@ -63,7 +63,6 @@ export default function LandingPage() {
               height={38}
               className="rounded-md"
             />
-            <span className="text-lg font-bold text-slate-900">ILALI</span>
           </Link>
 
           <div className="flex items-center gap-3">
@@ -284,7 +283,7 @@ export default function LandingPage() {
         <footer className="border-t border-slate-200 bg-slate-50 px-4 py-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center">
                 <img
                   src="/images/brand/ilali-logo-38.png"
                   alt="ILALI"
@@ -292,7 +291,6 @@ export default function LandingPage() {
                   height={32}
                   className="rounded"
                 />
-                <span className="text-sm font-bold text-slate-800">ILALI</span>
               </div>
               <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-500">
                 <Link href="/about" className="hover:text-slate-700 transition-colors">About</Link>

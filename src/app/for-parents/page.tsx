@@ -1,60 +1,13 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "For Parents | ILALI",
   description:
-    "Find trusted, background-checked activities for your children. Browse, book, and review with confidence on ILALI.",
+    "A parent's guide to finding safe, vetted extramural activities in Cape Town. Learn how vetting works, what to expect, and how to get started.",
 };
-
-const howItWorks = [
-  {
-    title: "Browse & Discover",
-    description:
-      "Explore activities by location, category, or age group. Read detailed profiles and see what other parents recommend.",
-    icon: "🔍",
-  },
-  {
-    title: "Book with Confidence",
-    description:
-      "Every provider is background-checked and verified. Book directly through our secure platform with transparent pricing.",
-    icon: "✅",
-  },
-  {
-    title: "Enjoy & Review",
-    description:
-      "After the activity, leave a review to help other parents. Your feedback keeps our community thriving.",
-    icon: "⭐",
-  },
-];
-
-const whyChoose = [
-  {
-    title: "Vetted Providers Only",
-    description:
-      "Every activity provider undergoes a thorough background check before they can list on ILALI. Your child's safety comes first.",
-    icon: "🛡️",
-  },
-  {
-    title: "Activities Near You",
-    description:
-      "Find activities in your neighbourhood — from Southern Suburbs to the Atlantic Seaboard. No more driving across town.",
-    icon: "📍",
-  },
-  {
-    title: "Easy Booking & Tracking",
-    description:
-      "Book, reschedule, and manage all your children's activities from one dashboard. Get reminders and updates automatically.",
-    icon: "📱",
-  },
-  {
-    title: "Community Reviews",
-    description:
-      "Real reviews from real parents. See what others say about providers before you book, and share your own experience.",
-    icon: "💬",
-  },
-];
 
 export default function ForParentsPage() {
   return (
@@ -65,51 +18,51 @@ export default function ForParentsPage() {
         <section className="bg-gradient-to-br from-ilali-600 to-ilali-800 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-              Find trusted activities for your children
+              A parent&apos;s guide to ILALI
             </h1>
             <p className="mt-3 text-base leading-relaxed text-ilali-100 sm:text-lg">
-              Discover safe, fun, and enriching extramural activities near you.
-              Every provider is background-checked for your peace of mind.
+              Everything you need to know about finding safe, fun activities
+              for your children — from how vetting works to what happens after
+              you book.
             </p>
-            <a
-              href="/browse"
-              className="mt-8 inline-flex items-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-ilali-700 shadow-sm hover:bg-ilali-50 transition-colors"
-            >
-              Browse activities
-            </a>
           </div>
         </section>
 
-        {/* How It Works */}
+        {/* How vetting works */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mb-10 text-center">
+          <div className="mx-auto max-w-3xl">
             <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-              How It Works
+              How vetting works
             </h2>
-            <p className="mt-2 text-sm text-slate-500">
-              Three simple steps to find the perfect activity
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">
+              Every provider on ILALI goes through a verification process before
+              they can list activities. Here&apos;s what that means for your family:
             </p>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-3">
-            {howItWorks.map((step, index) => (
-              <div
-                key={step.title}
-                className="relative rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm transition-all duration-200 hover:shadow-md"
-              >
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-ilali-500 text-xs font-bold text-white">
-                  {index + 1}
-                </span>
-                <span className="mt-2 inline-flex h-12 w-12 items-center justify-center rounded-full bg-ilali-100 text-2xl">
-                  {step.icon}
-                </span>
-                <h3 className="mt-4 text-lg font-semibold text-slate-900">
-                  {step.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                  {step.description}
-                </p>
-              </div>
-            ))}
+            <div className="mt-8 space-y-6">
+              {[
+                {
+                  q: "Background checks",
+                  a: "Every provider submits a police clearance or equivalent background check. We verify the document, not just collect it. This applies to all staff who work with children.",
+                },
+                {
+                  q: "Identity verification",
+                  a: "Providers must verify their identity and business details. We cross-reference against public records to confirm they are who they say they are.",
+                },
+                {
+                  q: "Ongoing monitoring",
+                  a: "Vetting isn't a one-time thing. Providers are periodically re-checked, and parents can report concerns at any time. A provider's status is clearly shown on their profile.",
+                },
+                {
+                  q: "What you see on a profile",
+                  a: "Each provider profile shows their vetting badge, how long they've been on ILALI, ratings from other parents, and a detailed description of their offering and credentials.",
+                },
+              ].map((item) => (
+                <div key={item.q} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <h3 className="text-base font-semibold text-slate-900">{item.q}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.a}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -118,33 +71,51 @@ export default function ForParentsPage() {
           <hr className="border-slate-200" />
         </div>
 
-        {/* Why Parents Choose ILALI */}
+        {/* Tips for choosing */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mb-10 text-center">
+          <div className="mx-auto max-w-3xl">
             <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-              Why Parents Choose ILALI
+              Tips for choosing the right activity
             </h2>
-            <p className="mt-2 text-sm text-slate-500">
-              Built with your family's safety and convenience in mind
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">
+              Not sure where to start? Here are a few things parents tell us
+              make the biggest difference:
             </p>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {whyChoose.map((item) => (
-              <div
-                key={item.title}
-                className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md"
-              >
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ilali-100 text-2xl">
-                  {item.icon}
-                </span>
-                <h3 className="mt-4 text-lg font-semibold text-slate-900">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                  {item.description}
-                </p>
-              </div>
-            ))}
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {[
+                {
+                  icon: "🎯",
+                  title: "Follow their interests",
+                  desc: "Start with what your child already loves — art, sport, music, or something new. The best activities are the ones they're excited about.",
+                },
+                {
+                  icon: "📍",
+                  title: "Consider location",
+                  desc: "Filter by neighbourhood to find activities close to home, school, or along your regular route. Less travel means more consistency.",
+                },
+                {
+                  icon: "📅",
+                  title: "Check the schedule",
+                  desc: "Look at session times, frequency, and whether it fits your weekly routine. Many providers offer trial sessions before committing.",
+                },
+                {
+                  icon: "⭐",
+                  title: "Read reviews",
+                  desc: "Real feedback from other parents tells you more than any description. Look for consistent positive patterns, not just star ratings.",
+                },
+              ].map((tip) => (
+                <div
+                  key={tip.title}
+                  className="flex gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+                >
+                  <span className="mt-0.5 text-2xl">{tip.icon}</span>
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-900">{tip.title}</h3>
+                    <p className="mt-1 text-xs leading-relaxed text-slate-500">{tip.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -152,23 +123,87 @@ export default function ForParentsPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <hr className="border-slate-200" />
         </div>
+
+        {/* Ubuntu Rewards for parents */}
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl">
+            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+              Earn while your kids grow
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">
+              ILALI&apos;s Ubuntu Rewards programme means every booking does more
+              than just keep your child busy — it earns points, unlocks
+              discounts, and supports kids who wouldn&apos;t otherwise have access.
+            </p>
+            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+              {[
+                { label: "Points per booking", value: "1pt / R20" },
+                { label: "Referral bonus", value: "50–200 pts" },
+                { label: "Community fund", value: "5% per booking" },
+              ].map((item) => (
+                <div key={item.label} className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-center">
+                  <p className="text-xs text-slate-500">{item.label}</p>
+                  <p className="mt-1 text-lg font-bold text-ilali-700">{item.value}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 text-center">
+              <Link
+                href="/ubuntu-rewards"
+                className="inline-flex items-center gap-1 text-sm font-semibold text-ilali-600 hover:text-ilali-700 transition-colors"
+              >
+                See full Ubuntu Rewards details →
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Divider */}
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <hr className="border-slate-200" />
+        </div>
+
+        {/* Getting started checklist */}
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl">
+            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+              Getting started checklist
+            </h2>
+            <ul className="mt-8 space-y-4">
+              {[
+                { step: "1", text: "Create your free ILALI account — no credit card needed" },
+                { step: "2", text: "Set your location to see activities near you" },
+                { step: "3", text: "Browse by category, age, or use the search bar" },
+                { step: "4", text: "Read provider profiles, reviews, and check their vetting status" },
+                { step: "5", text: "Book a session or trial — pay securely through the platform" },
+                { step: "6", text: "Leave a review afterwards to help other parents" },
+              ].map((item) => (
+                <li key={item.step} className="flex items-start gap-3">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ilali-100 text-xs font-bold text-ilali-700">
+                    {item.step}
+                  </span>
+                  <span className="text-sm leading-relaxed text-slate-700">{item.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
 
         {/* CTA */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="rounded-2xl bg-gradient-to-br from-ilali-500 to-ilali-700 px-6 py-12 text-center shadow-lg sm:px-12">
             <h2 className="text-2xl font-bold text-white sm:text-3xl">
-              Ready to Find the Perfect Activity?
+              Ready to find the perfect activity?
             </h2>
             <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-ilali-100">
-              Browse hundreds of trusted activities near you and book with
-              confidence.
+              Browse hundreds of trusted activities near you and book with confidence.
             </p>
-            <a
-              href="/browse"
+            <Link
+              href="/home"
               className="mt-6 inline-flex items-center rounded-full bg-white px-8 py-3 text-sm font-semibold text-ilali-700 shadow-sm hover:bg-ilali-50 transition-colors"
             >
-              Browse activities
-            </a>
+              Go to ILALI
+            </Link>
           </div>
         </section>
       </main>

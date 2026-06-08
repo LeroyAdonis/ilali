@@ -27,94 +27,42 @@ export default function HomePage() {
         {/* ───── HERO ───── */}
         <Hero />
 
-        {/* ───── HOW ILALI WORKS ───── */}
-        <section className="px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+        {/* ───── QUICK JUMP ───── */}
+        <section className="px-4 py-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <div className="mx-auto max-w-3xl text-center">
-              <span className="text-sm uppercase tracking-widest text-ilali-500 font-semibold">
-                How It Works
-              </span>
-              <h2 className="mt-3 text-3xl font-extrabold text-slate-900 sm:text-4xl">
-                Cape Town&apos;s trusted marketplace for kids&apos; activities
-              </h2>
-              <p className="mt-4 text-lg leading-relaxed text-slate-600">
-                Whether you&apos;re a parent looking for the perfect activity or a
-                provider wanting to reach more families, ILALI makes it simple.
-              </p>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <span className="text-sm font-medium text-slate-500">Jump to:</span>
+              <Link
+                href="/browse"
+                className="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-ilali-400 hover:text-ilali-600 transition-all"
+              >
+                Browse Activities
+              </Link>
+              <Link
+                href="/categories"
+                className="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-ilali-400 hover:text-ilali-600 transition-all"
+              >
+                Browse Categories
+              </Link>
+              <Link
+                href="/for-providers"
+                className="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-ilali-400 hover:text-ilali-600 transition-all"
+              >
+                For Providers
+              </Link>
             </div>
+          </div>
+        </section>
 
-            {/* Stats bar */}
-            <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-6 sm:grid-cols-4">
-              {stats.map((s) => (
-                <div key={s.label} className="rounded-xl bg-ilali-50 p-5 text-center">
-                  <p className="text-2xl font-extrabold text-ilali-700">{s.value}</p>
-                  <p className="mt-1 text-sm text-slate-500">{s.label}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* For Parents / For Providers */}
-            <div className="mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-2">
-              <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-ilali-100 text-2xl">
-                  👨‍👩‍👧‍👦
-                </span>
-                <h3 className="mt-4 text-xl font-bold text-slate-900">For Parents</h3>
-                <ol className="mt-4 space-y-3">
-                  {[
-                    { step: "1", title: "Search", desc: "Browse vetted activities by category, location, age, or price" },
-                    { step: "2", title: "Book", desc: "Reserve your spot directly through the platform" },
-                    { step: "3", title: "Earn Rewards", desc: "Collect Ubuntu Rewards points with every booking" },
-                  ].map((item) => (
-                    <li key={item.step} className="flex gap-3 text-sm">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ilali-600 text-xs font-bold text-white">
-                        {item.step}
-                      </span>
-                      <div>
-                        <span className="font-semibold text-slate-900">{item.title}:</span>{" "}
-                        <span className="text-slate-600">{item.desc}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-                <Link
-                  href="/for-parents"
-                  className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-ilali-600 hover:text-ilali-700 transition-colors"
-                >
-                  Learn more for parents →
-                </Link>
+        {/* ───── STATS BAR ───── */}
+        <section className="border-y border-slate-200 bg-white">
+          <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-slate-200 px-4 py-8 sm:grid-cols-4 sm:px-6 lg:px-8">
+            {stats.map((s) => (
+              <div key={s.label} className="text-center">
+                <p className="text-2xl font-extrabold text-ilali-700">{s.value}</p>
+                <p className="text-sm text-slate-500">{s.label}</p>
               </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-sunset-100 text-2xl">
-                  🎪
-                </span>
-                <h3 className="mt-4 text-xl font-bold text-slate-900">For Providers</h3>
-                <ol className="mt-4 space-y-3">
-                  {[
-                    { step: "1", title: "List", desc: "Create your profile and list your activities for free" },
-                    { step: "2", title: "Get Discovered", desc: "Families find you through search, categories, and recommendations" },
-                    { step: "3", title: "Grow", desc: "Manage bookings, build reputation, and attract more families" },
-                  ].map((item) => (
-                    <li key={item.step} className="flex gap-3 text-sm">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sunset-500 text-xs font-bold text-white">
-                        {item.step}
-                      </span>
-                      <div>
-                        <span className="font-semibold text-slate-900">{item.title}:</span>{" "}
-                        <span className="text-slate-600">{item.desc}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-                <Link
-                  href="/for-providers"
-                  className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-sunset-600 hover:text-sunset-700 transition-colors"
-                >
-                  Learn more for providers →
-                </Link>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
 

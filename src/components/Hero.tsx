@@ -22,8 +22,8 @@ export default function Hero() {
 
         {/* Description */}
         <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg">
-          Discover and book trusted children&apos;s extramural activities in your
-          community. Every provider is background-checked for your peace of mind.
+          Discover vetted extramural activities in your community. Every
+          provider is background-checked for your peace of mind.
         </p>
 
         {/* CTAs */}

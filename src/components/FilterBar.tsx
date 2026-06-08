@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ChevronDown, X } from "lucide-react";
@@ -102,14 +102,19 @@ function useOutsideClick(ref: React.RefObject<HTMLElement | null>, handler: () =
   }, [ref, handler]);
 }
 
-function FilterDropdown({ config }: { config: FilterConfig }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  useOutsideClick(ref, () => setOpen(false));
-
+function FilterDropdownMenu({
+  config,
+  searchParams,
+  router,
+  onClose,
+  onClear,
+}: {
+  config: FilterConfig;
+  searchParams: URLSearchParams;
+  router: ReturnType<typeof useRouter>;
+  onClose: () => void;
+  onClear: () => void;
+}) {
   const selectedValues = searchParams.getAll(config.param);
   const activeCount = selectedValues.length;
 
@@ -130,78 +135,51 @@ function FilterDropdown({ config }: { config: FilterConfig }) {
       }
     }
     router.push(`/browse?${params.toString()}`);
-    if (!config.multi) setOpen(false);
+    if (!config.multi) onClose();
   };
 
-  const label = activeCount > 0 ? `${config.label} (${activeCount})` : config.label;
-
   return (
-    <div ref={ref} className="relative shrink-0">
-      <button
-        onClick={() => setOpen(!open)}
-        className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-medium shadow-sm whitespace-nowrap transition-colors ${
-          activeCount > 0
-            ? "border-ilali-400 bg-ilali-50 text-ilali-700"
-            : "border-slate-200 bg-white text-slate-700 hover:border-ilali-300 hover:text-ilali-600 hover:bg-ilali-50"
-        }`}
-      >
-        {label}
-        <ChevronDown
-          className={`h-3.5 w-3.5 transition-transform ${
-            open ? "rotate-180" : ""
-          } ${activeCount > 0 ? "text-ilali-500" : "text-slate-400"}`}
-        />
-      </button>
+    <div className="w-full">
+      <div className="max-h-64 overflow-y-auto p-2">
+        {config.options.map((opt) => {
+          const isSelected = config.multi
+            ? selectedValues.includes(opt.value)
+            : selectedValues[0] === opt.value;
 
-      {open && (
-        <div className="absolute left-0 top-full mt-2 z-40 w-56 rounded-xl border border-slate-200 bg-white shadow-xl ring-1 ring-black/5">
-          <div className="max-h-64 overflow-y-auto p-2">
-            {config.options.map((opt) => {
-              const isSelected = config.multi
-                ? selectedValues.includes(opt.value)
-                : selectedValues[0] === opt.value;
-
-              return (
-                <button
-                  key={opt.value}
-                  onClick={() => toggle(opt.value)}
-                  className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
-                    isSelected
-                      ? "bg-ilali-50 text-ilali-700 font-medium"
-                      : "text-slate-600 hover:bg-slate-50"
-                  }`}
-                >
-                  <span
-                    className={`inline-flex h-4 w-4 shrink-0 items-center justify-center rounded border ${
-                      isSelected
-                        ? "bg-ilali-500 border-ilali-500 text-white"
-                        : "border-slate-300"
-                    }`}
-                  >
-                    {isSelected && "✓"}
-                  </span>
-                  <span>{opt.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {activeCount > 0 && (
-            <div className="border-t border-slate-100 p-2">
-              <button
-                onClick={() => {
-                  const params = new URLSearchParams(searchParams.toString());
-                  params.delete(config.param);
-                  router.push(`/browse?${params.toString()}`);
-                  setOpen(false);
-                }}
-                className="flex w-full items-center justify-center gap-1 rounded-lg px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 transition-colors"
+          return (
+            <button
+              key={opt.value}
+              onClick={() => toggle(opt.value)}
+              className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
+                isSelected
+                  ? "bg-ilali-50 text-ilali-700 font-medium"
+                  : "text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              <span
+                className={`inline-flex h-4 w-4 shrink-0 items-center justify-center rounded border ${
+                  isSelected
+                    ? "bg-ilali-500 border-ilali-500 text-white"
+                    : "border-slate-300"
+                }`}
               >
-                <X className="h-3 w-3" />
-                Clear filter
-              </button>
-            </div>
-          )}
+                {isSelected && "✓"}
+              </span>
+              <span>{opt.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {activeCount > 0 && (
+        <div className="border-t border-slate-100 p-2">
+          <button
+            onClick={onClear}
+            className="flex w-full items-center justify-center gap-1 rounded-lg px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 transition-colors"
+          >
+            <X className="h-3 w-3" />
+            Clear filter
+          </button>
         </div>
       )}
     </div>
@@ -209,17 +187,118 @@ function FilterDropdown({ config }: { config: FilterConfig }) {
 }
 
 export default function FilterBar() {
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Close on outside click for the entire filter bar
+  useOutsideClick(menuRef, () => {
+    if (openDropdown) setOpenDropdown(null);
+  });
+
+  const toggleDropdown = useCallback(
+    (param: string) => {
+      if (openDropdown === param) {
+        setOpenDropdown(null);
+      } else {
+        const btn = buttonRefs.current[param];
+        if (btn) {
+          const rect = btn.getBoundingClientRect();
+          setMenuPosition({
+            top: rect.bottom + 4,
+            left: rect.left,
+          });
+        }
+        setOpenDropdown(param);
+      }
+    },
+    [openDropdown]
+  );
+
+  const closeDropdown = useCallback(() => {
+    setOpenDropdown(null);
+  }, []);
+
+  const clearFilter = (config: FilterConfig) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete(config.param);
+    router.push(`/browse?${params.toString()}`);
+    setOpenDropdown(null);
+  };
+
+  const openConfig = filterConfigs.find((c) => c.param === openDropdown);
+  const searchParamsObj = new URLSearchParams(searchParams.toString());
+
+  // Close dropdown on scroll/resize
+  useEffect(() => {
+    if (!openDropdown) return;
+    const handleEvent = () => setOpenDropdown(null);
+    window.addEventListener("scroll", handleEvent, true);
+    window.addEventListener("resize", handleEvent);
+    return () => {
+      window.removeEventListener("scroll", handleEvent, true);
+      window.removeEventListener("resize", handleEvent);
+    };
+  }, [openDropdown]);
+
   const activeCategory = searchParams.get("category");
 
   return (
-    <div className="w-full">
-      <div className="relative flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-        {filterConfigs.map((config) => (
-          <FilterDropdown key={config.param} config={config} />
-        ))}
+    <div ref={wrapperRef} className="w-full relative">
+      {/* Filter buttons (scrollable) */}
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+        {filterConfigs.map((config) => {
+          const selectedValues = searchParams.getAll(config.param);
+          const activeCount = selectedValues.length;
+          const isOpen = openDropdown === config.param;
+          const label = activeCount > 0 ? `${config.label} (${activeCount})` : config.label;
+
+          return (
+            <button
+              key={config.param}
+              ref={(el) => {
+                buttonRefs.current[config.param] = el;
+              }}
+              onClick={() => toggleDropdown(config.param)}
+              className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-medium shadow-sm whitespace-nowrap shrink-0 transition-colors ${
+                activeCount > 0
+                  ? "border-ilali-400 bg-ilali-50 text-ilali-700"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-ilali-300 hover:text-ilali-600 hover:bg-ilali-50"
+              } ${isOpen ? "ring-2 ring-ilali-200" : ""}`}
+            >
+              {label}
+              <ChevronDown
+                className={`h-3.5 w-3.5 transition-transform ${
+                  isOpen ? "rotate-180" : ""
+                } ${activeCount > 0 ? "text-ilali-500" : "text-slate-400"}`}
+              />
+            </button>
+          );
+        })}
       </div>
 
+      {/* Dropdown menu — rendered OUTSIDE the overflow container so it can't be clipped */}
+      {openDropdown && openConfig && (
+        <div
+          ref={menuRef}
+          className="fixed z-50 w-56 rounded-xl border border-slate-200 bg-white shadow-xl ring-1 ring-black/5"
+          style={{ top: menuPosition.top, left: menuPosition.left }}
+        >
+          <FilterDropdownMenu
+            config={openConfig}
+            searchParams={searchParamsObj}
+            router={router}
+            onClose={closeDropdown}
+            onClear={() => clearFilter(openConfig)}
+          />
+        </div>
+      )}
+
+      {/* Category icons row */}
       <div className="relative mt-4 flex gap-3 overflow-x-auto scrollbar-hide pb-2">
         {categories.map((cat) => {
           const isActive = activeCategory === cat.slug;

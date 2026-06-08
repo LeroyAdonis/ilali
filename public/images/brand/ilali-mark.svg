@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Rounded square background -->
+  <rect x="1" y="1" width="46" height="46" rx="10" fill="#0d9488"/>
+  <!-- Stylised "i" — playful child-friendly mark -->
+  <!-- Descender (body of the i) -->
+  <rect x="21" y="14" width="6" height="24" rx="3" fill="white"/>
+  <!-- Dot of the i — styled as a small star/sparkle -->
+  <circle cx="24" cy="11" r="4" fill="white"/>
+  <!-- Small accent arc beneath to suggest a smile/community -->
+  <path d="M14 30c4 6 16 6 20 0" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Tiny gold star accent -->
+  <circle cx="36" cy="8" r="3" fill="#facc15"/>
+</svg>

@@ -71,10 +71,14 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6 lg:gap-8">
           {/* Brand Column */}
           <div className="col-span-2 sm:col-span-3 lg:col-span-2">
-            <Link href="/" className="inline-block">
-              <span className="text-2xl font-extrabold tracking-tight text-white">
-                {SITE_NAME}
-              </span>
+            <Link href="/" className="inline-block hover:opacity-90 transition-opacity">
+              <img
+                src="/images/brand/ilali-logo-38.png"
+                alt="ILALI"
+                width={36}
+                height={36}
+                className="rounded-md"
+              />
             </Link>
             <p className="mt-3 text-sm leading-relaxed text-slate-400 max-w-xs">
               A child-safety-first marketplace connecting families with vetted providers and activities. Building communities, enriching childhoods.

@@ -162,12 +162,26 @@ export default function HomePage() {
         </section>
 
         {/* Partnership Badge */}
-        <section className="bg-slate-50 py-8">
+        <section className="bg-slate-50 py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <p className="text-center text-xs leading-relaxed text-slate-500 max-w-2xl mx-auto">
-              Built in partnership with ASSITEJ South Africa, with initial funding
-              support from BASA through its Supporting Grants Programme.
-            </p>
+            <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-center">
+              <p className="text-xs leading-relaxed text-slate-500 max-w-lg text-center sm:text-left">
+                Built in partnership with ASSITEJ South Africa, with initial funding
+                support from BASA through its Supporting Grants Programme.
+              </p>
+              <div className="flex items-center gap-6">
+                <img
+                  src="/images/assitej/assitej-sa-logo.png"
+                  alt="ASSITEJ South Africa logo"
+                  className="h-12 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity"
+                />
+                <img
+                  src="/images/basa/basa-logo.png"
+                  alt="Business and Arts South Africa logo"
+                  className="h-10 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity"
+                />
+              </div>
+            </div>
           </div>
         </section>
       </main>

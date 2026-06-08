@@ -31,10 +31,14 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm border-b border-slate-200">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 shrink-0">
-          <span className="text-2xl font-extrabold tracking-tight text-ilali-600">
-            ILALI
-          </span>
+        <Link href="/" className="flex items-center hover:opacity-90 transition-opacity shrink-0">
+          <img
+            src="/images/brand/ilali-logo-38.png"
+            alt="ILALI"
+            width={38}
+            height={38}
+            className="rounded-md"
+          />
         </Link>
 
         {/* Desktop Nav */}

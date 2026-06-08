@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="#0d9488"/>
+  <!-- I letterform stylized as child/family mark -->
+  <path d="M32 14c-1.8 0-3.3 1.5-3.3 3.3v12.8h-6.6c-1.8 0-3.3 1.5-3.3 3.3v5.9c0 1.8 1.5 3.3 3.3 3.3h6.6v7.9c0 1.8 1.5 3.3 3.3 3.3 1.8 0 3.3-1.5 3.3-3.3V30h6.6c1.8 0 3.3-1.5 3.3-3.3v-5.9c0-1.8-1.5-3.3-3.3-3.3h-6.6V17.3c0-1.8-1.5-3.3-3.3-3.3z" fill="#fff"/>
+  <!-- Small star accent -->
+  <circle cx="44" cy="18" r="3" fill="#fef08a" opacity="0.9"/>
+</svg>

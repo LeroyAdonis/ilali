@@ -9,24 +9,41 @@ export const metadata: Metadata = {
   description:
     "Discover and book trusted children's extramural activities in your community. Every provider is background-checked for your peace of mind.",
   keywords:
-    "kids activities cape town, children activities, extramural activities, after school activities, holiday programs, arts for kids, south africa",
+    "kids activities cape town, children activities, extramural activities, after school activities, holiday programs, arts for kids, ballet classes, drama classes, coding for kids, south africa",
   authors: [{ name: "ILALI" }],
   creator: "ILALI",
   publisher: "ILALI",
+  metadataBase: new URL("https://preview.ilali.co"),
+  icons: {
+    icon: [
+      { url: "/images/brand/ilali-logo-38.png", sizes: "38x38", type: "image/png" },
+      { url: "/images/brand/ilali-logo-cropped.png", sizes: "778x790", type: "image/png" },
+    ],
+    apple: "/images/brand/ilali-logo-cropped.png",
+  },
   openGraph: {
     title: "ILALI",
     description:
-      "Find trusted children's activities in Cape Town. Every provider background-checked.",
+      "Discover and book trusted children's arts and cultural activities in Cape Town. Find ballet, drama, art classes, coding workshops and more for kids aged 3-18.",
     url: "https://preview.ilali.co",
     siteName: "ILALI",
     locale: "en_ZA",
     type: "website",
+    images: [
+      {
+        url: "/images/brand/ilali-logo-cropped.png",
+        width: 778,
+        height: 790,
+        alt: "ILALI",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "ILALI",
     description:
-      "Find trusted children's activities in Cape Town. Every provider background-checked.",
+      "Discover and book trusted children's arts and cultural activities in Cape Town. Find ballet, drama, art classes, coding workshops and more for kids aged 3-18.",
+    images: ["/images/brand/ilali-logo-cropped.png"],
   },
   robots: { index: true, follow: true },
 };

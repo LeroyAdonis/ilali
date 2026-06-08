@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import VenuePartnerForm from "./form";
 
 export const metadata: Metadata = {
   title: "For Venues | ILALI",
@@ -159,93 +160,7 @@ export default function ForVenuesPage() {
             <p className="mt-2 text-center text-sm text-slate-500">
               Tell us about your venue and we'll be in touch.
             </p>
-            <form className="mt-8 space-y-5">
-              <div>
-                <label
-                  htmlFor="venue-name"
-                  className="block text-sm font-medium text-slate-700"
-                >
-                  Venue Name
-                </label>
-                <input
-                  id="venue-name"
-                  type="text"
-                  placeholder="Your venue name"
-                  className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-sunset-500 focus:outline-none focus:ring-2 focus:ring-sunset-200"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="contact-name"
-                  className="block text-sm font-medium text-slate-700"
-                >
-                  Contact Person
-                </label>
-                <input
-                  id="contact-name"
-                  type="text"
-                  placeholder="Your full name"
-                  className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-sunset-500 focus:outline-none focus:ring-2 focus:ring-sunset-200"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="venue-email"
-                  className="block text-sm font-medium text-slate-700"
-                >
-                  Email Address
-                </label>
-                <input
-                  id="venue-email"
-                  type="email"
-                  placeholder="you@example.com"
-                  className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-sunset-500 focus:outline-none focus:ring-2 focus:ring-sunset-200"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="venue-phone"
-                  className="block text-sm font-medium text-slate-700"
-                >
-                  Phone Number
-                </label>
-                <input
-                  id="venue-phone"
-                  type="tel"
-                  placeholder="+27 00 000 0000"
-                  className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-sunset-500 focus:outline-none focus:ring-2 focus:ring-sunset-200"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="venue-type"
-                  className="block text-sm font-medium text-slate-700"
-                >
-                  Venue Type
-                </label>
-                <select
-                  id="venue-type"
-                  className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 focus:border-sunset-500 focus:outline-none focus:ring-2 focus:ring-sunset-200"
-                >
-                  <option value="">Select venue type...</option>
-                  <option value="studio">Studio</option>
-                  <option value="hall">Community Hall</option>
-                  <option value="outdoor">Outdoor Space</option>
-                  <option value="theatre">Theatre</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              <button
-                type="button"
-                className="w-full rounded-full bg-sunset-500 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-sunset-600 transition-colors"
-              >
-                Submit Application
-              </button>
-              <p className="text-center text-xs text-slate-400">
-                We'll review your application and get back to you within 2
-                business days.
-              </p>
-            </form>
+            <VenuePartnerForm />
           </div>
         </section>
       </main>

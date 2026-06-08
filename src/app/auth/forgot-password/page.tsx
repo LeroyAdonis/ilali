@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Sign In | ILALI",
-  description: "Sign in to your ILALI account to manage bookings and activities.",
+  title: "Forgot Password | ILALI",
+  description: "Reset your ILALI account password.",
 };
 
-export default function SignInPage() {
+export default function ForgotPasswordPage() {
   return (
     <>
       <Header />
@@ -18,10 +18,10 @@ export default function SignInPage() {
             <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
               <div className="mb-8 text-center">
                 <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-                  Welcome back
+                  Reset your password
                 </h1>
                 <p className="mt-2 text-sm text-slate-500">
-                  Sign in to your ILALI account
+                  Enter your email and we&apos;ll send you a reset link.
                 </p>
               </div>
 
@@ -44,59 +44,23 @@ export default function SignInPage() {
                   />
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-slate-700"
-                  >
-                    Password
-                  </label>
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    required
-                    placeholder="Enter your password"
-                    className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-slate-300 text-ilali-600 focus:ring-ilali-500"
-                    />
-                    <span className="text-sm text-slate-600">
-                      Remember me
-                    </span>
-                  </label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="text-sm font-medium text-ilali-600 hover:text-ilali-700"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-
                 <button
                   type="button"
                   className="w-full rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-ilali-700"
                 >
-                  Sign In
+                  Send reset link
                 </button>
               </form>
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-slate-500">
-                  Don&apos;t have an account?{" "}
-                  <a
-                    href="/auth/signup"
+                  Remember your password?{" "}
+                  <Link
+                    href="/auth/signin"
                     className="font-medium text-ilali-600 hover:text-ilali-700"
                   >
-                    Create one
-                  </a>
+                    Sign in
+                  </Link>
                 </p>
               </div>
             </div>

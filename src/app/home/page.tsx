@@ -23,98 +23,62 @@ export default function HomePage() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        {/* ───── QUICK JUMP ───── */}
-        <section className="px-4 py-12 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <span className="text-sm font-medium text-slate-500">Jump to:</span>
-              <Link
-                href="/browse"
-                className="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-ilali-400 hover:text-ilali-600 transition-all"
-              >
-                Browse Activities
-              </Link>
-              <Link
-                href="/categories"
-                className="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-ilali-400 hover:text-ilali-600 transition-all"
-              >
-                Browse Categories
-              </Link>
-              <Link
-                href="/for-providers"
-                className="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:border-ilali-400 hover:text-ilali-600 transition-all"
-              >
-                For Providers
-              </Link>
+        {/* ───── APP HERO ───── */}
+        <section className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white to-slate-50">
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+            <div className="mx-auto max-w-2xl text-center">
+              <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                What activity are you looking for?
+              </h1>
+              <p className="mt-3 text-base leading-relaxed text-slate-500">
+                Search hundreds of vetted kids&apos; activities across Cape Town
+              </p>
+
+              {/* Search bar */}
+              <div className="relative mt-8">
+                <svg
+                  className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Search by activity, provider, or location..."
+                  className="w-full rounded-full border border-slate-300 bg-white py-4 pl-14 pr-4 text-base text-slate-700 shadow-sm placeholder:text-slate-400 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-all"
+                  readOnly
+                />
+              </div>
+
+              {/* Trending tags */}
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+                <span className="text-xs font-medium text-slate-400">Trending:</span>
+                {["Arts & Culture", "Sports", "Music Lessons", "Holiday Programs"].map((tag) => (
+                  <Link
+                    key={tag}
+                    href={`/browse?category=${encodeURIComponent(tag.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-"))}`}
+                    className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition-all hover:border-ilali-400 hover:text-ilali-600 hover:bg-ilali-50"
+                  >
+                    {tag}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
         {/* ───── STATS BAR ───── */}
-        <section className="border-y border-slate-200 bg-white">
-          <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-slate-200 px-4 py-8 sm:grid-cols-4 sm:px-6 lg:px-8">
+        <section className="bg-white">
+          <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-slate-200 border-b border-slate-200 px-4 py-7 sm:grid-cols-4 sm:px-6 lg:px-8">
             {stats.map((s) => (
               <div key={s.label} className="text-center">
-                <p className="text-2xl font-extrabold text-ilali-700">{s.value}</p>
-                <p className="text-sm text-slate-500">{s.label}</p>
+                <p className="text-xl font-extrabold text-ilali-700">{s.value}</p>
+                <p className="text-xs text-slate-500">{s.label}</p>
               </div>
             ))}
-          </div>
-        </section>
-
-        {/* ───── WHY ILALI ───── */}
-        <section className="bg-slate-50 px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
-                Why ILALI?
-              </h2>
-              <p className="mt-4 text-lg leading-relaxed text-slate-600">
-                We&apos;re building more than a directory — we&apos;re building a
-                trusted community for Cape Town families.
-              </p>
-            </div>
-            <div className="mx-auto mt-12 grid max-w-5xl gap-6 sm:grid-cols-3">
-              {[
-                {
-                  icon: "🛡️",
-                  title: "100% Vetted",
-                  desc: "Every provider is background-checked. We do the safety work so you don't have to.",
-                },
-                {
-                  icon: "🏆",
-                  title: "Ubuntu Rewards",
-                  desc: "Earn points on every booking. Redeem for discounts and help fund kids' programmes across Cape Town.",
-                  highlight: true,
-                },
-                {
-                  icon: "🤲",
-                  title: "Community Built",
-                  desc: "Built in partnership with ASSITEJ SA & BASA. Your participation supports local children's arts and culture.",
-                },
-              ].map((item) => (
-                <div
-                  key={item.title}
-                  className={`rounded-xl border bg-white p-6 text-center shadow-sm transition-all hover:shadow-md ${
-                    item.highlight ? "border-ilali-300 ring-1 ring-ilali-200" : "border-slate-200"
-                  }`}
-                >
-                  <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-ilali-50 text-3xl">
-                    {item.icon}
-                  </span>
-                  <h3 className="mt-4 text-lg font-semibold text-slate-900">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.desc}</p>
-                  {item.highlight && (
-                    <Link
-                      href="/ubuntu-rewards"
-                      className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-ilali-600 hover:text-ilali-700 transition-colors"
-                    >
-                      Learn about rewards →
-                    </Link>
-                  )}
-                </div>
-              ))}
-            </div>
           </div>
         </section>
 

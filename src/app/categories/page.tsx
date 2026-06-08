@@ -38,7 +38,7 @@ export default function CategoriesPage() {
                 icon={cat.icon}
                 colorClasses={cat.color}
                 description={cat.description}
-                href={`/browse?category=${cat.slug}`}
+                href={`/category/${cat.slug}`}
               />
             ))}
           </div>

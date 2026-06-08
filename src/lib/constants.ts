@@ -302,6 +302,7 @@ export const navLinks = [
   { label: "Browse", href: "/browse" },
   { label: "Categories", href: "/categories" },
   { label: "How It Works", href: "/how-it-works" },
+  { label: "Ubuntu Rewards", href: "/ubuntu-rewards" },
 ];
 
 export const stats = [

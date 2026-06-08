@@ -32,7 +32,7 @@ export default async function VenuePage({ params }: { params: Promise<{ slug: st
         {/* Breadcrumb */}
         <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
           <nav className="flex items-center gap-2 text-xs text-slate-500">
-            <Link href="/" className="hover:text-ilali-600 transition-colors">Home</Link>
+            <Link href="/home" className="hover:text-ilali-600 transition-colors">Home</Link>
             <span>/</span>
             <Link href="/venues" className="hover:text-ilali-600 transition-colors">Venues</Link>
             <span>/</span>

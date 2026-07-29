@@ -3,11 +3,15 @@
 import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
 import VenueCard from "@/components/VenueCard";
-import { venues } from "@/lib/constants";
+import type { Venue } from "@/lib/types";
 
 const locations = ["All", "Newlands", "Claremont", "Muizenberg", "Observatory", "Constantia", "Woodstock", "Hout Bay"];
 
-export default function VenuesPageClient() {
+interface VenuesPageClientProps {
+  venues: Venue[];
+}
+
+export default function VenuesPageClient({ venues }: VenuesPageClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeLocation, setActiveLocation] = useState("All");
 
@@ -29,7 +33,7 @@ export default function VenuesPageClient() {
     }
 
     return result;
-  }, [searchQuery, activeLocation]);
+  }, [searchQuery, activeLocation, venues]);
 
   return (
     <main className="flex-1">

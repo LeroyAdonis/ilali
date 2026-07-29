@@ -6,7 +6,9 @@ import VenueCard from "@/components/VenueCard";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
-import { categories, providers, venues, stats } from "@/lib/constants";
+import { categories, stats } from "@/lib/constants";
+import { getProviders, getVenues, getCategories } from "@/lib/db/queries";
+import { mapProviders, mapVenue } from "@/lib/db/mappers";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -15,7 +17,14 @@ export const metadata: Metadata = {
     "Discover and book trusted children's extramural activities in Cape Town. Browse vetted providers, venues, and activities.",
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [dbProviders, dbVenues, dbCategories] = await Promise.all([
+    getProviders(),
+    getVenues(),
+    getCategories(),
+  ]);
+  const providers = mapProviders(dbProviders, dbCategories);
+  const venues = dbVenues.map(mapVenue);
   const newProviders = providers.slice(0, 4);
   const popularProviders = providers.filter((p) => p.featured);
 

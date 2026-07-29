@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { providers } from "@/lib/constants";
+import { getProviders, getCategories } from "@/lib/db/queries";
+import { mapProviders } from "@/lib/db/mappers";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category") || "";
   const location = searchParams.get("location") || "";
 
-  let result = [...providers];
+  const [dbProviders, dbCategories] = await Promise.all([
+    getProviders(),
+    getCategories(),
+  ]);
+  let result = mapProviders(dbProviders, dbCategories);
 
   if (category) {
     const slugs = category.split(",");

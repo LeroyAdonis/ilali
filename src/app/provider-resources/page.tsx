@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ComingSoon from "@/components/ComingSoon";
 
 export const metadata: Metadata = {
   title: "Provider Resources | ILALI",
@@ -100,6 +101,17 @@ export default function ProviderResourcesPage() {
           <hr className="border-slate-200" />
         </div>
 
+        {/* T058: AI onboarding placeholder */}
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-lg text-center">
+            <ComingSoon
+              title="AI-Powered Onboarding"
+              description="Answer a few WhatsApp questions and let our AI build your perfect listing — including description, age range, and tags."
+              icon="🤖"
+            />
+          </div>
+        </section>
+
         {/* Need Help? */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="rounded-2xl bg-gradient-to-br from-ilali-500 to-ilali-700 px-6 py-12 text-center shadow-lg sm:px-12">
@@ -107,7 +119,7 @@ export default function ProviderResourcesPage() {
               Need Help?
             </h2>
             <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-ilali-100">
-              Can't find what you're looking for? Our support team is here to
+              Can&apos;t find what you&apos;re looking for? Our support team is here to
               help you every step of the way.
             </p>
             <a

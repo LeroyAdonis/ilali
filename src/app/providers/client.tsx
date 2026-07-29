@@ -4,9 +4,14 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import ProviderCard from "@/components/ProviderCard";
-import { providers, categories } from "@/lib/constants";
+import type { Provider } from "@/lib/types";
 
-export default function ProvidersPageClient() {
+interface ProvidersPageClientProps {
+  providers: Provider[];
+  categories: { id: string; slug: string; name: string; icon: string; color: string }[];
+}
+
+export default function ProvidersPageClient({ providers, categories }: ProvidersPageClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
 
@@ -32,7 +37,7 @@ export default function ProvidersPageClient() {
     }
 
     return result;
-  }, [searchQuery, activeCategory]);
+  }, [searchQuery, activeCategory, providers, categories]);
 
   return (
     <main className="flex-1">

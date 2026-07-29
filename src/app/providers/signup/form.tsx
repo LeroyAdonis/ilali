@@ -3,6 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle } from "lucide-react";
+import { providerApplicationSchema } from "@/lib/validations";
+import { formatPhone } from "@/lib/utils";
+import { CT_SUBURBS } from "@/lib/suburbs";
 
 const activityTypes = [
   "Arts & Culture",
@@ -15,36 +18,114 @@ const activityTypes = [
   "Other",
 ];
 
+type FormData = {
+  name: string;
+  email: string;
+  phone: string;
+  activity_type: string;
+  description: string;
+  location: string;
+  age_min: string;
+  age_max: string;
+  price_value: string;
+  image_url: string;
+};
+
+type FieldErrors = Partial<Record<keyof FormData, string[]>>;
+
+const initialFormData: FormData = {
+  name: "",
+  email: "",
+  phone: "",
+  activity_type: "",
+  description: "",
+  location: "",
+  age_min: "",
+  age_max: "",
+  price_value: "",
+  image_url: "",
+};
+
 export default function ProviderSignupForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [submittedEmail, setSubmittedEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [formData, setFormData] = useState<FormData>(initialFormData);
+
+  function updateField(field: keyof FormData, value: string) {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    // Clear field error on change
+    setFieldErrors((prev) => {
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  }
+
+  function handlePhoneBlur() {
+    if (formData.phone.trim()) {
+      const formatted = formatPhone(formData.phone);
+      setFormData((prev) => ({ ...prev, phone: formatted }));
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setFieldErrors({});
 
-    const formData = new FormData(e.currentTarget);
-    const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
-      activity_type: formData.get("activityType"),
-    };
+    // ── Prepare data for Zod ──
+    const parsedPhone = formData.phone.trim() || undefined;
 
+    const validated = providerApplicationSchema.safeParse({
+      name: formData.name,
+      email: formData.email,
+      phone: parsedPhone,
+      activity_type: formData.activity_type,
+      description: formData.description || undefined,
+      location: formData.location || undefined,
+      age_min: formData.age_min ? Number(formData.age_min) : null,
+      age_max: formData.age_max ? Number(formData.age_max) : null,
+      price_value: formData.price_value ? Number(formData.price_value) : null,
+      image_url: formData.image_url || undefined,
+    });
+
+    if (!validated.success) {
+      const flat = validated.error.flatten().fieldErrors as FieldErrors;
+      setFieldErrors(flat);
+      setLoading(false);
+      return;
+    }
+
+    // ── Submit to API ──
     try {
       const res = await fetch("/api/providers/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(validated.data),
       });
 
-      if (!res.ok) throw new Error("Something went wrong");
+      const json = await res.json();
 
+      if (!res.ok) {
+        if (res.status === 429) {
+          setError(json.error || "Too many attempts. Please wait before trying again.");
+        } else if (json.errors) {
+          setFieldErrors(json.errors as FieldErrors);
+        } else {
+          setError(json.error || "Something went wrong. Please try again.");
+        }
+        setLoading(false);
+        return;
+      }
+
+      setSubmittedEmail(formData.email);
       setSubmitted(true);
     } catch {
-      setError("Could not submit. Please try again.");
+      setError("Could not submit. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -59,13 +140,31 @@ export default function ProviderSignupForm() {
             You&apos;re on the list!
           </h2>
           <p className="mt-2 text-sm text-slate-500">
-            Thanks for your interest. We&apos;ll review your application and
-            get back to you within 2 business days.
+            We&apos;ll review your application within 48 hours.
+            You&apos;ll hear from us at{" "}
+            <span className="font-medium text-slate-700">{submittedEmail}</span>.
+          </p>
+          <p className="mt-3 text-sm text-slate-500">
+            When approved, you&apos;ll get access to your own provider dashboard
+            to manage listings, track enquiries, and update your profile.
+          </p>
+          <p className="mt-1 text-sm text-slate-500">
+            You&apos;ll receive email updates about your application status.
           </p>
         </div>
       </section>
     );
   }
+
+  const fieldError = (field: keyof FormData): string | null =>
+    fieldErrors[field]?.[0] ?? null;
+
+  const inputClass = (field: keyof FormData) =>
+    `w-full rounded-lg border px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 transition-colors min-h-[44px] ${
+      fieldError(field)
+        ? "border-red-400 focus:border-red-500 focus:ring-red-100"
+        : "border-slate-300 focus:border-ilali-400 focus:ring-ilali-100"
+    }`;
 
   return (
     <section className="py-16 sm:py-20">
@@ -76,7 +175,8 @@ export default function ProviderSignupForm() {
         <p className="mt-2 text-center text-sm text-slate-500">
           Fill in your details and we&apos;ll be in touch.
         </p>
-        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-8 space-y-4" noValidate>
+          {/* ── Name ── */}
           <div>
             <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="name">
               Full name
@@ -86,10 +186,17 @@ export default function ProviderSignupForm() {
               name="name"
               type="text"
               required
-              className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-colors"
+              className={inputClass("name")}
               placeholder="Your name"
+              value={formData.name}
+              onChange={(e) => updateField("name", e.target.value)}
             />
+            {fieldError("name") && (
+              <p className="mt-1 text-xs text-red-500">{fieldError("name")}</p>
+            )}
           </div>
+
+          {/* ── Email ── */}
           <div>
             <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="email">
               Email address
@@ -99,10 +206,17 @@ export default function ProviderSignupForm() {
               name="email"
               type="email"
               required
-              className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-colors"
+              className={inputClass("email")}
               placeholder="you@example.com"
+              value={formData.email}
+              onChange={(e) => updateField("email", e.target.value)}
             />
+            {fieldError("email") && (
+              <p className="mt-1 text-xs text-red-500">{fieldError("email")}</p>
+            )}
           </div>
+
+          {/* ── Phone ── */}
           <div>
             <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="phone">
               Phone number
@@ -111,10 +225,18 @@ export default function ProviderSignupForm() {
               id="phone"
               name="phone"
               type="tel"
-              className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-colors"
+              className={inputClass("phone")}
               placeholder="+27 82 123 4567"
+              value={formData.phone}
+              onChange={(e) => updateField("phone", e.target.value)}
+              onBlur={handlePhoneBlur}
             />
+            {fieldError("phone") && (
+              <p className="mt-1 text-xs text-red-500">{fieldError("phone")}</p>
+            )}
           </div>
+
+          {/* ── Activity Type ── */}
           <div>
             <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="activityType">
               Activity type
@@ -123,29 +245,186 @@ export default function ProviderSignupForm() {
               id="activityType"
               name="activityType"
               required
-              className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-700 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-colors"
+              className={inputClass("activity_type")}
+              value={formData.activity_type}
+              onChange={(e) => updateField("activity_type", e.target.value)}
             >
               <option value="">Select a category…</option>
               {activityTypes.map((t) => (
-                <option key={t} value={t}>{t}</option>
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+            {fieldError("activity_type") && (
+              <p className="mt-1 text-xs text-red-500">{fieldError("activity_type")}</p>
+            )}
+          </div>
+
+          {/* ── Description ── */}
+          <div>
+            <label
+              className="block text-xs font-medium text-slate-700 mb-1"
+              htmlFor="description"
+            >
+              Description{" "}
+              <span className="text-slate-400 font-normal">(optional)</span>
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              rows={3}
+              className={inputClass("description")}
+              placeholder="Tell us about your activity, classes, or program…"
+              value={formData.description}
+              onChange={(e) => updateField("description", e.target.value)}
+            />
+          </div>
+
+          {/* ── Location ── */}
+          <div>
+            <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="location">
+              Location{" "}
+              <span className="text-slate-400 font-normal">(optional)</span>
+            </label>
+            <select
+              id="location"
+              name="location"
+              className={inputClass("location")}
+              value={formData.location}
+              onChange={(e) => updateField("location", e.target.value)}
+            >
+              <option value="">Select a suburb…</option>
+              {CT_SUBURBS.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
               ))}
             </select>
           </div>
+
+          {/* ── Age range ── */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label
+                className="block text-xs font-medium text-slate-700 mb-1"
+                htmlFor="age_min"
+              >
+                Min age{" "}
+                <span className="text-slate-400 font-normal">(optional)</span>
+              </label>
+              <input
+                id="age_min"
+                name="age_min"
+                type="number"
+                min={0}
+                max={18}
+                className={inputClass("age_min")}
+                placeholder="0"
+                value={formData.age_min}
+                onChange={(e) => updateField("age_min", e.target.value)}
+              />
+              {fieldError("age_min") && (
+                <p className="mt-1 text-xs text-red-500">{fieldError("age_min")}</p>
+              )}
+            </div>
+            <div>
+              <label
+                className="block text-xs font-medium text-slate-700 mb-1"
+                htmlFor="age_max"
+              >
+                Max age{" "}
+                <span className="text-slate-400 font-normal">(optional)</span>
+              </label>
+              <input
+                id="age_max"
+                name="age_max"
+                type="number"
+                min={0}
+                max={18}
+                className={inputClass("age_max")}
+                placeholder="18"
+                value={formData.age_max}
+                onChange={(e) => updateField("age_max", e.target.value)}
+              />
+              {fieldError("age_max") && (
+                <p className="mt-1 text-xs text-red-500">{fieldError("age_max")}</p>
+              )}
+            </div>
+          </div>
+
+          {/* ── Price ── */}
+          <div>
+            <label
+              className="block text-xs font-medium text-slate-700 mb-1"
+              htmlFor="price_value"
+            >
+              Price per session (R){" "}
+              <span className="text-slate-400 font-normal">(optional)</span>
+            </label>
+            <input
+              id="price_value"
+              name="price_value"
+              type="number"
+              min={0}
+              className={inputClass("price_value")}
+              placeholder="e.g. 150"
+              value={formData.price_value}
+              onChange={(e) => updateField("price_value", e.target.value)}
+            />
+            {fieldError("price_value") && (
+              <p className="mt-1 text-xs text-red-500">{fieldError("price_value")}</p>
+            )}
+          </div>
+
+          {/* ── Image URL ── */}
+          <div>
+            <label
+              className="block text-xs font-medium text-slate-700 mb-1"
+              htmlFor="image_url"
+            >
+              Image URL{" "}
+              <span className="text-slate-400 font-normal">(optional)</span>
+            </label>
+            <input
+              id="image_url"
+              name="image_url"
+              type="url"
+              className={inputClass("image_url")}
+              placeholder="https://example.com/photo.jpg"
+              value={formData.image_url}
+              onChange={(e) => updateField("image_url", e.target.value)}
+            />
+            {fieldError("image_url") && (
+              <p className="mt-1 text-xs text-red-500">{fieldError("image_url")}</p>
+            )}
+          </div>
+
+          {/* ── Global error ── */}
           {error && (
             <p className="text-sm text-red-500 text-center">{error}</p>
           )}
+
+          {/* ── Submit ── */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white hover:bg-ilali-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+            className="w-full rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white hover:bg-ilali-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2 min-h-[44px]"
           >
             {loading ? "Submitting…" : "Submit interest"}
             <ArrowRight className="h-4 w-4" />
           </button>
+
           <p className="text-xs text-center text-slate-400">
             By submitting, you agree to our{" "}
-            <Link href="/terms" className="text-ilali-500 hover:underline">Terms</Link> and{" "}
-            <Link href="/privacy" className="text-ilali-500 hover:underline">Privacy Policy</Link>.
+            <Link href="/terms" className="text-ilali-500 hover:underline">
+              Terms
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="text-ilali-500 hover:underline">
+              Privacy Policy
+            </Link>
+            .
           </p>
         </form>
       </div>

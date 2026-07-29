@@ -3,17 +3,19 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, Star, Users, Wifi } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { venues } from "@/lib/constants";
-import type { Venue } from "@/lib/types";
+import { getVenues, getVenueBySlug } from "@/lib/db/queries";
+import { mapVenue } from "@/lib/db/mappers";
 
-export function generateStaticParams() {
-  return venues.map((v: Venue) => ({ slug: v.slug }));
+export async function generateStaticParams() {
+  const dbVenues = await getVenues();
+  return dbVenues.map((v) => ({ slug: v.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const venue = venues.find((v: Venue) => v.slug === slug);
-  if (!venue) return { title: "Venue Not Found — ILALI" };
+  const dbVenue = await getVenueBySlug(slug);
+  if (!dbVenue) return { title: "Venue Not Found — ILALI" };
+  const venue = mapVenue(dbVenue);
   return {
     title: `${venue.name} — ILALI Venues`,
     description: `${venue.name} — ${venue.type} venue in ${venue.location}.`,
@@ -22,8 +24,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function VenuePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const venue = venues.find((v: Venue) => v.slug === slug);
-  if (!venue) notFound();
+  const dbVenue = await getVenueBySlug(slug);
+  if (!dbVenue) notFound();
+  const venue = mapVenue(dbVenue);
 
   return (
     <div className="flex min-h-screen flex-col">

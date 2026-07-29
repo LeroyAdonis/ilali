@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { venues } from "@/lib/constants";
+import { getVenues } from "@/lib/db/queries";
+import { mapVenue } from "@/lib/db/mappers";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const location = searchParams.get("location") || "";
 
-  let result = [...venues];
+  const dbVenues = await getVenues();
+  let result = dbVenues.map(mapVenue);
 
   if (location) {
     result = result.filter((v) =>

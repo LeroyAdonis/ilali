@@ -28,6 +28,9 @@ export interface Provider {
   image: string;
   featured?: boolean;
   isFree?: boolean;
+  verified?: boolean;
+  tags?: string[];
+  phone?: string;
 }
 
 export interface Venue {

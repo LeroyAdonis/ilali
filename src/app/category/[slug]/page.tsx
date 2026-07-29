@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProviderCard from "@/components/ProviderCard";
-import { categories, providers } from "@/lib/constants";
+import { categories } from "@/lib/constants";
+import { getProviders, getCategories } from "@/lib/db/queries";
+import { mapProviders } from "@/lib/db/mappers";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -30,6 +32,11 @@ export default async function CategoryPage({ params }: Props) {
   const cat = categories.find((c) => c.slug === slug);
   if (!cat) notFound();
 
+  const [dbProviders, dbCategories] = await Promise.all([
+    getProviders({ category: slug }),
+    getCategories(),
+  ]);
+  const providers = mapProviders(dbProviders, dbCategories);
   const filtered = providers.filter((p) => p.categorySlug === slug);
 
   return (

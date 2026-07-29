@@ -1,4 +1,13 @@
-import { Category, Provider, Venue, Testimonial } from "./types";
+import { Category, Testimonial } from "./types";
+
+// ── DEPRECATED DATA SOURCES ──
+// `providers` and `venues` have been migrated to the database (Neon + Drizzle).
+// These arrays are removed. Use src/lib/db/queries.ts for dynamic data:
+//   import { getProviders, getVenues } from "@/lib/db/queries";
+//   import { mapProvider, mapVenue, mapProviders } from "@/lib/db/mappers";
+//
+// `categories` is kept as a static fallback — use DB getCategories() for live data.
+// `testimonials`, `navLinks`, and `stats` remain static for now.
 
 export const SITE_NAME = "ILALI";
 export const SITE_TAGLINE = "It takes a village";
@@ -94,150 +103,6 @@ export const categories: Category[] = [
     description: "School tours, open days, and enrollment events",
     icon: "🏫",
     color: "bg-violet-100 text-violet-600",
-  },
-];
-
-export const providers: Provider[] = [
-  {
-    id: "1",
-    name: "ILALI Creative Arts Workshop",
-    slug: "ilali-creative-arts-workshop",
-    category: "Arts & Culture",
-    categorySlug: "arts-culture",
-    description:
-      "A hands-on creative arts and crafts experience where children explore their imagination through various artistic mediums in a safe, guided environment.",
-    providerName: "ILALI Academy",
-    location: "Muizenberg",
-    distance: "2.5km",
-    ageRange: "12-15 years",
-    ageMin: 12,
-    ageMax: 15,
-    rating: 0,
-    reviewCount: 0,
-    price: "R150",
-    priceValue: 150,
-    priceLabel: "per session",
-    image:
-      "https://jbmdbhqgmbxufqtstfgi.supabase.co/storage/v1/object/public/activity-images/ilali-academy/1770719332577-hzgrp8.png",
-  },
-  {
-    id: "2",
-    name: "QA Academy Holiday Camp",
-    slug: "qa-academy-holiday-camp",
-    category: "Holiday Programs",
-    categorySlug: "holiday-programs",
-    description:
-      "Action-packed school holiday camp with sports, outdoor adventures, arts & crafts, and team-building activities for active kids during school breaks.",
-    providerName: "ILALI Academy",
-    location: "Muizenberg",
-    distance: "2.5km",
-    ageRange: "8-14 years",
-    ageMin: 8,
-    ageMax: 14,
-    rating: 0,
-    reviewCount: 0,
-    price: "R2,500",
-    priceValue: 2500,
-    priceLabel: "per session",
-    image:
-      "https://images.unsplash.com/photo-1596464716127-f2a82984de30?w=800",
-    featured: true,
-  },
-  {
-    id: "3",
-    name: "QA Academy Term Programme",
-    slug: "qa-academy-term-programme",
-    category: "Arts & Culture",
-    categorySlug: "arts-culture",
-    description:
-      "A structured term-time arts and crafts programme designed to nurture creativity, fine motor skills, and self-expression in young children.",
-    providerName: "ILALI Academy",
-    location: "Muizenberg",
-    distance: "2.5km",
-    ageRange: "6-12 years",
-    ageMin: 6,
-    ageMax: 12,
-    rating: 0,
-    reviewCount: 0,
-    price: "R1,500",
-    priceValue: 1500,
-    priceLabel: "per session",
-    image:
-      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800",
-  },
-  {
-    id: "4",
-    name: "Creative Expression Improv Through Art",
-    slug: "creative-expression-improv-through-art",
-    category: "Arts & Culture",
-    categorySlug: "arts-culture",
-    description:
-      "An improv-based art programme where teens explore visual storytelling, mixed media, and creative expression in a supportive community setting.",
-    providerName: "Butterfly Art Project",
-    location: "Vrygrond",
-    distance: "12.5km",
-    ageRange: "12-18 years",
-    ageMin: 12,
-    ageMax: 18,
-    rating: 0,
-    reviewCount: 0,
-    price: "Free",
-    priceValue: 0,
-    priceLabel: "per session",
-    isFree: true,
-    image:
-      "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800",
-  },
-];
-
-export const venues: Venue[] = [
-  {
-    id: "1",
-    name: "Main Theatre",
-    slug: "main-theatre",
-    type: "studio",
-    location: "Newlands",
-    rating: 4.5,
-    reviewCount: 12,
-    image: "",
-    capacity: "50 people",
-    amenities: ["Stage", "Sound system", "Lighting", "Parking"],
-  },
-  {
-    id: "2",
-    name: "Dance Studio",
-    slug: "dance-studio",
-    type: "studio",
-    location: "Claremont",
-    rating: 4.5,
-    reviewCount: 8,
-    image: "",
-    capacity: "30 people",
-    amenities: ["Mirrors", "Barre", "Wooden floor", "Changing rooms"],
-  },
-  {
-    id: "3",
-    name: "Training Fields",
-    slug: "training-fields",
-    type: "outdoor",
-    location: "Newlands",
-    rating: 4.5,
-    reviewCount: 15,
-    image: "",
-    capacity: "100+ people",
-    amenities: ["Floodlights", "Changing rooms", "Parking", "Canteen"],
-  },
-  {
-    id: "4",
-    name: "ILALI Academy Studio",
-    slug: "ilali-academy-studio",
-    type: "studio",
-    location: "Muizenberg",
-    rating: 4.5,
-    reviewCount: 6,
-    image: "",
-    capacity: "40 people",
-    amenities: ["WiFi", "Projector", "Kitchen", "Garden access"],
   },
 ];
 

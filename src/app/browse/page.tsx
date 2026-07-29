@@ -2,10 +2,21 @@ import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import FilterBar from "@/components/FilterBar";
 import ProviderCard from "@/components/ProviderCard";
+import ComingSoon from "@/components/ComingSoon";
 import Footer from "@/components/Footer";
 import { Suspense } from "react";
-import { providers } from "@/lib/constants";
+import { getProviders, getCategories } from "@/lib/db/queries";
+import { mapProviders } from "@/lib/db/mappers";
 import type { Provider } from "@/lib/types";
+import type { categories as categoriesSchema } from "@/lib/db/schema";
+
+type DbCategory = typeof categoriesSchema.$inferSelect;
+
+interface MatchResult {
+  provider: Provider;
+  score: number;
+  reasons: string[];
+}
 
 interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -86,15 +97,32 @@ function filterProviders(
   return filtered;
 }
 
-function ResultsSection({ params }: { params: { [key: string]: string | string[] | undefined } }) {
+interface ResultsSectionProps {
+  providers: Provider[];
+  categories: DbCategory[];
+  params: { [key: string]: string | string[] | undefined };
+  matchResults?: MatchResult[] | null;
+}
+
+function ResultsSection({
+  providers,
+  categories,
+  params,
+  matchResults,
+}: ResultsSectionProps) {
   const filtered = filterProviders(providers, params);
   const q = typeof params.q === "string" ? params.q : "";
-  const activeCategory = typeof params.category === "string" ? params.category : "";
+  const nl = typeof params.nl === "string" ? params.nl : "";
+  const activeCategory =
+    typeof params.category === "string" ? params.category : "";
 
   const newProviders = providers.slice(0, 4);
   const localFavourites = providers.slice(0, 4);
 
-  const hasActiveFilters = q || params.category || params.age || params.price || params.distance;
+  const hasActiveFilters =
+    q || nl || params.category || params.age || params.price || params.distance;
+
+  const isAiMatch = !!nl && matchResults && matchResults.length > 0;
 
   return (
     <>
@@ -103,13 +131,22 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
           <div className="text-center">
             <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
               {activeCategory
-                ? `${providers.find((p) => p.categorySlug === activeCategory)?.category || "Browse"} Activities`
-                : "Find the perfect activity"}
+                ? `${
+                    providers.find((p) => p.categorySlug === activeCategory)
+                      ?.category || "Browse"
+                  } Activities`
+                : isAiMatch
+                  ? "AI-Powered Matches"
+                  : "Find the perfect activity"}
             </h1>
             <p className="mt-2 text-sm text-slate-500">
-              {hasActiveFilters
-                ? `Showing ${filtered.length} ${filtered.length === 1 ? "activity" : "activities"}`
-                : "Search from hundreds of vetted children's activities near you."}
+              {nl
+                ? `Showing matches for "${nl}"`
+                : hasActiveFilters
+                  ? `Showing ${filtered.length} ${
+                      filtered.length === 1 ? "activity" : "activities"
+                    }`
+                  : "Search from hundreds of vetted children's activities near you."}
             </p>
           </div>
           <div className="mt-8">
@@ -123,12 +160,33 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
       <section className="pb-6">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Suspense fallback={<div className="h-24 w-full" />}>
-            <FilterBar />
+            <FilterBar categories={categories} />
           </Suspense>
         </div>
       </section>
 
-      {hasActiveFilters ? (
+      {/* AI Match Results */}
+      {isAiMatch ? (
+        <section className="py-10">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <p className="mb-6 text-sm text-slate-500">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-ilali-50 px-3 py-1 text-xs font-medium text-ilali-700">
+                🤖 AI-powered results based on your description
+              </span>
+            </p>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {matchResults!.map(({ provider, score, reasons }) => (
+                <ProviderCard
+                  key={provider.id}
+                  provider={provider}
+                  matchScore={score}
+                  matchReasons={reasons}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : hasActiveFilters ? (
         <section className="py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {filtered.length > 0 ? (
@@ -139,12 +197,15 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
               </div>
             ) : (
               <div className="rounded-xl border border-slate-200 bg-white p-12 text-center shadow-sm">
-                <span className="text-4xl">🔍</span>
+                <span className="text-4xl" role="img" aria-hidden="true">
+                  🔍
+                </span>
                 <h3 className="mt-4 text-lg font-semibold text-slate-900">
                   No activities match your filters
                 </h3>
                 <p className="mt-2 text-sm text-slate-500">
-                  Try adjusting your search or clearing filters to see more options.
+                  Try adjusting your search or clearing filters to see more
+                  options.
                 </p>
               </div>
             )}
@@ -152,6 +213,19 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
         </section>
       ) : (
         <>
+          {/* T055: Parent accounts placeholder */}
+          <section className="pb-6">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <ComingSoon
+                title="Parent Accounts"
+                description="Sign up to save favourites and get personalised recommendations."
+                icon="👋"
+                linkHref="/auth/signup"
+                linkLabel="Sign up"
+              />
+            </div>
+          </section>
+
           <section className="py-10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
@@ -162,7 +236,10 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
               </p>
               <div className="mt-6 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
                 {newProviders.map((provider) => (
-                  <div key={provider.id} className="w-[280px] shrink-0 snap-start">
+                  <div
+                    key={provider.id}
+                    className="w-[280px] shrink-0 snap-start"
+                  >
                     <ProviderCard provider={provider} />
                   </div>
                 ))}
@@ -185,7 +262,10 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
               </p>
               <div className="mt-6 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
                 {localFavourites.map((provider) => (
-                  <div key={provider.id} className="w-[280px] shrink-0 snap-start">
+                  <div
+                    key={provider.id}
+                    className="w-[280px] shrink-0 snap-start"
+                  >
                     <ProviderCard provider={provider} />
                   </div>
                 ))}
@@ -205,6 +285,38 @@ function ResultsSection({ params }: { params: { [key: string]: string | string[]
 
 export default async function BrowsePage({ searchParams }: Props) {
   const params = await searchParams;
+  const [dbProviders, dbCategories] = await Promise.all([
+    getProviders(),
+    getCategories(),
+  ]);
+  const providers = mapProviders(dbProviders, dbCategories);
+
+  // AI matching via `nl` param
+  let matchResults: MatchResult[] | null = null;
+  const nl = typeof params.nl === "string" ? params.nl : "";
+
+  if (nl) {
+    try {
+      // Determine base URL for server-side API call
+      const baseUrl =
+        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+      const res = await fetch(`${baseUrl}/api/match`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: nl }),
+        // Next.js fetch caching: don't cache this
+        cache: "no-store",
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        matchResults = data.matches || [];
+      }
+    } catch (err) {
+      console.warn("[browse] AI match fetch failed:", err);
+      // Fall through — matchResults stays null
+    }
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -217,7 +329,12 @@ export default async function BrowsePage({ searchParams }: Props) {
             </div>
           }
         >
-          <ResultsSection params={params} />
+          <ResultsSection
+            providers={providers}
+            categories={dbCategories}
+            params={params}
+            matchResults={matchResults}
+          />
         </Suspense>
       </main>
       <Footer />

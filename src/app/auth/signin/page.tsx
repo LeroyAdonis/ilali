@@ -1,109 +1,137 @@
-import type { Metadata } from "next";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import Link from "next/link";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Sign In | ILALI",
-  description: "Sign in to your ILALI account to manage bookings and activities.",
-};
+import { createAuthClient } from "better-auth/client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Loader2 } from "lucide-react";
+
+const authClient = createAuthClient();
 
 export default function SignInPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const result = await authClient.signIn.email({
+        email,
+        password,
+      });
+
+      if (result.error) {
+        setError("Invalid email or password");
+      } else {
+        router.push("/admin");
+        router.refresh();
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <>
-      <Header />
-      <main className="flex-1">
-        <div className="flex min-h-[calc(100vh-10rem)] items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-          <div className="w-full max-w-md">
-            <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-              <div className="mb-8 text-center">
-                <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-                  Welcome back
-                </h1>
-                <p className="mt-2 text-sm text-slate-500">
-                  Sign in to your ILALI account
-                </p>
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <div className="mb-8 text-center">
+          <Link href="/" className="inline-block">
+            <span className="text-3xl font-bold text-ilali-600">ILALI</span>
+          </Link>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+          <div className="mb-8 text-center">
+            <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+              Welcome back
+            </h1>
+            <p className="mt-2 text-sm text-slate-500">
+              Sign in to your ILALI account
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {error && (
+              <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 border border-red-200">
+                {error}
               </div>
+            )}
 
-              <form className="space-y-5">
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-slate-700"
-                  >
-                    Email address
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    placeholder="you@example.com"
-                    className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-slate-700"
-                  >
-                    Password
-                  </label>
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    required
-                    placeholder="Enter your password"
-                    className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-slate-300 text-ilali-600 focus:ring-ilali-500"
-                    />
-                    <span className="text-sm text-slate-600">
-                      Remember me
-                    </span>
-                  </label>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="text-sm font-medium text-ilali-600 hover:text-ilali-700"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-
-                <button
-                  type="button"
-                  className="w-full rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-ilali-700"
-                >
-                  Sign In
-                </button>
-              </form>
-
-              <div className="mt-6 text-center">
-                <p className="text-sm text-slate-500">
-                  Don&apos;t have an account?{" "}
-                  <a
-                    href="/auth/signup"
-                    className="font-medium text-ilali-600 hover:text-ilali-700"
-                  >
-                    Create one
-                  </a>
-                </p>
-              </div>
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-slate-700"
+              >
+                Email address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+              />
             </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-slate-700"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex w-full items-center justify-center rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-ilali-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Sign In"
+              )}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-slate-500">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/auth/signup"
+                className="font-medium text-ilali-600 hover:text-ilali-700"
+              >
+                Create one
+              </Link>
+            </p>
           </div>
         </div>
-      </main>
-      <Footer />
-    </>
+      </div>
+    </div>
   );
 }

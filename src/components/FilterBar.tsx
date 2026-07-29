@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ChevronDown, X } from "lucide-react";
-import { categories } from "@/lib/constants";
+import { categories as fallbackCategories } from "@/lib/constants";
 
 interface DropdownOption {
   value: string;
@@ -18,77 +18,9 @@ interface FilterConfig {
   multi?: boolean;
 }
 
-const filterConfigs: FilterConfig[] = [
-  {
-    param: "category",
-    label: "Category",
-    options: categories.map((c) => ({ value: c.slug, label: c.name })),
-    multi: true,
-  },
-  {
-    param: "age",
-    label: "Any age",
-    options: [
-      { value: "0-3", label: "Toddlers (0-3)" },
-      { value: "4-7", label: "Early Childhood (4-7)" },
-      { value: "8-12", label: "Middle Childhood (8-12)" },
-      { value: "13-17", label: "Teens (13-17)" },
-    ],
-  },
-  {
-    param: "date",
-    label: "Any date",
-    options: [
-      { value: "today", label: "Today" },
-      { value: "this-week", label: "This week" },
-      { value: "this-month", label: "This month" },
-      { value: "next-month", label: "Next month" },
-    ],
-  },
-  {
-    param: "distance",
-    label: "Distance",
-    options: [
-      { value: "1", label: "Within 1 km" },
-      { value: "2", label: "Within 2 km" },
-      { value: "5", label: "Within 5 km" },
-      { value: "10", label: "Within 10 km" },
-      { value: "20", label: "Within 20 km" },
-    ],
-  },
-  {
-    param: "price",
-    label: "Any price",
-    options: [
-      { value: "free", label: "Free" },
-      { value: "under-100", label: "Under R100" },
-      { value: "100-250", label: "R100 - R250" },
-      { value: "250-500", label: "R250 - R500" },
-      { value: "over-500", label: "Over R500" },
-    ],
-  },
-  {
-    param: "level",
-    label: "All levels",
-    options: [
-      { value: "beginner", label: "Beginner" },
-      { value: "intermediate", label: "Intermediate" },
-      { value: "advanced", label: "Advanced" },
-      { value: "all-levels", label: "All levels welcome" },
-    ],
-  },
-  {
-    param: "disability",
-    label: "Disability/Neurodivergence",
-    options: [
-      { value: "friendly", label: "Neurodivergent-friendly" },
-      { value: "physical-access", label: "Physical accessibility" },
-      { value: "sensory-friendly", label: "Sensory-friendly" },
-      { value: "inclusive", label: "Fully inclusive" },
-    ],
-    multi: true,
-  },
-];
+interface FilterBarProps {
+  categories?: { id: string; slug: string; name: string; icon: string; color: string }[];
+}
 
 function useOutsideClick(ref: React.RefObject<HTMLElement | null>, handler: () => void) {
   useEffect(() => {
@@ -186,7 +118,81 @@ function FilterDropdownMenu({
   );
 }
 
-export default function FilterBar() {
+export default function FilterBar({ categories: categoriesProp }: FilterBarProps) {
+  const categories = categoriesProp ?? fallbackCategories;
+
+  const filterConfigs: FilterConfig[] = [
+    {
+      param: "category",
+      label: "Category",
+      options: categories.map((c) => ({ value: c.slug, label: c.name })),
+      multi: true,
+    },
+    {
+      param: "age",
+      label: "Any age",
+      options: [
+        { value: "0-3", label: "Toddlers (0-3)" },
+        { value: "4-7", label: "Early Childhood (4-7)" },
+        { value: "8-12", label: "Middle Childhood (8-12)" },
+        { value: "13-17", label: "Teens (13-17)" },
+      ],
+    },
+    {
+      param: "date",
+      label: "Any date",
+      options: [
+        { value: "today", label: "Today" },
+        { value: "this-week", label: "This week" },
+        { value: "this-month", label: "This month" },
+        { value: "next-month", label: "Next month" },
+      ],
+    },
+    {
+      param: "distance",
+      label: "Distance",
+      options: [
+        { value: "1", label: "Within 1 km" },
+        { value: "2", label: "Within 2 km" },
+        { value: "5", label: "Within 5 km" },
+        { value: "10", label: "Within 10 km" },
+        { value: "20", label: "Within 20 km" },
+      ],
+    },
+    {
+      param: "price",
+      label: "Any price",
+      options: [
+        { value: "free", label: "Free" },
+        { value: "under-100", label: "Under R100" },
+        { value: "100-250", label: "R100 - R250" },
+        { value: "250-500", label: "R250 - R500" },
+        { value: "over-500", label: "Over R500" },
+      ],
+    },
+    {
+      param: "level",
+      label: "All levels",
+      options: [
+        { value: "beginner", label: "Beginner" },
+        { value: "intermediate", label: "Intermediate" },
+        { value: "advanced", label: "Advanced" },
+        { value: "all-levels", label: "All levels welcome" },
+      ],
+    },
+    {
+      param: "disability",
+      label: "Disability/Neurodivergence",
+      options: [
+        { value: "friendly", label: "Neurodivergent-friendly" },
+        { value: "physical-access", label: "Physical accessibility" },
+        { value: "sensory-friendly", label: "Sensory-friendly" },
+        { value: "inclusive", label: "Fully inclusive" },
+      ],
+      multi: true,
+    },
+  ];
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);

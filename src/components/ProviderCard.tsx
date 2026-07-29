@@ -1,12 +1,18 @@
 import Link from "next/link";
-import { MapPin, Star } from "lucide-react";
+import { MapPin, Star, CheckCircle, Sparkles } from "lucide-react";
 import type { Provider } from "@/lib/types";
 
 interface ProviderCardProps {
   provider: Provider;
+  matchScore?: number;
+  matchReasons?: string[];
 }
 
-export default function ProviderCard({ provider }: ProviderCardProps) {
+export default function ProviderCard({
+  provider,
+  matchScore,
+  matchReasons,
+}: ProviderCardProps) {
   const {
     name,
     category,
@@ -23,6 +29,10 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
     slug,
   } = provider;
 
+  // Determine trust badge
+  const isVerified =
+    (provider as Provider & { verified?: boolean }).verified ?? false;
+
   return (
     <Link
       href={`/activity/${slug}`}
@@ -38,15 +48,38 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <div className="h-16 w-16 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-2xl">
+            <div className="h-16 w-16 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-2xl" aria-hidden="true">
               {name.charAt(0)}
             </div>
           </div>
         )}
+
+        {/* Trust badge — top left */}
+        <span
+          className={`absolute top-3 left-3 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm ${
+            isVerified
+              ? "bg-ilali-600/90 text-white"
+              : "bg-amber-400/90 text-amber-900"
+          }`}
+        >
+          {isVerified ? (
+            <span className="flex items-center gap-1">
+              <CheckCircle className="h-3 w-3" aria-hidden="true" />
+              Verified
+            </span>
+          ) : (
+            <span className="flex items-center gap-1">
+              <Sparkles className="h-3 w-3" aria-hidden="true" />
+              New
+            </span>
+          )}
+        </span>
+
         {/* Category badge */}
-        <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm backdrop-blur-sm">
+        <span className="absolute top-3 left-[100px] rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm backdrop-blur-sm">
           {category}
         </span>
+
         {/* Age range badge */}
         <span className="absolute top-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm backdrop-blur-sm">
           {ageRange}
@@ -55,14 +88,46 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="text-sm font-semibold text-slate-900 group-hover:text-ilali-600 transition-colors line-clamp-1">
-          {name}
-        </h3>
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="text-sm font-semibold text-slate-900 group-hover:text-ilali-600 transition-colors line-clamp-1">
+            {name}
+          </h3>
+
+          {/* Match score badge */}
+          {matchScore !== undefined && (
+            <span
+              className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                matchScore >= 80
+                  ? "bg-gradient-to-r from-ilali-500 to-ilali-600 text-white"
+                  : matchScore >= 60
+                    ? "bg-ilali-100 text-ilali-700"
+                    : "bg-slate-100 text-slate-600"
+              }`}
+            >
+              {matchScore}% match
+            </span>
+          )}
+        </div>
+
         <p className="mt-0.5 text-xs text-slate-500">{providerName}</p>
+
+        {/* Match reason tags */}
+        {matchReasons && matchReasons.length > 0 && (
+          <div className="mt-1.5 flex flex-wrap gap-1">
+            {matchReasons.slice(0, 3).map((reason) => (
+              <span
+                key={reason}
+                className="inline-block rounded-full bg-ilali-50 px-2 py-0.5 text-[10px] font-medium text-ilali-700"
+              >
+                {reason}
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* Location */}
         <div className="mt-2 flex items-center gap-1 text-xs text-slate-500">
-          <MapPin className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+          <MapPin className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
           <span>
             {location} &middot; {distance}
           </span>
@@ -70,9 +135,11 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
 
         {/* Rating */}
         <div className="mt-2 flex items-center gap-1">
-          <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+          <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" aria-hidden="true" />
           <span className="text-sm font-semibold text-slate-800">{rating}</span>
-          <span className="text-xs text-slate-500">({reviewCount} reviews)</span>
+          <span className="text-xs text-slate-500">
+            ({reviewCount} review{reviewCount !== 1 ? "s" : ""})
+          </span>
         </div>
 
         {/* Price / Free */}

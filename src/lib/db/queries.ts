@@ -150,9 +150,9 @@ export async function getSimilarProviders(
     return [];
   }
 
-  // Build a PostgreSQL array literal from the tags
-  const tagList = target.tags.map((t) => `'${t}'`).join(", ");
-  const tagArray = sql.raw(`ARRAY[${tagList}]::text[]`);
+  // Build parameterized tag array for safe SQL overlap query
+  const tagValues = target.tags.map((t) => sql`${t}`);
+  const tagArray = sql`ARRAY[${sql.join(tagValues, sql`, `)}]::text[]`;
 
   // Find providers with overlapping tags, excluding the target itself
   return db

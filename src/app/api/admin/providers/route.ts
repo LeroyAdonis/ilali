@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db/index";
 import { providers } from "@/lib/db/schema";
+import { adminProviderSchema } from "@/lib/validations";
 
 function slugify(text: string): string {
   return text
@@ -47,26 +48,37 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json();
 
-  const slug = slugify(body.name || "");
+  // Validate with Zod
+  const result = adminProviderSchema.safeParse(body);
+  if (!result.success) {
+    const fieldErrors = result.error.flatten().fieldErrors;
+    return NextResponse.json(
+      { error: "Validation failed", fieldErrors },
+      { status: 400 }
+    );
+  }
+
+  const data = result.data;
+  const slug = slugify(data.name || "");
 
   const [provider] = await db
     .insert(providers)
     .values({
-      name: body.name,
+      name: data.name,
       slug,
-      category: body.category,
-      description: body.description || "",
-      providerName: body.providerName || body.name,
-      location: body.location,
-      ageMin: body.ageMin || 0,
-      ageMax: body.ageMax || 0,
-      priceValue: Math.round((body.priceValue || 0) * 100), // Convert rands to cents
-      priceLabel: body.priceLabel || "per session",
-      imageUrl: body.imageUrl || null,
-      phone: body.phone || null,
-      tags: body.tags || null,
-      verified: body.verified || false,
-      featured: body.featured || false,
+      category: data.category,
+      description: data.description,
+      providerName: data.providerName || data.name,
+      location: data.location,
+      ageMin: data.ageMin,
+      ageMax: data.ageMax,
+      priceValue: Math.round(data.priceValue * 100), // Convert rands to cents
+      priceLabel: data.priceLabel || "per session",
+      imageUrl: data.imageUrl || null,
+      phone: data.phone || null,
+      tags: data.tags || null,
+      verified: data.verified || false,
+      featured: data.featured || false,
     })
     .returning();
 

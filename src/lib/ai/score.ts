@@ -41,10 +41,12 @@ export function scoreProvider(
     const iMin = intent.ageMin ?? 0;
     const iMax = intent.ageMax ?? 99;
 
-    // Check overlap
-    const overlap = Math.min(pMax, iMax) - Math.max(pMin, iMin);
-    if (overlap >= 0) {
-      const intentRange = iMax - iMin || 1;
+    // Check overlap (inclusive range — partial overlap counts)
+    const overlapStart = Math.max(pMin, iMin);
+    const overlapEnd = Math.min(pMax, iMax);
+    if (overlapStart <= overlapEnd) {
+      const overlap = overlapEnd - overlapStart + 1; // +1 so point overlap counts
+      const intentRange = (iMax - iMin) + 1; // +1 so single-year query has range 1
       const overlapRatio = Math.min(1, overlap / intentRange);
       const ageScore = Math.round(overlapRatio * 25);
       score += ageScore;

@@ -102,6 +102,7 @@ interface ResultsSectionProps {
   categories: DbCategory[];
   params: { [key: string]: string | string[] | undefined };
   matchResults?: MatchResult[] | null;
+  searchSuggestions?: { message: string; suggestedCategories: string[] } | null;
 }
 
 function ResultsSection({
@@ -109,6 +110,7 @@ function ResultsSection({
   categories,
   params,
   matchResults,
+  searchSuggestions,
 }: ResultsSectionProps) {
   const filtered = filterProviders(providers, params);
   const q = typeof params.q === "string" ? params.q : "";
@@ -201,12 +203,33 @@ function ResultsSection({
                   🔍
                 </span>
                 <h3 className="mt-4 text-lg font-semibold text-slate-900">
-                  No activities match your filters
+                  Nothing matched "{q || nl}"
                 </h3>
-                <p className="mt-2 text-sm text-slate-500">
-                  Try adjusting your search or clearing filters to see more
-                  options.
-                </p>
+                {searchSuggestions ? (
+                  <>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-500 max-w-md mx-auto">
+                      {searchSuggestions.message}
+                    </p>
+                    {searchSuggestions.suggestedCategories.length > 0 && (
+                      <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                        {searchSuggestions.suggestedCategories.map((cat) => (
+                          <Link
+                            key={cat}
+                            href={`/browse?category=${encodeURIComponent(cat.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-"))}`}
+                            className="rounded-full border border-ilali-200 bg-ilali-50 px-4 py-2 text-sm font-medium text-ilali-700 hover:bg-ilali-100 transition-colors"
+                          >
+                            {cat}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <p className="mt-2 text-sm text-slate-500">
+                    Try adjusting your search or clearing filters to see more
+                    options.
+                  </p>
+                )}
               </div>
             )}
           </div>
@@ -298,18 +321,19 @@ export default async function BrowsePage({ searchParams }: Props) {
 
   // AI matching via `nl` param
   let matchResults: MatchResult[] | null = null;
+  let searchSuggestions: { message: string; suggestedCategories: string[] } | null = null;
   const nl = typeof params.nl === "string" ? params.nl : "";
+  const q = typeof params.q === "string" ? params.q.trim() : "";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
   if (nl) {
     try {
-      // Determine base URL for server-side API call
-      const baseUrl =
-        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
       const res = await fetch(`${baseUrl}/api/match`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: nl }),
-        // Next.js fetch caching: don't cache this
         cache: "no-store",
       });
 
@@ -319,7 +343,35 @@ export default async function BrowsePage({ searchParams }: Props) {
       }
     } catch (err) {
       console.warn("[browse] AI match fetch failed:", err);
-      // Fall through — matchResults stays null
+    }
+  }
+
+  // Fetch AI suggestions when search returns no results
+  const searchQuery = nl || q;
+  const shouldSuggest =
+    searchQuery &&
+    // No match results from AI search
+    ((nl && (!matchResults || matchResults.length === 0)) ||
+      // No filtered results from text search
+      (!nl && q));
+
+  if (shouldSuggest) {
+    try {
+      const categoryNames = dbCategories.map((c) => c.name);
+      const res = await fetch(`${baseUrl}/api/ai/search-suggestions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: searchQuery,
+          availableCategories: categoryNames,
+        }),
+        cache: "no-store",
+      });
+      if (res.ok) {
+        searchSuggestions = await res.json();
+      }
+    } catch (err) {
+      console.warn("[browse] Search suggestions fetch failed:", err);
     }
   }
 
@@ -339,6 +391,7 @@ export default async function BrowsePage({ searchParams }: Props) {
             categories={dbCategories}
             params={params}
             matchResults={matchResults}
+            searchSuggestions={searchSuggestions}
           />
         </Suspense>
       </main>

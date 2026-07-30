@@ -3,13 +3,7 @@ import Link from "next/link";
 export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-ilali-50 via-white to-sunset-50">
-      {/* Decorative shapes */}
-      <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-ilali-100/40 blur-3xl" />
-      <div className="absolute -bottom-32 -left-32 h-[30rem] w-[30rem] rounded-full bg-warm-100/30 blur-3xl" />
-      <div className="absolute top-1/3 right-1/4 h-32 w-32 rounded-full bg-sunset-200/20 blur-2xl" />
-      <div className="absolute bottom-1/4 left-1/3 h-40 w-40 rounded-full bg-ilali-200/20 blur-2xl" />
-
-      <div className="relative mx-auto flex max-w-7xl flex-col items-center px-4 py-20 text-center sm:px-6 lg:px-8 lg:py-32">
+      <div className="relative mx-auto flex max-w-7xl flex-col items-start px-4 py-20 text-left sm:px-6 lg:px-8 lg:py-32">
         {/* Tagline */}
         <span className="text-sm uppercase tracking-widest text-ilali-500 font-semibold mb-5">
           IT TAKES A VILLAGE

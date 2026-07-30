@@ -91,8 +91,6 @@ export default function LandingPage() {
       <main className="flex-1">
         {/* ───── HERO ───── */}
         <section className="relative overflow-hidden bg-gradient-to-br from-ilali-50 via-white to-sunset-50">
-          <div className="pointer-events-none absolute -top-40 -right-40 h-[30rem] w-[30rem] rounded-full bg-ilali-100/30 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-40 -left-40 h-[30rem] w-[30rem] rounded-full bg-warm-100/20 blur-3xl" />
 
           <div className="relative mx-auto flex max-w-7xl flex-col items-center px-4 py-24 text-center sm:px-6 lg:px-8 lg:py-36">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-ilali-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-ilali-700">
@@ -159,7 +157,7 @@ export default function LandingPage() {
         {/* ───── FEATURES ───── */}
         <section className="px-4 py-24 sm:px-6 sm:py-28 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <div className="mx-auto max-w-3xl text-center">
+            <div className="mx-auto max-w-3xl">
               <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
                 Everything you need to find the right activity
               </h2>
@@ -168,16 +166,29 @@ export default function LandingPage() {
                 Everything&apos;s in one place, vetted and verified.
               </p>
             </div>
-            <div className="mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-3">
-              {features.map((f) => (
-                <div key={f.title} className="group rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm transition-all hover:border-ilali-200 hover:shadow-md">
-                  <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-ilali-50 text-ilali-600 transition-colors group-hover:bg-ilali-100">
-                    {f.icon}
-                  </span>
-                  <h3 className="mt-5 text-lg font-bold text-slate-900">{f.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600">{f.desc}</p>
-                </div>
-              ))}
+            <div className="mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-2">
+              {/* Primary feature */}
+              <div className="rounded-2xl bg-ilali-50/60 p-10">
+                <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl bg-ilali-100 text-ilali-600">
+                  {features[0].icon}
+                </span>
+                <h3 className="mt-5 text-2xl font-extrabold text-slate-900">{features[0].title}</h3>
+                <p className="mt-4 text-base leading-relaxed text-slate-600">{features[0].desc}</p>
+              </div>
+              {/* Secondary features */}
+              <div className="flex flex-col justify-center gap-8">
+                {features.slice(1).map((f) => (
+                  <div key={f.title} className="flex items-start gap-5">
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-ilali-50 text-ilali-600">
+                      {f.icon}
+                    </span>
+                    <div>
+                      <h3 className="text-lg font-bold text-slate-900">{f.title}</h3>
+                      <p className="mt-1 text-sm leading-relaxed text-slate-600">{f.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -185,7 +196,7 @@ export default function LandingPage() {
         {/* ───── HOW IT WORKS ───── */}
         <section className="bg-slate-50 px-4 py-24 sm:px-6 sm:py-28 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <div className="mx-auto max-w-3xl text-center">
+            <div className="mx-auto max-w-3xl">
               <span className="text-sm uppercase tracking-widest text-ilali-500 font-semibold">
                 Three Simple Steps
               </span>
@@ -195,7 +206,7 @@ export default function LandingPage() {
             </div>
             <div className="mx-auto mt-16 grid max-w-4xl gap-8 md:grid-cols-3">
               {steps.map((step) => (
-                <div key={step.num} className="relative text-center">
+                <div key={step.num} className="relative">
                   <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-ilali-600 text-2xl font-bold text-white shadow-lg">
                     {step.num}
                   </span>
@@ -204,7 +215,7 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
-            <div className="mt-12 text-center">
+            <div className="mt-12">
               <Link
                 href="/how-it-works"
                 className="text-sm font-semibold text-ilali-600 hover:text-ilali-700 transition-colors"
@@ -219,7 +230,7 @@ export default function LandingPage() {
         <section className="relative overflow-hidden px-4 py-24 sm:px-6 sm:py-28 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-4xl overflow-hidden rounded-3xl bg-gradient-to-br from-ilali-600 via-ilali-700 to-sunset-700 shadow-xl">
-              <div className="relative px-8 py-16 text-center sm:px-16 sm:py-20">
+              <div className="relative px-8 py-16 sm:px-16 sm:py-20">
                 <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
                   Are you a provider?
                 </h2>
@@ -250,7 +261,7 @@ export default function LandingPage() {
         {/* ───── FINAL CTA ───── */}
         <section className="border-t border-slate-200 bg-white px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <div className="mx-auto max-w-3xl text-center">
+            <div className="mx-auto max-w-3xl">
               <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
                 Ready to find your child&apos;s next adventure?
               </h2>

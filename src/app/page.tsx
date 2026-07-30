@@ -39,7 +39,7 @@ const features = [
       </svg>
     ),
     title: "Trusted Community",
-    desc: "Built with ASSITEJ SA & BASA. Real reviews from real Cape Town families.",
+    desc: "Built with ASSITEJ SA & BASA. Read real reviews from Cape Town families and leave your own.",
   },
 ];
 
@@ -108,8 +108,7 @@ export default function LandingPage() {
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-600 sm:text-xl">
               ILALI is Cape Town&apos;s trusted marketplace for children&apos;s
               extramural activities. Every provider is background-checked, every
-              review is from a real family, and every booking supports local
-              kids&apos; programmes.
+              review is from a real family, and our AI helps you find the perfect match.
             </p>
 
             <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
@@ -131,7 +130,7 @@ export default function LandingPage() {
             </div>
 
             <p className="mt-6 text-sm text-slate-400">
-              No credit card required &middot; Free to browse &middot; 500+ activities
+              No credit card required &middot; Free to browse &middot; Vetted providers across Cape Town
             </p>
           </div>
         </section>
@@ -226,7 +225,8 @@ export default function LandingPage() {
                 </h2>
                 <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-ilali-100">
                   List your activities for free and reach thousands of Cape Town
-                  families looking for quality children&apos;s programmes.
+                  families. Use our AI-powered setup — just describe your activity
+                  and we&apos;ll build your listing for you.
                 </p>
                 <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
                   <Link
@@ -255,8 +255,8 @@ export default function LandingPage() {
                 Ready to find your child&apos;s next adventure?
               </h2>
               <p className="mt-4 text-lg leading-relaxed text-slate-600">
-                Join thousands of Cape Town families who trust ILALI for their
-                children&apos;s extramural activities.
+                Browse vetted activities, read real reviews, and discover the perfect
+                match with our AI-powered search.
               </p>
               <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <Link

@@ -2,24 +2,29 @@ import { NextResponse } from "next/server";
 import { reviewSubmissionSchema } from "@/lib/validations/review";
 import { db } from "@/lib/db/index";
 import { reviews } from "@/lib/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, or, desc } from "drizzle-orm";
 
-// GET /api/reviews?providerId=...
+// GET /api/reviews?providerId=...&venueId=...
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const providerId = searchParams.get("providerId");
+  const venueId = searchParams.get("venueId");
 
-  if (!providerId) {
+  if (!providerId && !venueId) {
     return NextResponse.json(
-      { error: "Missing providerId parameter" },
+      { error: "Missing providerId or venueId parameter" },
       { status: 400 }
     );
   }
 
+  const conditions = [];
+  if (providerId) conditions.push(eq(reviews.providerId, providerId));
+  if (venueId) conditions.push(eq(reviews.venueId, venueId));
+
   const results = await db
     .select()
     .from(reviews)
-    .where(eq(reviews.providerId, providerId))
+    .where(or(...conditions))
     .orderBy(desc(reviews.createdAt))
     .limit(20);
 
@@ -43,13 +48,14 @@ export async function POST(request: Request) {
     );
   }
 
-  const { providerId, reviewerName, rating, content } = validated.data;
+  const { providerId, venueId, reviewerName, rating, content } = validated.data;
 
   const [inserted] = await db
     .insert(reviews)
     .values({
-      providerId,
-      userId: reviewerName, // store reviewer name in userId field (no auth needed)
+      providerId: providerId ?? null,
+      venueId: venueId ?? null,
+      userId: reviewerName,
       rating,
       content,
     })

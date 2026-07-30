@@ -1,3 +1,4 @@
+import { chat } from "./client";
 import { CT_SUBURBS } from "@/lib/suburbs";
 
 export interface MatchIntent {
@@ -27,106 +28,65 @@ export const MATCH_TAGS = [
   "advanced",
 ] as const;
 
-const DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions";
 const TIMEOUT_MS = 3000;
 
 export async function extractIntent(
   query: string
 ): Promise<MatchIntent | null> {
-  const apiKey = process.env.DEEPSEEK_API_KEY;
-  if (!apiKey) {
-    console.warn("[match] DEEPSEEK_API_KEY not set — skipping AI intent extraction");
-    return null;
-  }
-
   const systemPrompt = `You extract structured search parameters from parent queries about children's activities.
 Return ONLY valid JSON, no other text. No markdown, no explanation.
 
 Available tags (you may ONLY use these exact strings):
-${MATCH_TAGS.join(", ")}
+${(MATCH_TAGS as readonly string[]).join(", ")}
 
-Cape Town suburbs (if the parent mentions a location, pick the closest suburb):
+Cape Town suburbs:
 ${CT_SUBURBS.join(", ")}
 
 Output format:
 {
-  "ageMin": number | null,
-  "ageMax": number | null,
-  "tags": string[],
-  "location": string | null,
-  "priceMax": number | null
+  "ageMin": "number | null",
+  "ageMax": "number | null",
+  "tags": ["string"] (up to 5, from the available list only),
+  "location": "string | null (Cape Town suburb from the list)",
+  "priceMax": "number | null (in Rands, whole number)"
 }
 
 Rules:
-- If the parent says "my 7 year old" or "age 7", set ageMin and ageMax to 7.
-- If they say "ages 5-10", set ageMin=5 and ageMax=10.
-- If they say "under 12", set ageMax=12.
-- Extract tags ONLY from the available list above. Infer them from context (e.g., "football" → "sport", "drawing" → "creative", "outdoors" → "outdoor").
-- If they mention a Cape Town suburb by name, put it in location.
-- If they say "affordable", "cheap", "under R200", set priceMax accordingly (in rand, we'll convert to cents later).
-- If they say "free", add "free" to tags.`;
+- Extract age from phrases like "for my 7 year old", "my teenager", "under 10"
+- Choose tags ONLY from the available list above
+- Match location to the closest suburb from the list
+- Extract price from phrases like "under R200", "free", "affordable"
+- If you're unsure about any field, set it to null`;
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const content = await chat({
+    systemPrompt,
+    userMessage: query,
+    temperature: 0.1,
+    maxTokens: 300,
+    timeoutMs: TIMEOUT_MS,
+  });
+
+  if (!content) return null;
 
   try {
-    const response = await fetch(DEEPSEEK_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "deepseek-chat",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: query },
-        ],
-        temperature: 0.1,
-        max_tokens: 300,
-      }),
-      signal: controller.signal,
-    });
-
-    if (!response.ok) {
-      console.warn(
-        `[match] DeepSeek API returned ${response.status}: ${response.statusText}`
-      );
-      return null;
-    }
-
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content;
-    if (!content) return null;
-
-    // Parse JSON — strip any markdown fences if present
     const cleaned = content
       .replace(/```json\s*/g, "")
       .replace(/```\s*/g, "")
       .trim();
 
-    const intent = JSON.parse(cleaned) as MatchIntent;
+    const result = JSON.parse(cleaned) as MatchIntent;
 
-    // Normalize
     return {
-      ageMin: intent.ageMin ?? undefined,
-      ageMax: intent.ageMax ?? undefined,
-      tags: Array.isArray(intent.tags)
-        ? intent.tags.filter((t) =>
-            (MATCH_TAGS as readonly string[]).includes(t)
-          )
+      ageMin: result.ageMin ?? undefined,
+      ageMax: result.ageMax ?? undefined,
+      tags: Array.isArray(result.tags)
+        ? result.tags.filter((t) => (MATCH_TAGS as readonly string[]).includes(t)).slice(0, 5)
         : [],
-      location: intent.location ?? undefined,
-      priceMax: intent.priceMax != null ? intent.priceMax * 100 : undefined,
+      location: result.location ?? undefined,
+      priceMax: result.priceMax ?? undefined,
     };
-  } catch (err: unknown) {
-    if (err instanceof DOMException && err.name === "AbortError") {
-      console.warn("[match] DeepSeek API timed out after 3s");
-    } else {
-      console.warn("[match] Failed to extract intent:", err);
-    }
+  } catch {
+    console.warn("[match] Failed to parse AI response");
     return null;
-  } finally {
-    clearTimeout(timeout);
   }
 }

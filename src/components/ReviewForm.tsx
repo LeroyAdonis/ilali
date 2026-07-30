@@ -4,11 +4,12 @@ import { useState } from "react";
 import { Star } from "lucide-react";
 
 interface ReviewFormProps {
-  providerId: string;
+  providerId?: string;
+  venueId?: string;
   onSubmitted: () => void;
 }
 
-export default function ReviewForm({ providerId, onSubmitted }: ReviewFormProps) {
+export default function ReviewForm({ providerId, venueId, onSubmitted }: ReviewFormProps) {
   const [reviewerName, setReviewerName] = useState("");
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -23,10 +24,14 @@ export default function ReviewForm({ providerId, onSubmitted }: ReviewFormProps)
     setLoading(true);
 
     try {
+      const body: Record<string, unknown> = { reviewerName, rating, content };
+      if (providerId) body.providerId = providerId;
+      if (venueId) body.venueId = venueId;
+
       const res = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ providerId, reviewerName, rating, content }),
+        body: JSON.stringify(body),
       });
 
       if (!res.ok) {

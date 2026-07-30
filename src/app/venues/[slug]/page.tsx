@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, Star, Users, Wifi } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ReviewSection from "@/components/ReviewSection";
 import { getVenues, getVenueBySlug } from "@/lib/db/queries";
 import { mapVenue } from "@/lib/db/mappers";
 
@@ -130,6 +131,11 @@ export default async function VenuePage({ params }: { params: Promise<{ slug: st
                     </li>
                   ))}
                 </ul>
+              </div>
+
+              {/* Reviews */}
+              <div>
+                <ReviewSection providerId="" venueId={dbVenue.id} />
               </div>
             </div>
 

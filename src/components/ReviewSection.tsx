@@ -5,16 +5,20 @@ import ReviewForm from "./ReviewForm";
 import ReviewList from "./ReviewList";
 
 interface ReviewSectionProps {
-  providerId: string;
+  providerId?: string;
+  venueId?: string;
 }
 
-export default function ReviewSection({ providerId }: ReviewSectionProps) {
+export default function ReviewSection({ providerId, venueId }: ReviewSectionProps) {
   const [reviews, setReviews] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(true);
+  const targetParam = venueId
+    ? `venueId=${venueId}`
+    : `providerId=${providerId}`;
 
   async function fetchReviews() {
     try {
-      const res = await fetch(`/api/reviews?providerId=${providerId}`);
+      const res = await fetch(`/api/reviews?${targetParam}`);
       if (res.ok) {
         const data = await res.json();
         setReviews(data);
@@ -29,7 +33,7 @@ export default function ReviewSection({ providerId }: ReviewSectionProps) {
   useEffect(() => {
     fetchReviews();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [providerId]);
+  }, [targetParam]);
 
   return (
     <div>
@@ -44,7 +48,11 @@ export default function ReviewSection({ providerId }: ReviewSectionProps) {
       )}
 
       <div className="mt-6">
-        <ReviewForm providerId={providerId} onSubmitted={fetchReviews} />
+        <ReviewForm
+          providerId={providerId}
+          venueId={venueId}
+          onSubmitted={fetchReviews}
+        />
       </div>
     </div>
   );

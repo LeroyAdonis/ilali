@@ -1,3 +1,4 @@
+import { chat } from "./client";
 import { CT_SUBURBS } from "@/lib/suburbs";
 
 export interface ProviderExtract {
@@ -28,18 +29,11 @@ const MATCH_TAGS = [
   "after-school", "holiday-program", "free", "beginner", "advanced",
 ];
 
-const DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions";
 const TIMEOUT_MS = 4000;
 
 export async function extractProviderDetails(
   description: string
 ): Promise<ProviderExtract | null> {
-  const apiKey = process.env.DEEPSEEK_API_KEY;
-  if (!apiKey) {
-    console.warn("[extract-provider] DEEPSEEK_API_KEY not set");
-    return null;
-  }
-
   const systemPrompt = `You extract structured provider details from free-text descriptions of children's activities.
 Return ONLY valid JSON, no other text. No markdown, no explanation.
 
@@ -72,37 +66,17 @@ Rules:
 - Extract price if mentioned (in Rands)
 - Infer tags from context (e.g., "football" → sport, outdoor; "drawing" → creative, indoor)`;
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const content = await chat({
+    systemPrompt,
+    userMessage: description,
+    temperature: 0.1,
+    maxTokens: 400,
+    timeoutMs: TIMEOUT_MS,
+  });
+
+  if (!content) return null;
 
   try {
-    const response = await fetch(DEEPSEEK_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "deepseek-chat",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: description },
-        ],
-        temperature: 0.1,
-        max_tokens: 400,
-      }),
-      signal: controller.signal,
-    });
-
-    if (!response.ok) {
-      console.warn(`[extract-provider] DeepSeek returned ${response.status}`);
-      return null;
-    }
-
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content;
-    if (!content) return null;
-
     const cleaned = content
       .replace(/```json\s*/g, "")
       .replace(/```\s*/g, "")
@@ -122,14 +96,8 @@ Rules:
         ? result.tags.filter((t) => (MATCH_TAGS as readonly string[]).includes(t)).slice(0, 5)
         : undefined,
     };
-  } catch (err: unknown) {
-    if (err instanceof DOMException && err.name === "AbortError") {
-      console.warn("[extract-provider] DeepSeek timed out");
-    } else {
-      console.warn("[extract-provider] Failed:", err);
-    }
+  } catch {
+    console.warn("[extract-provider] Failed to parse AI response");
     return null;
-  } finally {
-    clearTimeout(timeout);
   }
 }

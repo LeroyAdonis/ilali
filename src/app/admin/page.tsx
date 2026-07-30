@@ -2,9 +2,8 @@ import { db } from "@/lib/db/index";
 import { providerApplications } from "@/lib/db/schema";
 import { desc } from "drizzle-orm";
 import Link from "next/link";
-import { ClipboardList, Users, Building2, CheckCircle } from "lucide-react";
+import { ClipboardList } from "lucide-react";
 import {
-  AdminStatCard,
   AdminStatusBadge,
   AdminTable,
   AdminPageHeader,
@@ -20,33 +19,6 @@ export default async function AdminDashboardPage() {
 
   const pending = applications.filter((a) => a.status === "pending");
   const approved = applications.filter((a) => a.status === "approved");
-
-  const stats = [
-    {
-      label: "Total Applications",
-      value: applications.length,
-      icon: ClipboardList,
-      colorClasses: "text-slate-600 bg-slate-100",
-    },
-    {
-      label: "Pending",
-      value: pending.length,
-      icon: Users,
-      colorClasses: "text-amber-600 bg-amber-100",
-    },
-    {
-      label: "Approved",
-      value: approved.length,
-      icon: CheckCircle,
-      colorClasses: "text-teal-600 bg-teal-100",
-    },
-    {
-      label: "Providers Live",
-      value: approved.length,
-      icon: Building2,
-      colorClasses: "text-blue-600 bg-blue-100",
-    },
-  ];
 
   const headers = ["Name", "Activity", "Location", "Status", "Date"];
   const rows = applications.slice(0, 10).map((app) => [
@@ -75,17 +47,32 @@ export default async function AdminDashboardPage() {
         description="Overview of provider applications and activity."
       />
 
-      {/* Stats cards */}
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <AdminStatCard
-            key={stat.label}
-            label={stat.label}
-            value={stat.value}
-            icon={stat.icon}
-            colorClasses={stat.colorClasses}
-          />
-        ))}
+      {/* T4 Numbered stat strip — Hallmark */}
+      <div className="mb-8 flex flex-wrap divide-x divide-slate-200 overflow-hidden rounded-xl border border-slate-200 bg-white sm:grid sm:grid-cols-2 lg:flex">
+        <div className="flex flex-1 flex-col justify-center px-6 py-4 sm:px-5 sm:py-4">
+          <span className="text-2xl font-extrabold tabular-nums text-slate-900 sm:text-3xl">
+            {applications.length}
+          </span>
+          <span className="mt-0.5 text-xs text-slate-500">total applications</span>
+        </div>
+        <div className="flex flex-1 flex-col justify-center border-t border-slate-200 px-6 py-4 sm:border-t-0 sm:px-5 sm:py-4">
+          <span className="text-2xl font-extrabold tabular-nums text-slate-900 sm:text-3xl">
+            {pending.length}
+          </span>
+          <span className="mt-0.5 text-xs text-slate-500">pending</span>
+        </div>
+        <div className="flex flex-1 flex-col justify-center border-t border-slate-200 px-6 py-4 sm:border-t-0 sm:px-5 sm:py-4">
+          <span className="text-2xl font-extrabold tabular-nums text-slate-900 sm:text-3xl">
+            {approved.length}
+          </span>
+          <span className="mt-0.5 text-xs text-slate-500">approved</span>
+        </div>
+        <div className="flex flex-1 flex-col justify-center border-t border-slate-200 px-6 py-4 sm:border-t-0 sm:px-5 sm:py-4">
+          <span className="text-2xl font-extrabold tabular-nums text-slate-900 sm:text-3xl">
+            {approved.length}
+          </span>
+          <span className="mt-0.5 text-xs text-slate-500">providers live</span>
+        </div>
       </div>
 
       {/* Recent applications */}

@@ -3,6 +3,7 @@ import { providers } from "@/lib/db/schema";
 import { desc } from "drizzle-orm";
 import Link from "next/link";
 import { Plus, Pencil, Check, Star } from "lucide-react";
+import { RemoveProviderButton } from "@/components/admin/RemoveProviderButton";
 
 export const dynamic = "force-dynamic";
 
@@ -92,13 +93,16 @@ export default async function ProvidersPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Link
-                      href={`/admin/providers/${p.id}/edit`}
-                      className="inline-flex items-center gap-1 text-xs font-medium text-ilali-600 hover:text-ilali-700"
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                      Edit
-                    </Link>
+                    <div className="flex items-center justify-end gap-3">
+                      <Link
+                        href={`/admin/providers/${p.id}/edit`}
+                        className="inline-flex items-center gap-1 text-xs font-medium text-ilali-600 hover:text-ilali-700"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                        Edit
+                      </Link>
+                      <RemoveProviderButton providerId={p.id} />
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -21,14 +21,12 @@ export const GET = withAdmin(async () => {
 export const POST = withAdmin(async (request: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
 
-  // Support both JSON body and form-encoded body (from HTML forms)
+  // Try formData first (HTML form submissions), fall back to JSON
   let newStatus: string;
-  const contentType = request.headers.get("content-type") || "";
-
-  if (contentType.includes("application/x-www-form-urlencoded") || contentType.includes("multipart/form-data")) {
+  try {
     const formData = await request.formData();
     newStatus = formData.get("status") as string;
-  } else {
+  } catch {
     const body = await request.json();
     newStatus = body.status;
   }
@@ -64,12 +62,8 @@ export const POST = withAdmin(async (request: NextRequest, { params }: { params:
     .where(eq(providerApplications.id, id))
     .returning();
 
-  // Redirect back to applications page after form submission
-  if (contentType.includes("application/x-www-form-urlencoded") || contentType.includes("multipart/form-data")) {
-    return NextResponse.redirect(new URL("/admin/applications", request.url));
-  }
-
-  return NextResponse.json(updated);
+  // Always redirect after POST — all submissions come from HTML forms
+  return NextResponse.redirect(new URL("/admin/applications", request.url));
 });
 
 export const PATCH = withAdmin(async (request: NextRequest, { params }: { params: Promise<{ id: string }> }) => {

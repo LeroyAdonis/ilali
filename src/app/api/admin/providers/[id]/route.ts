@@ -33,3 +33,30 @@ export const PATCH = withAdmin(async (request: NextRequest, { params }: { params
 
   return NextResponse.json(updated);
 });
+
+export const DELETE = withAdmin(async (_request: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
+  const [deleted] = await db.delete(providers).where(eq(providers.id, id)).returning();
+  if (!deleted) {
+    return NextResponse.json({ error: "Provider not found" }, { status: 404 });
+  }
+  return NextResponse.json({ success: true });
+});
+
+export const POST = withAdmin(async (request: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
+  let formData: FormData;
+  try {
+    formData = await request.formData();
+  } catch {
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  }
+  if (formData.get("_method") === "DELETE") {
+    const [deleted] = await db.delete(providers).where(eq(providers.id, id)).returning();
+    if (!deleted) {
+      return NextResponse.json({ error: "Provider not found" }, { status: 404 });
+    }
+    return NextResponse.redirect(new URL("/admin/providers", request.url));
+  }
+  return NextResponse.json({ error: "Unknown method" }, { status: 400 });
+});

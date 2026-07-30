@@ -3,19 +3,41 @@ import { providerApplications, providers } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
 import Link from "next/link";
 import { ArrowLeft, Building2, CheckCircle, XCircle, Phone, Mail } from "lucide-react";
+import { AdminStatusBadge } from "@/components/admin";
 
 export const dynamic = "force-dynamic";
 
-export default async function ApplicationsPage() {
-  const applications = await db
+const TAB_STATUSES = [
+  { label: "All", value: "" },
+  { label: "Pending", value: "pending" },
+  { label: "Contacted", value: "contacted" },
+  { label: "Approved", value: "approved" },
+  { label: "Rejected", value: "rejected" },
+] as const;
+
+export default async function ApplicationsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  const { status: activeStatus } = await searchParams;
+
+  const all = await db
     .select()
     .from(providerApplications)
     .orderBy(desc(providerApplications.createdAt));
 
-  const pending = applications.filter((a) => a.status === "pending");
-  const contacted = applications.filter((a) => a.status === "contacted");
-  const approved = applications.filter((a) => a.status === "approved");
-  const rejected = applications.filter((a) => a.status === "rejected");
+  const applications = activeStatus
+    ? all.filter((a) => a.status === activeStatus)
+    : all;
+
+  // Compute counts for each tab from the full list
+  const counts: Record<string, number> = {};
+  for (const tab of TAB_STATUSES) {
+    counts[tab.value] = tab.value
+      ? all.filter((a) => a.status === tab.value).length
+      : all.length;
+  }
 
   return (
     <div>
@@ -26,13 +48,36 @@ export default async function ApplicationsPage() {
         </p>
       </div>
 
-      {/* Filter tabs */}
-      <div className="mb-6 flex gap-2">
-        <Tab label="All" count={applications.length} />
-        <Tab label="Pending" count={pending.length} active />
-        <Tab label="Contacted" count={contacted.length} />
-        <Tab label="Approved" count={approved.length} />
-        <Tab label="Rejected" count={rejected.length} />
+      {/* C1 Outlined chip filter tabs — Hallmark */}
+      <div className="mb-6 flex gap-2 overflow-x-auto pb-1">
+        {TAB_STATUSES.map((tab) => {
+          const isActive =
+            tab.value === (activeStatus ?? "") ||
+            (!activeStatus && tab.value === "");
+          return (
+            <Link
+              key={tab.value}
+              href={tab.value ? `?status=${tab.value}` : "?"}
+              scroll={false}
+              className={`inline-flex shrink-0 items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors min-h-[44px] ${
+                isActive
+                  ? "bg-ilali-600 text-white border-ilali-600"
+                  : "border-slate-300 text-slate-600 hover:border-slate-400 hover:text-slate-900"
+              }`}
+            >
+              {tab.label}
+              <span
+                className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs tabular-nums ${
+                  isActive
+                    ? "bg-white/20 text-white"
+                    : "bg-slate-100 text-slate-600"
+                }`}
+              >
+                {counts[tab.value]}
+              </span>
+            </Link>
+          );
+        })}
       </div>
 
       {/* Applications list */}
@@ -54,7 +99,7 @@ export default async function ApplicationsPage() {
                     <h3 className="text-lg font-semibold text-slate-900">
                       {app.name}
                     </h3>
-                    <StatusBadge status={app.status} />
+                    <AdminStatusBadge status={app.status as "pending" | "contacted" | "approved" | "rejected" | null} />
                   </div>
                   <p className="mt-1 text-sm text-slate-500">
                     {app.activityType}
@@ -160,53 +205,5 @@ export default async function ApplicationsPage() {
         </div>
       )}
     </div>
-  );
-}
-
-function Tab({
-  label,
-  count,
-  active,
-}: {
-  label: string;
-  count: number;
-  active?: boolean;
-}) {
-  return (
-    <button
-      className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-        active
-          ? "bg-ilali-600 text-white"
-          : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
-      }`}
-    >
-      {label}
-      <span
-        className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs ${
-          active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"
-        }`}
-      >
-        {count}
-      </span>
-    </button>
-  );
-}
-
-function StatusBadge({ status }: { status: string | null }) {
-  const styles: Record<string, string> = {
-    pending: "bg-amber-100 text-amber-700 border-amber-200",
-    contacted: "bg-blue-100 text-blue-700 border-blue-200",
-    approved: "bg-teal-100 text-teal-700 border-teal-200",
-    rejected: "bg-red-100 text-red-700 border-red-200",
-  };
-
-  return (
-    <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${
-        styles[status || "pending"] || styles.pending
-      }`}
-    >
-      {status || "pending"}
-    </span>
   );
 }

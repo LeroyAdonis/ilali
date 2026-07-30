@@ -23,8 +23,20 @@ export const auth = betterAuth({
   session: {
     expiresIn: 30 * 24 * 60 * 60, // 30 days in seconds
   },
+  // Include role field in session user object
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        defaultValue: "parent",
+      },
+    },
+  },
   // Use nextCookies for App Router compatibility
   plugins: [nextCookies()],
   // Trust localhost for dev
-  trustedOrigins: [process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"],
+  trustedOrigins: [
+    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+    "http://localhost:3001",
+  ],
 });

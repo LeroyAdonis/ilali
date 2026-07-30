@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { Users, Shield, Zap, Check, ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
@@ -103,7 +104,9 @@ export default function ProviderSignupPage() {
         </section>
 
         {/* Form */}
-        <ProviderSignupForm />
+        <Suspense fallback={<div className="py-20 text-center"><div className="mx-auto h-6 w-6 animate-spin rounded-full border-2 border-ilali-500 border-t-transparent" /></div>}>
+          <ProviderSignupForm />
+        </Suspense>
       </main>
       <Footer />
     </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ComingSoon from "@/components/ComingSoon";
+import AIOnboardingForm from "@/components/AIOnboardingForm";
 
 export const metadata: Metadata = {
   title: "Provider Resources | ILALI",
@@ -101,14 +101,10 @@ export default function ProviderResourcesPage() {
           <hr className="border-slate-200" />
         </div>
 
-        {/* T058: AI onboarding placeholder */}
+        {/* AI-Powered Onboarding */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-lg text-center">
-            <ComingSoon
-              title="AI-Powered Onboarding"
-              description="Answer a few WhatsApp questions and let our AI build your perfect listing — including description, age range, and tags."
-              icon="🤖"
-            />
+          <div className="mx-auto max-w-lg">
+            <AIOnboardingForm />
           </div>
         </section>
 

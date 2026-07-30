@@ -2,8 +2,8 @@ import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import FilterBar from "@/components/FilterBar";
 import ProviderCard from "@/components/ProviderCard";
-import ComingSoon from "@/components/ComingSoon";
 import Footer from "@/components/Footer";
+import Link from "next/link";
 import { Suspense } from "react";
 import { getProviders, getCategories } from "@/lib/db/queries";
 import { mapProvider } from "@/lib/db/mappers";
@@ -213,16 +213,21 @@ function ResultsSection({
         </section>
       ) : (
         <>
-          {/* T055: Parent accounts placeholder */}
+          {/* Parent accounts signup CTA */}
           <section className="pb-6">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <ComingSoon
-                title="Parent Accounts"
-                description="Sign up to save favourites and get personalised recommendations."
-                icon="👋"
-                linkHref="/auth/signup"
-                linkLabel="Sign up"
-              />
+              <div className="rounded-xl border border-ilali-200 bg-gradient-to-r from-ilali-50 to-white p-6 sm:flex sm:items-center sm:justify-between">
+                <div>
+                  <h3 className="text-base font-bold text-slate-900">👋 Create your free account</h3>
+                  <p className="mt-1 text-sm text-slate-500">Save your favourite activities and get personalised recommendations.</p>
+                </div>
+                <Link
+                  href="/auth/signup"
+                  className="mt-4 inline-flex items-center gap-2 rounded-full bg-ilali-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-ilali-700 transition-colors sm:mt-0 shrink-0"
+                >
+                  Sign up free
+                </Link>
+              </div>
             </div>
           </section>
 

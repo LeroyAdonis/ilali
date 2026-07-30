@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { providerApplicationSchema } from "@/lib/validations";
 import { formatPhone } from "@/lib/utils";
@@ -47,12 +48,34 @@ const initialFormData: FormData = {
 };
 
 export default function ProviderSignupForm() {
+  const searchParams = useSearchParams();
   const [submitted, setSubmitted] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formData, setFormData] = useState<FormData>(initialFormData);
+
+  // Pre-fill from AI extraction URL params
+  useEffect(() => {
+    const updates: Partial<FormData> = {};
+    const fields: Array<{ param: string; field: keyof FormData }> = [
+      { param: "name", field: "name" },
+      { param: "category", field: "activity_type" },
+      { param: "description", field: "description" },
+      { param: "location", field: "location" },
+      { param: "ageMin", field: "age_min" },
+      { param: "ageMax", field: "age_max" },
+      { param: "price", field: "price_value" },
+    ];
+    for (const { param, field } of fields) {
+      const val = searchParams.get(param);
+      if (val) updates[field] = val;
+    }
+    if (Object.keys(updates).length > 0) {
+      setFormData((prev) => ({ ...prev, ...updates }));
+    }
+  }, [searchParams]);
 
   function updateField(field: keyof FormData, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ComingSoon from "@/components/ComingSoon";
+import AIOnboardingForm from "@/components/AIOnboardingForm";
 import ProviderInquiryForm from "./form";
 
 export const metadata: Metadata = {
@@ -150,14 +150,10 @@ export default function ForProvidersPage() {
           <hr className="border-slate-200" />
         </div>
 
-        {/* T057: AI onboarding placeholder */}
+        {/* AI-Powered Onboarding */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-lg text-center">
-            <ComingSoon
-              title="AI-Powered Onboarding"
-              description="Answer a few WhatsApp questions and let our AI build your perfect listing — including description, age range, and tags."
-              icon="🤖"
-            />
+          <div className="mx-auto max-w-lg">
+            <AIOnboardingForm />
           </div>
         </section>
 

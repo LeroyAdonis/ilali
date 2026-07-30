@@ -325,6 +325,7 @@ export default async function BrowsePage({ searchParams }: Props) {
   const nl = typeof params.nl === "string" ? params.nl : "";
   const q = typeof params.q === "string" ? params.q.trim() : "";
   const baseUrl =
+    process.env.NEXT_PUBLIC_APP_URL ||
     process.env.NEXT_PUBLIC_SITE_URL ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 

@@ -8,7 +8,7 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import { categories, stats } from "@/lib/constants";
 import { getProviders, getVenues, getCategories } from "@/lib/db/queries";
-import { mapProviders, mapVenue } from "@/lib/db/mappers";
+import { mapProvider, mapVenue } from "@/lib/db/mappers";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -23,7 +23,7 @@ export default async function HomePage() {
     getVenues(),
     getCategories(),
   ]);
-  const providers = mapProviders(dbProviders, dbCategories);
+  const providers = dbProviders.map(p => mapProvider(p, dbCategories));
   const venues = dbVenues.map(mapVenue);
   const newProviders = providers.slice(0, 4);
   const popularProviders = providers.filter((p) => p.featured);

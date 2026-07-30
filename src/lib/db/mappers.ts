@@ -57,13 +57,3 @@ export function mapVenue(dbRow: DbVenue): Venue {
     amenities: (dbRow as DbVenue).amenities ?? [],
   };
 }
-
-/**
- * Maps an array of DB provider rows to UI Provider type.
- */
-export function mapProviders(
-  dbRows: DbProvider[],
-  categories: { id: string; name: string }[]
-): Provider[] {
-  return dbRows.map((row) => mapProvider(row, categories));
-}

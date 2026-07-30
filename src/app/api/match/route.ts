@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { extractIntent } from "@/lib/ai/match";
 import { scoreAllProviders } from "@/lib/ai/score";
 import { getProviders, searchProviders, getCategories } from "@/lib/db/queries";
-import { mapProviders } from "@/lib/db/mappers";
+import { mapProvider } from "@/lib/db/mappers";
 
 export async function POST(request: Request) {
   let body: { query: string };
@@ -26,13 +26,13 @@ export async function POST(request: Request) {
   // Step 1: Extract intent via DeepSeek LLM
   const intent = await extractIntent(query);
 
-  // Step 2: If intent extraction fails, fallback to keyword search
+  // Step 2: Fallback to keyword search on extraction failure
   if (!intent) {
     const [dbProviders, dbCategories] = await Promise.all([
       searchProviders(query),
       getCategories(),
     ]);
-    const providers = mapProviders(dbProviders, dbCategories);
+    const providers = dbProviders.map(p => mapProvider(p, dbCategories));
     return NextResponse.json({
       fallback: true,
       mode: "keyword",
@@ -60,10 +60,7 @@ export async function POST(request: Request) {
 
   // Map providers for the response
   const mappedGood = goodMatches.map((s) => ({
-    provider: mapProviders(
-      [s.provider as Parameters<typeof mapProviders>[0][number]],
-      dbCategories
-    )[0],
+    provider: mapProvider(s.provider, dbCategories),
     score: s.score,
     reasons: s.reasons,
   }));
@@ -82,10 +79,7 @@ export async function POST(request: Request) {
 
   // Step 6: All <30% — return with fallback flag
   const allMapped = scored.map((s) => ({
-    provider: mapProviders(
-      [s.provider as Parameters<typeof mapProviders>[0][number]],
-      dbCategories
-    )[0],
+    provider: mapProvider(s.provider, dbCategories),
     score: s.score,
     reasons: s.reasons,
   }));

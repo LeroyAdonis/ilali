@@ -1,52 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getProviders, getCategories } from "@/lib/db/queries";
-import { mapProviders } from "@/lib/db/mappers";
+import { mapProvider } from "@/lib/db/mappers";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category") || "";
-  const location = searchParams.get("location") || "";
 
   const [dbProviders, dbCategories] = await Promise.all([
     getProviders(),
     getCategories(),
   ]);
-  let result = mapProviders(dbProviders, dbCategories);
+  const result = dbProviders.map((p) => mapProvider(p, dbCategories));
 
-  if (category) {
-    const slugs = category.split(",");
-    result = result.filter((p) => slugs.includes(p.categorySlug));
-  }
+  // Client-side filtering is acceptable for MVP (< 100 providers)
+  const filtered = category
+    ? result.filter((p) => p.categorySlug === category)
+    : result;
 
-  if (location) {
-    result = result.filter((p) =>
-      p.location.toLowerCase().includes(location.toLowerCase())
-    );
-  }
-
-  return NextResponse.json({
-    data: result,
-    total: result.length,
-  });
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    return NextResponse.json({
-      success: true,
-      message: "Provider application received. We'll be in touch soon.",
-      data: {
-        id: `app_${Date.now()}`,
-        ...body,
-        status: "pending",
-        created_at: new Date().toISOString(),
-      },
-    });
-  } catch {
-    return NextResponse.json(
-      { success: false, message: "Invalid request body" },
-      { status: 400 }
-    );
-  }
+  return NextResponse.json({ data: filtered, total: filtered.length });
 }

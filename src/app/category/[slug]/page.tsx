@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import ProviderCard from "@/components/ProviderCard";
 import { categories } from "@/lib/constants";
 import { getProviders, getCategories } from "@/lib/db/queries";
-import { mapProviders } from "@/lib/db/mappers";
+import { mapProvider } from "@/lib/db/mappers";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -36,7 +36,7 @@ export default async function CategoryPage({ params }: Props) {
     getProviders({ category: slug }),
     getCategories(),
   ]);
-  const providers = mapProviders(dbProviders, dbCategories);
+  const providers = dbProviders.map(p => mapProvider(p, dbCategories));
   const filtered = providers.filter((p) => p.categorySlug === slug);
 
   return (

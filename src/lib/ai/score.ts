@@ -102,8 +102,8 @@ export function scoreProvider(
   return { score: Math.min(100, score), reasons };
 }
 
-export interface ScoredResult {
-  provider: unknown;
+export interface ScoredResult<T = unknown> {
+  provider: T;
   score: number;
   reasons: string[];
 }
@@ -114,7 +114,7 @@ export interface ScoredResult {
 export function scoreAllProviders<T extends { id: string; ageMin: number; ageMax: number; tags?: string[] | null; location?: string; priceValue: number; isFree?: boolean | null }>(
   providers: T[],
   intent: MatchIntent
-): ScoredResult[] {
+): ScoredResult<T>[] {
   const scored = providers.map((provider) => {
     const { score, reasons } = scoreProvider(provider, intent);
     return { provider, score, reasons };

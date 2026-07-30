@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { searchProviders, getCategories, SearchFilters } from "@/lib/db/queries";
-import { mapProviders } from "@/lib/db/mappers";
+import { mapProvider } from "@/lib/db/mappers";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     getCategories(),
   ]);
 
-  const providers = mapProviders(dbProviders, dbCategories);
+  const providers = dbProviders.map(p => mapProvider(p, dbCategories));
 
   // Optional client-side price filtering (keep it simple for MVP)
   let results = providers;

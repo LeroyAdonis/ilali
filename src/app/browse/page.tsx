@@ -6,7 +6,7 @@ import ComingSoon from "@/components/ComingSoon";
 import Footer from "@/components/Footer";
 import { Suspense } from "react";
 import { getProviders, getCategories } from "@/lib/db/queries";
-import { mapProviders } from "@/lib/db/mappers";
+import { mapProvider } from "@/lib/db/mappers";
 import type { Provider } from "@/lib/types";
 import type { categories as categoriesSchema } from "@/lib/db/schema";
 
@@ -289,7 +289,7 @@ export default async function BrowsePage({ searchParams }: Props) {
     getProviders(),
     getCategories(),
   ]);
-  const providers = mapProviders(dbProviders, dbCategories);
+  const providers = dbProviders.map(p => mapProvider(p, dbCategories));
 
   // AI matching via `nl` param
   let matchResults: MatchResult[] | null = null;

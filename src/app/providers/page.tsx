@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProvidersPageClient from "./client";
 import { getProviders, getCategories } from "@/lib/db/queries";
-import { mapProviders } from "@/lib/db/mappers";
+import { mapProvider } from "@/lib/db/mappers";
 
 export const metadata: Metadata = {
   title: "Providers | ILALI",
@@ -16,7 +16,7 @@ export default async function ProvidersPage() {
     getProviders(),
     getCategories(),
   ]);
-  const providers = mapProviders(dbProviders, dbCategories);
+  const providers = dbProviders.map(p => mapProvider(p, dbCategories));
 
   return (
     <>

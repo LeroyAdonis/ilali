@@ -20,7 +20,7 @@ import {
   getCategories,
   getSimilarProviders,
 } from "@/lib/db/queries";
-import { mapProvider, mapProviders } from "@/lib/db/mappers";
+import { mapProvider } from "@/lib/db/mappers";
 
 export async function generateStaticParams() {
   const dbProviders = await getProviders();
@@ -63,7 +63,7 @@ export default async function ActivityPage({
   } catch {
     // Silently fail — similar providers are a nice-to-have
   }
-  const similarProviders = mapProviders(similarDbProviders, categories);
+  const similarProviders = similarDbProviders.map(p => mapProvider(p, categories));
 
   return (
     <div className="flex min-h-screen flex-col">

@@ -12,9 +12,16 @@ function getDb(): NeonHttpDatabase<typeof schema> {
   return _db;
 }
 
-// Proxy that defers DB init until first query — prevents Turbopack build failures
-export const db = new Proxy({} as NeonHttpDatabase<typeof schema>, {
-  get(_, prop) {
-    return (getDb() as any)[prop];
+// Proxy defers DB init until first query — prevents Turbopack build failures
+const handler: ProxyHandler<object> = {
+  get(_target, prop) {
+    const db = getDb();
+    const value = (db as unknown as Record<string | symbol, unknown>)[prop];
+    if (typeof value === "function") {
+      return value.bind(db);
+    }
+    return value;
   },
-});
+};
+
+export const db = new Proxy({}, handler) as unknown as NeonHttpDatabase<typeof schema>;

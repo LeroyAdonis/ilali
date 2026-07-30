@@ -1,9 +1,10 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db/index";
-import { providers, providerApplications } from "@/lib/db/schema";
+import { providers, providerApplications, categories } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { getCategories } from "@/lib/db/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +44,9 @@ export default async function NewProviderPage({
   }
 
   const { applicationId } = await searchParams;
+
+  // Fetch categories from DB
+  const dbCategories = await getCategories();
 
   // Pre-fill from application if available
   let prefill: Partial<{
@@ -88,24 +92,32 @@ export default async function NewProviderPage({
 
     const slug = slugify(String(formData.get("name") || ""));
     const tags = formData.getAll("tags").map(String);
+    const priceInRands = Number(formData.get("priceValue")) || 0;
 
-    await db.insert(providers).values({
-      name: String(formData.get("name") || ""),
-      slug,
-      category: String(formData.get("category") || ""),
-      description: String(formData.get("description") || ""),
-      providerName: String(formData.get("providerName") || ""),
-      location: String(formData.get("location") || ""),
-      ageMin: Number(formData.get("ageMin")) || 0,
-      ageMax: Number(formData.get("ageMax")) || 0,
-      priceValue: Number(formData.get("priceValue")) || 0,
-      priceLabel: String(formData.get("priceLabel") || "per session"),
-      imageUrl: String(formData.get("imageUrl") || ""),
-      phone: String(formData.get("phone") || ""),
-      tags: tags.length > 0 ? tags : null,
-      verified: formData.get("verified") === "on",
-      featured: formData.get("featured") === "on",
-    });
+    try {
+      await db.insert(providers).values({
+        name: String(formData.get("name") || ""),
+        slug,
+        category: String(formData.get("category") || ""),
+        description: String(formData.get("description") || ""),
+        providerName: String(formData.get("providerName") || ""),
+        location: String(formData.get("location") || ""),
+        ageMin: Number(formData.get("ageMin")) || 0,
+        ageMax: Number(formData.get("ageMax")) || 0,
+        priceValue: Math.round(priceInRands * 100), // Convert Rands → cents
+        priceLabel: String(formData.get("priceLabel") || "per session"),
+        imageUrl: String(formData.get("imageUrl") || ""),
+        phone: String(formData.get("phone") || ""),
+        tags: tags.length > 0 ? tags : null,
+        verified: formData.get("verified") === "on",
+        featured: formData.get("featured") === "on",
+      });
+    } catch (err) {
+      console.error("Failed to create provider:", err);
+      throw new Error("Failed to create provider. Check that all required fields are filled and the category exists.");
+    }
+
+    redirect("/admin/providers");
   }
 
   return (
@@ -168,18 +180,14 @@ export default async function NewProviderPage({
               <select
                 name="category"
                 required
-                defaultValue="sports"
                 className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
               >
-                <option value="sports">⚽ Sports</option>
-                <option value="arts-crafts">🎨 Arts & Crafts</option>
-                <option value="music">🎵 Music</option>
-                <option value="dance">💃 Dance</option>
-                <option value="stem">🔬 STEM</option>
-                <option value="language">🗣️ Language</option>
-                <option value="outdoor">🏕️ Outdoor</option>
-                <option value="cooking">🍳 Cooking</option>
-                <option value="martial-arts">🥋 Martial Arts</option>
+                <option value="">Select category</option>
+                {dbCategories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.icon} {cat.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div>

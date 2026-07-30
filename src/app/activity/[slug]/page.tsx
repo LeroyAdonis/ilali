@@ -14,6 +14,7 @@ import Footer from "@/components/Footer";
 import ProviderCard from "@/components/ProviderCard";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import ComingSoon from "@/components/ComingSoon";
+import ReviewSection from "@/components/ReviewSection";
 import {
   getProviders,
   getProviderBySlug,
@@ -229,13 +230,9 @@ export default async function ActivityPage({
                 </ul>
               </div>
 
-              {/* T053: Reviews coming soon */}
+              {/* Reviews */}
               <div>
-                <ComingSoon
-                  title="Reviews"
-                  description="We're building a trusted review system for Cape Town families."
-                  icon="⭐"
-                />
+                <ReviewSection providerId={dbProvider.id} />
               </div>
             </div>
 

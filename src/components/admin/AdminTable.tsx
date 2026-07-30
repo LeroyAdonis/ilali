@@ -24,7 +24,7 @@ export function AdminTable({
 
   const tableHead = (
     <thead>
-      <tr className="border-b border-slate-200">
+      <tr className="bg-slate-50/80 border-b border-slate-200">
         {headers.map((header, i) => (
           <th
             key={i}

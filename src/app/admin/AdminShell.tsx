@@ -87,6 +87,9 @@ export function AdminShell({ children, user }: AdminShellProps) {
         </div>
 
         <nav className="flex-1 space-y-1 p-4">
+          <p className="px-3 pt-4 pb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Manage
+          </p>
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
@@ -122,6 +125,9 @@ export function AdminShell({ children, user }: AdminShellProps) {
         </div>
 
         <nav className="flex-1 space-y-1 p-4">
+          <p className="px-3 pt-4 pb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            Manage
+          </p>
           {NAV_LINKS.map((link) => (
             <Link key={link.href} href={link.href} className={navLinkClasses}>
               <link.icon className="h-4 w-4" />

@@ -2,7 +2,7 @@ import { db } from "@/lib/db/index";
 import { providerApplications, providers } from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
 import Link from "next/link";
-import { ArrowLeft, Building2, CheckCircle, XCircle, Phone, Mail } from "lucide-react";
+import { ArrowLeft, Building2, CheckCircle, XCircle, Phone, Mail, Download } from "lucide-react";
 import { AdminStatusBadge } from "@/components/admin";
 
 export const dynamic = "force-dynamic";
@@ -49,35 +49,44 @@ export default async function ApplicationsPage({
       </div>
 
       {/* C1 Outlined chip filter tabs — Hallmark */}
-      <div className="mb-6 flex gap-2 overflow-x-auto pb-1">
-        {TAB_STATUSES.map((tab) => {
-          const isActive =
-            tab.value === (activeStatus ?? "") ||
-            (!activeStatus && tab.value === "");
-          return (
-            <Link
-              key={tab.value}
-              href={tab.value ? `?status=${tab.value}` : "?"}
-              scroll={false}
-              className={`inline-flex shrink-0 items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors min-h-[44px] ${
-                isActive
-                  ? "bg-ilali-600 text-white border-ilali-600"
-                  : "border-slate-300 text-slate-600 hover:border-slate-400 hover:text-slate-900"
-              }`}
-            >
-              {tab.label}
-              <span
-                className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs tabular-nums ${
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {TAB_STATUSES.map((tab) => {
+            const isActive =
+              tab.value === (activeStatus ?? "") ||
+              (!activeStatus && tab.value === "");
+            return (
+              <Link
+                key={tab.value}
+                href={tab.value ? `?status=${tab.value}` : "?"}
+                scroll={false}
+                className={`inline-flex shrink-0 items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors min-h-[44px] ${
                   isActive
-                    ? "bg-white/20 text-white"
-                    : "bg-slate-100 text-slate-600"
+                    ? "bg-ilali-600 text-white border-ilali-600"
+                    : "border-slate-300 text-slate-600 hover:border-slate-400 hover:text-slate-900"
                 }`}
               >
-                {counts[tab.value]}
-              </span>
-            </Link>
-          );
-        })}
+                {tab.label}
+                <span
+                  className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs tabular-nums ${
+                    isActive
+                      ? "bg-white/20 text-white"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  {counts[tab.value]}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+        <button
+          type="button"
+          className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+        >
+          <Download className="h-4 w-4" />
+          Export
+        </button>
       </div>
 
       {/* Applications list */}

@@ -6,10 +6,10 @@ import {
   LayoutDashboard,
   ClipboardList,
   Building2,
-  LogOut,
   Menu,
   X,
 } from "lucide-react";
+import { SignOutButton, SignOutButtonFull } from "@/components/admin/SignOutButton";
 
 interface AdminShellProps {
   children: React.ReactNode;
@@ -50,38 +50,25 @@ export function AdminShell({ children, user }: AdminShellProps) {
           ILALI Admin
         </Link>
 
-        <form action="/api/auth/sign-out" method="POST">
-          <button
-            type="submit"
-            aria-label="Sign out"
-            className="flex h-11 w-11 items-center justify-center rounded-lg text-red-600 hover:bg-red-50"
-          >
-            <LogOut className="h-5 w-5" />
-          </button>
-        </form>
+        <SignOutButton className="flex h-11 w-11 items-center justify-center rounded-lg text-red-600 hover:bg-red-50" />
       </header>
 
       {/* ============================================
           MOBILE SIDEBAR OVERLAY + DRAWER (< 768px)
           ============================================ */}
-      {/* Dark overlay */}
       <div
         className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-200 md:hidden ${
-          sidebarOpen
-            ? "visible opacity-100"
-            : "invisible opacity-0"
+          sidebarOpen ? "visible opacity-100" : "invisible opacity-0"
         }`}
         onClick={() => setSidebarOpen(false)}
         aria-hidden="true"
       />
 
-      {/* Slide-over drawer */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-white shadow-lg transition-transform duration-200 md:hidden ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Drawer header */}
         <div className="flex h-14 items-center justify-between border-b border-slate-200 px-4">
           <Link
             href="/admin"
@@ -99,7 +86,6 @@ export function AdminShell({ children, user }: AdminShellProps) {
           </button>
         </div>
 
-        {/* Navigation links */}
         <nav className="flex-1 space-y-1 p-4">
           {NAV_LINKS.map((link) => (
             <Link
@@ -114,7 +100,6 @@ export function AdminShell({ children, user }: AdminShellProps) {
           ))}
         </nav>
 
-        {/* User footer */}
         <div className="border-t border-slate-200 p-4">
           <div className="mb-3 px-3">
             <p className="text-sm font-medium text-slate-900 truncate">
@@ -122,15 +107,7 @@ export function AdminShell({ children, user }: AdminShellProps) {
             </p>
             <p className="text-xs text-slate-500 truncate">{user.email}</p>
           </div>
-          <form action="/api/auth/sign-out" method="POST">
-            <button
-              type="submit"
-              className="flex h-11 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
-            >
-              <LogOut className="h-4 w-4" />
-              Sign Out
-            </button>
-          </form>
+          <SignOutButtonFull className="flex h-11 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors" />
         </div>
       </aside>
 
@@ -138,14 +115,12 @@ export function AdminShell({ children, user }: AdminShellProps) {
           DESKTOP SIDEBAR (≥ 768px)
           ============================================ */}
       <aside className="hidden md:flex md:w-60 md:shrink-0 md:flex-col md:border-r md:border-slate-200 md:bg-white md:h-screen md:sticky md:top-0 md:overflow-y-auto">
-        {/* Logo */}
         <div className="flex h-16 items-center border-b border-slate-200 px-6">
           <Link href="/admin" className="text-xl font-bold text-ilali-600">
             ILALI Admin
           </Link>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 space-y-1 p-4">
           {NAV_LINKS.map((link) => (
             <Link key={link.href} href={link.href} className={navLinkClasses}>
@@ -155,7 +130,6 @@ export function AdminShell({ children, user }: AdminShellProps) {
           ))}
         </nav>
 
-        {/* User footer */}
         <div className="border-t border-slate-200 p-4">
           <div className="mb-3 px-3">
             <p className="text-sm font-medium text-slate-900 truncate">
@@ -163,15 +137,7 @@ export function AdminShell({ children, user }: AdminShellProps) {
             </p>
             <p className="text-xs text-slate-500 truncate">{user.email}</p>
           </div>
-          <form action="/api/auth/sign-out" method="POST">
-            <button
-              type="submit"
-              className="flex h-11 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
-            >
-              <LogOut className="h-4 w-4" />
-              Sign Out
-            </button>
-          </form>
+          <SignOutButtonFull className="flex h-11 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors" />
         </div>
       </aside>
 

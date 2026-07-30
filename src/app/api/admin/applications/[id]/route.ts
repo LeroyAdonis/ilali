@@ -18,6 +18,60 @@ export const GET = withAdmin(async () => {
   return NextResponse.json(applications);
 });
 
+export const POST = withAdmin(async (request: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
+
+  // Support both JSON body and form-encoded body (from HTML forms)
+  let newStatus: string;
+  const contentType = request.headers.get("content-type") || "";
+
+  if (contentType.includes("application/x-www-form-urlencoded") || contentType.includes("multipart/form-data")) {
+    const formData = await request.formData();
+    newStatus = formData.get("status") as string;
+  } else {
+    const body = await request.json();
+    newStatus = body.status;
+  }
+
+  if (!newStatus || !VALID_STATUSES.includes(newStatus)) {
+    return NextResponse.json(
+      { error: `Invalid status. Must be one of: ${VALID_STATUSES.join(", ")}` },
+      { status: 400 }
+    );
+  }
+
+  const [application] = await db
+    .select()
+    .from(providerApplications)
+    .where(eq(providerApplications.id, id));
+
+  if (!application) {
+    return NextResponse.json({ error: "Application not found" }, { status: 404 });
+  }
+
+  const currentStatus = application.status || "pending";
+  const allowedNext = VALID_TRANSITIONS[currentStatus];
+  if (!allowedNext || !allowedNext.includes(newStatus)) {
+    return NextResponse.json(
+      { error: `Cannot transition from "${currentStatus}" to "${newStatus}"` },
+      { status: 400 }
+    );
+  }
+
+  const [updated] = await db
+    .update(providerApplications)
+    .set({ status: newStatus })
+    .where(eq(providerApplications.id, id))
+    .returning();
+
+  // Redirect back to applications page after form submission
+  if (contentType.includes("application/x-www-form-urlencoded") || contentType.includes("multipart/form-data")) {
+    return NextResponse.redirect(new URL("/admin/applications", request.url));
+  }
+
+  return NextResponse.json(updated);
+});
+
 export const PATCH = withAdmin(async (request: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const body = await request.json();

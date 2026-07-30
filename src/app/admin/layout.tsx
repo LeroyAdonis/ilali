@@ -69,13 +69,15 @@ export default async function AdminLayout({
               {user.email}
             </p>
           </div>
-          <a
-            href="/api/auth/sign-out"
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
-          >
-            <LogOut className="h-4 w-4" />
-            Sign Out
-          </a>
+          <form action="/api/auth/sign-out" method="POST">
+            <button
+              type="submit"
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </button>
+          </form>
         </div>
       </aside>
 

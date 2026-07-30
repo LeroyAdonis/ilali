@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { withAdmin } from "@/lib/auth-guard";
 import { db } from "@/lib/db/index";
 import { providers } from "@/lib/db/schema";
 import { adminProviderSchema } from "@/lib/validations";
@@ -14,52 +14,24 @@ function slugify(text: string): string {
     .replace(/^-|-$/g, "");
 }
 
-export async function GET(request: NextRequest) {
-  const session = await auth.api.getSession({
-    headers: request.headers,
-  });
-
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const user = session.user as { role?: string };
-  if (user.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
+export const GET = withAdmin(async () => {
   const providerList = await db.select().from(providers);
   return NextResponse.json(providerList);
-}
+});
 
-export async function POST(request: NextRequest) {
-  const session = await auth.api.getSession({
-    headers: request.headers,
-  });
-
-  if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const user = session.user as { role?: string };
-  if (user.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
+export const POST = withAdmin(async (request: NextRequest) => {
   const body = await request.json();
 
-  // Validate with Zod
   const result = adminProviderSchema.safeParse(body);
   if (!result.success) {
-    const fieldErrors = result.error.flatten().fieldErrors;
     return NextResponse.json(
-      { error: "Validation failed", fieldErrors },
+      { error: "Validation failed", fieldErrors: result.error.flatten().fieldErrors },
       { status: 400 }
     );
   }
 
   const data = result.data;
-  const slug = slugify(data.name || "");
+  const slug = slugify(data.name);
 
   const [provider] = await db
     .insert(providers)
@@ -72,7 +44,7 @@ export async function POST(request: NextRequest) {
       location: data.location,
       ageMin: data.ageMin,
       ageMax: data.ageMax,
-      priceValue: Math.round(data.priceValue * 100), // Convert rands to cents
+      priceValue: Math.round(data.priceValue * 100),
       priceLabel: data.priceLabel || "per session",
       imageUrl: data.imageUrl || null,
       phone: data.phone || null,
@@ -83,4 +55,4 @@ export async function POST(request: NextRequest) {
     .returning();
 
   return NextResponse.json(provider, { status: 201 });
-}
+});

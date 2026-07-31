@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   CalendarDays,
-  Car,
   ChevronRight,
   Home,
   MapPin,
@@ -12,12 +11,12 @@ import {
 } from "lucide-react";
 import ClubEventCard from "@/components/community/ClubEventCard";
 import RoleBadge from "@/components/community/RoleBadge";
+import RideRequest from "@/components/community/RideRequest";
 import {
   getProviderBySlug,
   getCategories,
   getClubEvents,
   getClubStats,
-  getRideRequests,
 } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
 
@@ -30,11 +29,10 @@ export default async function ClubHomePage({
   const dbProvider = await getProviderBySlug(slug);
   if (!dbProvider) notFound();
 
-  const [categories, events, stats, rideRequests] = await Promise.all([
+  const [categories, events, stats] = await Promise.all([
     getCategories(),
     getClubEvents(dbProvider.id),
     getClubStats(dbProvider.id),
-    getRideRequests({ providerId: dbProvider.id }),
   ]);
   const provider = mapProvider(dbProvider, categories);
 
@@ -43,9 +41,6 @@ export default async function ClubHomePage({
   const upcomingEvents = events
     .filter((e) => e.startTime.getTime() >= now)
     .slice(0, 3);
-
-  // Open ride requests needing help (static read-only list for now)
-  const openRideRequests = rideRequests.filter((r) => r.status === "open");
 
   return (
     <div className="grid gap-10 lg:grid-cols-3">
@@ -214,47 +209,15 @@ export default async function ClubHomePage({
           </p>
         </section>
 
-        {/* Ride requests — read-only slot for Task 5 */}
-        {/* RIDE REQUESTS SLOT — Task 5 mounts the interactive ride-request
-            component (offer/claim rides) here. Until then we render a static,
-            read-only list of open requests from getRideRequests. */}
-        <section
-          aria-labelledby="club-rides"
-          className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
-        >
-          <h2
-            id="club-rides"
-            className="flex items-center gap-2 text-sm font-bold text-slate-900"
-          >
-            <Car className="h-4 w-4 text-ilali-500" aria-hidden="true" />
-            Ride requests
-          </h2>
-          {openRideRequests.length > 0 ? (
-            <ul className="mt-3 space-y-3">
-              {openRideRequests.slice(0, 4).map((req) => (
-                <li key={req.id} className="rounded-lg bg-slate-50 p-3">
-                  <p className="text-sm font-semibold text-slate-800">
-                    {req.parentName}
-                  </p>
-                  <p className="mt-0.5 text-xs text-slate-500">
-                    {req.eventTitle}
-                  </p>
-                  <p className="mt-1 text-[11px] font-medium uppercase tracking-wide text-ilali-600">
-                    {req.direction === "to" ? "Ride to event" : "Ride from event"}{" "}
-                    · open
-                  </p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="mt-3 text-xs text-slate-400">
-              No open ride requests right now.
-            </p>
-          )}
-          <p className="mt-3 text-xs text-slate-400">
-            Offering a lift earns you volunteer points.
-          </p>
-        </section>
+        {/* Ride requests — interactive lift club (Task 5) */}
+        <RideRequest
+          providerId={provider.id}
+          events={events.map((e) => ({
+            id: e.id,
+            title: e.title,
+            startTime: e.startTime.toISOString(),
+          }))}
+        />
       </aside>
     </div>
   );

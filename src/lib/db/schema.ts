@@ -274,6 +274,10 @@ export const rideRequests = pgTable("ride_requests", {
   direction: text("direction").notNull(), // 'to' | 'from'
   status: text("status").default("open"), // 'open' | 'claimed' | 'completed'
   claimedBy: text("claimed_by").references(() => users.id),
+  // Two-sided confirmation — both parents must confirm the ride happened
+  // before the request completes. Set by POST /api/rides/[id]/confirm.
+  requesterConfirmed: boolean("requester_confirmed").default(false).notNull(),
+  claimerConfirmed: boolean("claimer_confirmed").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

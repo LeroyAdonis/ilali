@@ -433,6 +433,10 @@ export const mockRideRequests: MockRideRequest[] = rideSpec.map(
     direction,
     status,
     claimedBy,
+    // Mock rides that are completed have both sides confirmed; anything
+    // open/claimed is still awaiting completion confirmation.
+    requesterConfirmed: status === "completed",
+    claimerConfirmed: status === "completed",
     createdAt: daysAgo(createdDaysAgo),
   })
 );

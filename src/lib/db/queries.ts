@@ -308,15 +308,19 @@ export async function getRideRequests(filters: RideRequestFilters = {}) {
         parentId: rideRequests.parentId,
         parentName: users.name,
         childId: rideRequests.childId,
+        childName: childProfiles.name,
         direction: rideRequests.direction,
         status: rideRequests.status,
         claimedBy: rideRequests.claimedBy,
         claimedByName: claimedByUser.name,
+        requesterConfirmed: rideRequests.requesterConfirmed,
+        claimerConfirmed: rideRequests.claimerConfirmed,
         createdAt: rideRequests.createdAt,
       })
       .from(rideRequests)
       .innerJoin(clubEvents, eq(rideRequests.eventId, clubEvents.id))
       .innerJoin(users, eq(rideRequests.parentId, users.id))
+      .innerJoin(childProfiles, eq(rideRequests.childId, childProfiles.id))
       .leftJoin(claimedByUser, eq(rideRequests.claimedBy, claimedByUser.id))
       .orderBy(desc(rideRequests.createdAt));
 

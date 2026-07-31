@@ -28,6 +28,11 @@ test.describe("ILALI — Club / Community Pages", () => {
     await expect(
       page.getByRole("heading", { name: "Upcoming events" })
     ).toBeVisible();
+
+    // Ride requests section (lift club) renders
+    await expect(
+      page.getByRole("heading", { name: "Ride requests" })
+    ).toBeVisible();
   });
 
   test("Club events page groups by month and renders schedule heading", async ({

@@ -296,10 +296,13 @@ function mockGetRideRequests(
   return requests
     .map((r) => {
       const event = mockClubEvents.find((e) => e.id === r.eventId);
+      const parent = mockParentById(r.parentId);
       return {
         ...r,
         eventTitle: event?.title ?? "Club event",
-        parentName: mockParentById(r.parentId)?.name ?? "Unknown parent",
+        parentName: parent?.name ?? "Unknown parent",
+        childName:
+          parent?.children.find((c) => c.id === r.childId)?.name ?? "",
         claimedByName: r.claimedBy
           ? (mockParentById(r.claimedBy)?.name ?? null)
           : null,

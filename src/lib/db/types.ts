@@ -60,6 +60,8 @@ export type RideRequest = {
   direction: RideDirection;
   status: RideRequestStatus;
   claimedBy: string | null;
+  requesterConfirmed: boolean;
+  claimerConfirmed: boolean;
   createdAt: Date;
 };
 

@@ -12,7 +12,7 @@ ILALI is a children's extramural activities marketplace for Cape Town, SA.
 - URL: https://ilali.vercel.app (prod), https://preview.ilali.co (preview)
 - Stack: Next.js 16.2.7 App Router, React 19.2.4, TypeScript 5, Tailwind CSS v4, lucide-react, @fontsource/inter
 - Backend: Neon PostgreSQL + Drizzle ORM (15 tables), Better Auth
-- AI: NVIDIA NIM `mistralai/mistral-nemotron` (free, 40 RPM), fallback: DeepSeek
+- AI: NVIDIA NIM `nvidia/nemotron-3-super-120b-a12b` (free, 40 RPM), fallback: DeepSeek
 - E2E: Playwright (10 smoke tests), Unit: Vitest (48 tests)
 
 ## Commands

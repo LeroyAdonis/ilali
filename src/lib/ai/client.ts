@@ -7,7 +7,7 @@
  *   3. Set NVIDIA_API_KEY in .env.local (and Vercel env)
  *
  * NVIDIA NIM: 1,000 free credits, 40 RPM, OpenAI SDK compatible.
- * Default model: qwen/qwen3-32b (excellent at structured JSON extraction).
+ * Default model: nvidia/nemotron-3-super-120b-a12b (Nemotron 3 Super, 120B MoE, 12B active).
  */
 
 const NVIDIA_BASE = "https://integrate.api.nvidia.com/v1/chat/completions";
@@ -33,7 +33,7 @@ export function getAIConfig(): {
     return {
       baseUrl: NVIDIA_BASE,
       apiKey: nvidiaKey,
-      model: "mistralai/mistral-nemotron",
+      model: "nvidia/nemotron-3-super-120b-a12b",
       provider: "nvidia",
     };
   }

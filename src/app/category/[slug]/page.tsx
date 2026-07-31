@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProviderCard from "@/components/ProviderCard";
 import { categories } from "@/lib/constants";
-import { getProviders, getCategories } from "@/lib/db/queries";
+import { getProviders, getCategories } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
 
 interface Props {

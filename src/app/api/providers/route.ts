@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getProviders, getCategories } from "@/lib/db/queries";
+import { getProviders, getCategories } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
 
 export async function GET(request: NextRequest) {

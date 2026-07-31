@@ -4,7 +4,7 @@ import { ArrowLeft, MapPin, Star, Users, Wifi } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ReviewSection from "@/components/ReviewSection";
-import { getVenues, getVenueBySlug } from "@/lib/db/queries";
+import { getVenues, getVenueBySlug } from "@/lib/data-source";
 import { mapVenue } from "@/lib/db/mappers";
 
 export async function generateStaticParams() {

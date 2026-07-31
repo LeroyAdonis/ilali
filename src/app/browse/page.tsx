@@ -3,9 +3,10 @@ import SearchBar from "@/components/SearchBar";
 import FilterBar from "@/components/FilterBar";
 import ProviderCard from "@/components/ProviderCard";
 import Footer from "@/components/Footer";
+import VerificationBadge from "@/components/verification/VerificationBadge";
 import Link from "next/link";
 import { Suspense } from "react";
-import { getProviders, getCategories } from "@/lib/db/queries";
+import { getProviders, getCategories } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
 import type { Provider } from "@/lib/types";
 import type { categories as categoriesSchema } from "@/lib/db/schema";
@@ -183,6 +184,11 @@ function ResultsSection({
                   provider={provider}
                   matchScore={score}
                   matchReasons={reasons}
+                  verificationBadge={
+                    <Suspense fallback={null}>
+                      <VerificationBadge providerId={provider.id} />
+                    </Suspense>
+                  }
                 />
               ))}
             </div>
@@ -194,7 +200,15 @@ function ResultsSection({
             {filtered.length > 0 ? (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {filtered.map((provider) => (
-                  <ProviderCard key={provider.id} provider={provider} />
+                  <ProviderCard
+                    key={provider.id}
+                    provider={provider}
+                    verificationBadge={
+                      <Suspense fallback={null}>
+                        <VerificationBadge providerId={provider.id} />
+                      </Suspense>
+                    }
+                  />
                 ))}
               </div>
             ) : (
@@ -268,13 +282,28 @@ function ResultsSection({
                     key={provider.id}
                     className="w-[280px] shrink-0 snap-start"
                   >
-                    <ProviderCard provider={provider} />
+                    <ProviderCard
+                      provider={provider}
+                      verificationBadge={
+                        <Suspense fallback={null}>
+                          <VerificationBadge providerId={provider.id} />
+                        </Suspense>
+                      }
+                    />
                   </div>
                 ))}
               </div>
               <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
                 {newProviders.map((provider) => (
-                  <ProviderCard key={provider.id} provider={provider} />
+                  <ProviderCard
+                    key={provider.id}
+                    provider={provider}
+                    verificationBadge={
+                      <Suspense fallback={null}>
+                        <VerificationBadge providerId={provider.id} />
+                      </Suspense>
+                    }
+                  />
                 ))}
               </div>
             </div>
@@ -294,13 +323,28 @@ function ResultsSection({
                     key={provider.id}
                     className="w-[280px] shrink-0 snap-start"
                   >
-                    <ProviderCard provider={provider} />
+                    <ProviderCard
+                      provider={provider}
+                      verificationBadge={
+                        <Suspense fallback={null}>
+                          <VerificationBadge providerId={provider.id} />
+                        </Suspense>
+                      }
+                    />
                   </div>
                 ))}
               </div>
               <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
                 {localFavourites.map((provider) => (
-                  <ProviderCard key={provider.id} provider={provider} />
+                  <ProviderCard
+                    key={provider.id}
+                    provider={provider}
+                    verificationBadge={
+                      <Suspense fallback={null}>
+                        <VerificationBadge providerId={provider.id} />
+                      </Suspense>
+                    }
+                  />
                 ))}
               </div>
             </div>

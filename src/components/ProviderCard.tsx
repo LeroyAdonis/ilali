@@ -6,12 +6,15 @@ interface ProviderCardProps {
   provider: Provider;
   matchScore?: number;
   matchReasons?: string[];
+  /** Optional verification badge rendered by a parent server component */
+  verificationBadge?: React.ReactNode;
 }
 
 export default function ProviderCard({
   provider,
   matchScore,
   matchReasons,
+  verificationBadge,
 }: ProviderCardProps) {
   const {
     name,
@@ -110,6 +113,11 @@ export default function ProviderCard({
         </div>
 
         <p className="mt-0.5 text-xs text-slate-500">{providerName}</p>
+
+        {/* Verification badge — injected by server parent */}
+        {verificationBadge && (
+          <div className="mt-1.5">{verificationBadge}</div>
+        )}
 
         {/* Match reason tags */}
         {matchReasons && matchReasons.length > 0 && (

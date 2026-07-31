@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { searchProviders, getCategories, SearchFilters } from "@/lib/db/queries";
+import { searchProviders, getCategories, SearchFilters } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
 
 export async function GET(request: Request) {

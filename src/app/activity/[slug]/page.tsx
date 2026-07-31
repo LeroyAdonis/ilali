@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import {
   ArrowLeft,
   MapPin,
@@ -7,7 +8,6 @@ import {
   Clock,
   Calendar,
   Award,
-  CheckCircle,
 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -15,12 +15,13 @@ import ProviderCard from "@/components/ProviderCard";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import ComingSoon from "@/components/ComingSoon";
 import ReviewSection from "@/components/ReviewSection";
+import VerificationBadge from "@/components/verification/VerificationBadge";
 import {
   getProviders,
   getProviderBySlug,
   getCategories,
   getSimilarProviders,
-} from "@/lib/db/queries";
+} from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
 
 export async function generateStaticParams() {
@@ -54,8 +55,6 @@ export default async function ActivityPage({
   if (!dbProvider) notFound();
   const categories = await getCategories();
   const provider = mapProvider(dbProvider, categories);
-
-  const isVerified = dbProvider.verified ?? false;
 
   // Fetch similar providers
   let similarDbProviders: Awaited<ReturnType<typeof getSimilarProviders>> = [];
@@ -116,24 +115,14 @@ export default async function ActivityPage({
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
           <div className="absolute bottom-6 left-6 sm:left-10">
-            {/* Trust badge on hero */}
-            <span
-              className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm mb-2 ${
-                isVerified
-                  ? "bg-ilali-600/90 text-white"
-                  : "bg-amber-400/90 text-amber-900"
-              }`}
-            >
-              {isVerified ? (
-                <>
-                  <CheckCircle className="h-3 w-3" aria-hidden="true" />
-                  Verified
-                </>
-              ) : (
-                "New"
-              )}
-            </span>
-            <span className="inline-block rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 backdrop-blur-sm mb-2 ml-2">
+            {/* Verification tier badge */}
+            <div className="mb-2">
+              <VerificationBadge
+                providerId={dbProvider.id}
+                className="shadow-sm backdrop-blur-sm text-xs"
+              />
+            </div>
+            <span className="inline-block rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 backdrop-blur-sm mb-2 ml-0">
               {provider.category}
             </span>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-white drop-shadow-lg">
@@ -315,7 +304,15 @@ export default async function ActivityPage({
               </p>
               <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {similarProviders.map((sp) => (
-                  <ProviderCard key={sp.id} provider={sp} />
+                  <ProviderCard
+                    key={sp.id}
+                    provider={sp}
+                    verificationBadge={
+                      <Suspense fallback={null}>
+                        <VerificationBadge providerId={sp.id} />
+                      </Suspense>
+                    }
+                  />
                 ))}
               </div>
             </section>

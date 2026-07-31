@@ -9,51 +9,102 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Project identity
 
 ILALI is a children's extramural activities marketplace for Cape Town, SA.
-- URL: https://preview.ilali.co
+- URL: https://ilali.vercel.app (prod), https://preview.ilali.co (preview)
 - Stack: Next.js 16.2.7 App Router, React 19.2.4, TypeScript 5, Tailwind CSS v4, lucide-react, @fontsource/inter
-- All data is static mock data in `src/lib/constants.ts` — no backend, database, or auth yet.
-- Backend migration plan (Neon + Drizzle + Next.js API Routes) documented in `docs/backend-plan.md`.
+- Backend: Neon PostgreSQL + Drizzle ORM (15 tables), Better Auth
+- AI: NVIDIA NIM `mistralai/mistral-nemotron` (free, 40 RPM), fallback: DeepSeek
+- E2E: Playwright (10 smoke tests), Unit: Vitest (48 tests)
 
 ## Commands
 
 | Command | Purpose |
 |---|---|
-| `npm run dev` | Dev server (localhost:3000) |
+| `npm run dev` | Dev server (localhost:3001) |
 | `npm run build` | Production build |
 | `npm run start` | Serve production build |
 | `npm run lint` | ESLint (flat config: `eslint.config.mjs`) |
-
-No test runner, typecheck script, CI/CD, or pre-commit hooks configured.
+| `npx vitest run` | Unit tests (48 tests, 4 suites) |
+| `npx playwright test` | E2E smoke tests (10 tests) |
+| `npx tsc --noEmit` | Type-check |
+| `npx drizzle-kit push` | Push schema changes to Neon DB |
 
 ## Architecture
 
-- **26 routes** in `src/app/` (App Router, file-based). All server components by default.
-- **`"use client"` files** — only `Header.tsx`, `SearchBar.tsx`, `FilterBar.tsx`, `TestimonialCarousel.tsx`.
-- **Dynamic routes** — `activity/[slug]/page.tsx` and `venues/[slug]/page.tsx`. Both use `generateStaticParams()`.
-- **Path alias** — `@/*` maps to `./src/*` (configured in `tsconfig.json`).
-- **Shared components** — 11 files in `src/components/`. All page layouts wrap `Header` / `<main className="flex-1">` / `Footer`.
-- **Auth pages** (`/auth/signin`, `/auth/signup`) are UI-only placeholders with no form submission logic.
-- **Forms** (`/providers/signup`, `/providers/refer`) also placeholder — no actual submission.
+- **30+ routes** in `src/app/` (App Router, file-based)
+- **Path alias** — `@/*` maps to `./src/*`
+- **Auth** — Better Auth (email/password). Admins: leroy@ilali.co, george@ilali.co / ilali-admin-2026
+- **Proxy** — `src/proxy.ts` (Next.js 16 — not middleware.ts)
+- **DB client** — `src/lib/db/index.ts` — lazy-init proxy (safe for Turbopack)
+
+## Data flow
+
+```
+src/lib/data-source.ts → USE_MOCK toggle → mock or DB
+  ├── USE_MOCK=true  → src/lib/mock/* (15 providers, 34 reviews, 25 parents, 51 children)
+  └── USE_MOCK=false → src/lib/db/queries.ts → Neon PostgreSQL (Drizzle ORM)
+```
+
+Set `NEXT_PUBLIC_USE_MOCK=true` in `.env` to run without a DB connection.
+
+## Database (15 tables)
+
+| Table | Purpose |
+|-------|---------|
+| categories | Activity categories (managed, not user-creatable) |
+| providers | Activity listings with location, pricing, tags |
+| venues | Physical venues with amenities |
+| venueAmenities | Amenity tags per venue |
+| users | Auth users (parents, providers, admins) |
+| authSessions | Better Auth sessions |
+| authAccounts | Better Auth accounts (password hashes) |
+| authVerifications | Better Auth email verifications |
+| providerApplications | Provider signup applications |
+| referrals | Provider referrals |
+| reviews | Activity/venue reviews (supports providerId + venueId) |
+| childProfiles | Parent's children — age, interests, availability, suburb |
+| notificationPreferences | Opt-in notification toggles per user |
+| providerVerifications | Document uploads + AI review for provider verification tiers |
+| providerVouches | Community vouching from parents (3 needed for Trusted tier) |
+
+## Key API Routes
+
+| Route | Method | Purpose |
+|-------|--------|---------|
+| `/api/match` | POST | AI natural language → provider matches |
+| `/api/ai/chat-match` | POST | AI chat: extract query → match → explain (Phase 0) |
+| `/api/ai/extract-provider` | POST | Free text → structured provider fields |
+| `/api/ai/search-suggestions` | POST | Failed search → alternative category suggestions |
+| `/api/onboarding` | POST | Parent onboarding: create child profiles + notification prefs |
+| `/api/onboard` | POST | Email poster onboarding (WhatsApp substitute, Phase 0) |
+| `/api/providers/verify` | POST | Provider document upload for verification |
+| `/api/admin/applications` | GET | List provider applications (admin) |
+| `/api/admin/applications/[id]` | POST | Approve/reject applications (admin) |
+| `/api/admin/providers` | GET/POST | Manage providers (admin) |
+| `/api/admin/providers/[id]` | DELETE | Delete provider (admin) |
+
+## Verification Tiers
+
+| Tier | Requirements | Badge |
+|------|-------------|-------|
+| 🥉 Listed | Self-registered or AI-onboarded | Grey |
+| 🥈 Verified | Approved verification docs | Teal (ilali-600) |
+| 🥇 Trusted | Verified + 3+ parent vouches + 5+ reviews | Gold |
 
 ## Tailwind CSS v4
 
-Uses `@tailwindcss/postcss` (v4-specific PostCSS plugin) with `@theme inline` custom tokens:
+Uses `@tailwindcss/postcss` with `@theme inline` custom tokens:
 - `ilali-50` through `ilali-900` (teal palette, primary brand color)
 - `sunset-50` through `sunset-600` (orange accent)
 - `warm-50` through `warm-500` (yellow)
 Font family: `"Inter", ui-sans-serif, system-ui, sans-serif` via `@fontsource/inter`.
 
-## Data flow
-
-```
-src/lib/constants.ts → Server Components (direct import, synchronous)
-```
-
-All provider, venue, category, and testimonial data lives in `constants.ts`. Future migration per `docs/backend-plan.md` will replace these with Drizzle ORM queries against Neon PostgreSQL — no UI changes needed, only data source swaps in ~8 files.
-
 ## Quirks
 
-- `eslint.config.mjs` uses the new ESLint flat config format (not `.eslintrc.*`).
-- No `.env` files exist (`.env*` is gitignored).
-- No typecheck npm script — run `npx tsc --noEmit` to type-check manually.
-- Build output goes to `.next/` (gitignored). No `opencode.json` in this repo.
+- Dev server on port 3001 (KitFix occupies 3000)
+- Nemotron wraps JSON in ```json``` blocks — always clean with `.replace()` before parsing
+- `useSearchParams()` requires `<Suspense>` wrapper in Next.js 16
+- Better Auth admin sign-out must use client-side `signOut()`, not `<form method="POST">`
+- Server-side fetch to self must check `NEXT_PUBLIC_APP_URL` not just `NEXT_PUBLIC_SITE_URL`
+- `searchParams` is an async Promise in Next.js 16 page props
+- DB client is lazy-init proxy — no module-level `DATABASE_URL` check
+- `vercel env pull` may leave critical vars empty — use `vercel env add` for explicit values

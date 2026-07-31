@@ -6,6 +6,7 @@ import {
   boolean,
   timestamp,
   uuid,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 // ── Categories (managed, not user-creatable) ──
@@ -138,6 +139,7 @@ export const providerApplications = pgTable("provider_applications", {
   priceValue: integer("price_value"),
   imageUrl: text("image_url"),
   status: text("status").default("pending"), // pending, contacted, approved, rejected
+  onboardSource: text("onboard_source"), // 'email' | 'form' | 'whatsapp' | null
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -166,4 +168,60 @@ export const reviews = pgTable("reviews", {
   rating: integer("rating").notNull(),
   content: text("content"),
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ── Child Profiles ──
+export const childProfiles = pgTable("child_profiles", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  parentId: text("parent_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  age: integer("age").notNull(),
+  interests: text("interests").array(),
+  availability: jsonb("availability"),
+  suburb: text("suburb"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// ── Provider Verifications (document upload + AI review) ──
+export const providerVerifications = pgTable("provider_verifications", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  providerId: uuid("provider_id")
+    .notNull()
+    .references(() => providers.id, { onDelete: "cascade" }),
+  documentUrls: jsonb("document_urls"), // { businessReg?: string, safeguarding?: string, idDoc?: string }
+  status: text("status").default("pending"), // pending, approved, rejected
+  aiReview: jsonb("ai_review"), // { documentType: string, nameMatch: boolean, expiryValid: boolean, flags: string[] }
+  adminNotes: text("admin_notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// ── Provider Vouches (community vouching) ──
+export const providerVouches = pgTable("provider_vouches", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  providerId: uuid("provider_id")
+    .notNull()
+    .references(() => providers.id, { onDelete: "cascade" }),
+  parentId: text("parent_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  comment: text("comment"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ── Notification Preferences ──
+export const notificationPreferences = pgTable("notification_preferences", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" })
+    .unique(),
+  notifyNewProviders: boolean("notify_new_providers").default(true),
+  notifyCommunity: boolean("notify_community").default(true),
+  notifyRewards: boolean("notify_rewards").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });

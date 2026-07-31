@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProvidersPageClient from "./client";
-import { getProviders, getCategories } from "@/lib/db/queries";
+import { getProviders, getCategories } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
 
 export const metadata: Metadata = {

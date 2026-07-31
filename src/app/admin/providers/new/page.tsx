@@ -4,7 +4,7 @@ import { providers, providerApplications, categories } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { getCategories } from "@/lib/db/queries";
+import { getCategories } from "@/lib/data-source";
 
 export const dynamic = "force-dynamic";
 

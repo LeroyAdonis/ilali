@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import VenuesPageClient from "./client";
-import { getVenues } from "@/lib/db/queries";
+import { getVenues } from "@/lib/data-source";
 import { mapVenue } from "@/lib/db/mappers";
 import type { Venue } from "@/lib/types";
 

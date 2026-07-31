@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { extractIntent } from "@/lib/ai/match";
 import { scoreAllProviders } from "@/lib/ai/score";
-import { getProviders, searchProviders, getCategories } from "@/lib/db/queries";
+import { getProviders, searchProviders, getCategories } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
 
 export async function POST(request: Request) {

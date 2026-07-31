@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
       priceValue: parsed.data.price_value ?? null,
       imageUrl: parsed.data.image_url || null,
       status: "pending",
+      onboardSource: "form",
     });
 
     return NextResponse.json({ success: true });

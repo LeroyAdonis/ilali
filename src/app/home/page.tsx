@@ -6,10 +6,10 @@ import VenueCard from "@/components/VenueCard";
 import TestimonialCarousel from "@/components/TestimonialCarousel";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import AIChatPanel from "@/components/chat/AIChatPanel";
 import { categories, stats } from "@/lib/constants";
-import { getProviders, getVenues, getCategories } from "@/lib/db/queries";
+import { getProviders, getVenues, getCategories } from "@/lib/data-source";
 import { mapProvider, mapVenue } from "@/lib/db/mappers";
-import HomeSearch from "@/components/HomeSearch";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -33,33 +33,23 @@ export default async function HomePage() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        {/* ───── APP HERO ───── */}
+        {/* ───── HERO: AI Chat Panel ───── */}
         <section className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white to-slate-50">
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-            <div className="mx-auto max-w-2xl text-center">
-              <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-                What activity are you looking for?
-              </h1>
-              <p className="mt-3 text-base leading-relaxed text-slate-500">
-                Search hundreds of vetted kids&apos; activities across Cape Town
-              </p>
+            <AIChatPanel />
 
-              {/* Search bar */}
-              <HomeSearch />
-
-              {/* Trending tags */}
-              <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-                <span className="text-xs font-medium text-slate-400">Trending:</span>
-                {["Arts & Culture", "Sports", "Music Lessons", "Holiday Programs"].map((tag) => (
-                  <Link
-                    key={tag}
-                    href={`/browse?category=${encodeURIComponent(tag.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-"))}`}
-                    className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition-all hover:border-ilali-400 hover:text-ilali-600 hover:bg-ilali-50"
-                  >
-                    {tag}
-                  </Link>
-                ))}
-              </div>
+            {/* Trending tags */}
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+              <span className="text-xs font-medium text-slate-400">Trending:</span>
+              {["Arts & Culture", "Sports", "Music Lessons", "Holiday Programs"].map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/browse?category=${encodeURIComponent(tag.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-"))}`}
+                  className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition-all hover:border-ilali-400 hover:text-ilali-600 hover:bg-ilali-50"
+                >
+                  {tag}
+                </Link>
+              ))}
             </div>
           </div>
         </section>

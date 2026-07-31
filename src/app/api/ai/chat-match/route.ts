@@ -71,6 +71,12 @@ const CATEGORY_LABELS: Record<string, string> = {
   "holiday-programs": "Holiday Programs",
 };
 
+// Default concierge model: NVIDIA bake-off winner (Jul 2026) —
+// nemotron-nano-12b-v2-vl: 4.8s avg latency, 100% parse/extract/chosen/reply.
+// Override anytime with CONCIERGE_MODEL env var (e.g. "openai/gpt-oss-120b").
+const CONCIERGE_MODEL =
+  process.env.CONCIERGE_MODEL ?? "nvidia/nemotron-nano-12b-v2-vl";
+
 const CATALOG_LIMIT = 60;
 
 // ── Child Profile Helpers (lazy-load DB to survive build w/o DATABASE_URL) ──
@@ -245,9 +251,10 @@ Respond with ONLY valid JSON (no markdown, no commentary):
 
 Rules:
 - extracted: map the parent's request to fields. Categories: "sports", "arts-culture", "education", "music-lessons", "emotional-intelligence", "holiday-programs" ("soccer"→"sports", "piano"→"music-lessons", "tutoring"/"coding"→"education", "painting"/"drama"→"arts-culture", "mindfulness"/"confidence"→"emotional-intelligence", "holiday camp"→"holiday-programs"). activityType is the specific activity in lowercase ("soccer", "swimming", "piano"). Ages: "my 7 year old" → 7/7; "ages 5-10" → 5/10; "my teenager" → 13/17; "toddler" → 2/4. days: full weekday names ("Monday"...). timeSlot: 24h ("15:00" for 3pm, "after school" → "14:00"). location: Cape Town suburb (Sea Point, Claremont, Rondebosch, Durbanville, Muizenberg, etc). maxPrice in Rands ("under R200" → 200, "free" → 0). When the child context gives age/suburb and the message doesn't, use those. Null when unsure — never invent.
-- chosen: the 1-3 catalog NUMBERS that best fit the parent's needs (age range, activity, location, price). Prefer exact activity matches. Empty [] ONLY when nothing in the catalog is a reasonable fit.
-- message: warm, plain South African English, 2-4 sentences, max 90 words. No emojis, no bullet lists, no headers. GOOD matches → name 1-3 providers with ONE specific reason each (age, location, price, or the activity itself); use the child's name naturally if known. NO matches → be honest and gentle ("there isn't much {activity} for {age}-year-olds in {area} yet"), suggest 1-2 alternative directions with a reason each, and set followUp. VAGUE request (no activity, age, or area) → friendly one-liner asking for the child's age, what they enjoy, and their area; set followUp to that question.
-- When mentioning a price, copy it EXACTLY as printed in the catalog (e.g. "R2500 per session") — never round, convert, or interpret it. Never invent a price, day-of-week, age, or location not shown.
+- chosen: the 1-3 catalog NUMBERS that best fit the parent's needs (age range, activity, location, price). Prefer exact activity matches. STRICT AGE RULE: never pick a provider whose age range does not include the child's age — if the parent said an age (or the child context has one), every pick MUST cover that age. When no catalog entry covers the child's age for their activity, set chosen to [] and offer alternatives instead. Empty [] ONLY when nothing in the catalog is a reasonable fit.
+- message: warm, plain South African English, 2-4 sentences, max 90 words. No emojis, no bullet lists, no headers. GOOD matches → name 1-3 providers with ONE specific reason each (age, location, price, or the activity itself); use the child's name naturally if known. NO matches → be honest and gentle ("there isn't much {activity} for {age}-year-olds in {area} yet"), suggest 1-2 alternative directions with a reason each, and set followUp. 
+- VAGUE request (the parent did NOT name a specific activity, age, or area): DO NOT recommend any provider and set chosen to []. Instead reply with a friendly one-liner asking for the child's age, what they enjoy, and their area, and set followUp to that question. Never guess an activity for a vague request.
+- When mentioning a price, copy it EXACTLY as printed in the catalog (e.g. "R2500 per session") — never round, convert, or interpret it. Never invent a price, day-of-week, age, or location not shown. Do NOT mention schedules, times, or session details unless they are shown in the catalog.
 - alternatives: when chosen is empty, suggest 2-4 category directions that exist in the catalog (e.g. "Sports programs", "Music Lessons", "Holiday Programs"). Otherwise null.
 - followUp: one short question (max 12 words) to continue the conversation, or null when results are clear.
 - Never invent providers, prices, locations, or ages not in the catalog. Only reference catalog numbers in chosen.`;
@@ -255,6 +262,7 @@ Rules:
   const content = await chat({
     systemPrompt,
     userMessage: input.message,
+    model: CONCIERGE_MODEL,
     temperature: 0.3,
     maxTokens: 1200,
     timeoutMs: 20000,
@@ -421,6 +429,73 @@ function scoreProviderMatch(
   return { score: Math.min(100, score), reasons };
 }
 
+// ── Vague-request detection (server-side safety net) ──
+
+const CPT_SUBURBS = [
+  "sea point", "green point", "claremont", "rondebosch", "newlands",
+  "observatory", "woodstock", "wynberg", "constantia", "hout bay",
+  "durbanville", "bellville", "century city", "table view", "milnerton",
+  "blouberg", "muizenberg", "fish hoek", "somerset west", "stellenbosch",
+  "paarl", "cape town", "cpt", "northern suburbs", "southern suburbs",
+];
+
+const ACTIVITY_WORDS = [
+  "soccer", "football", "rugby", "cricket", "swim", "tennis", "golf",
+  "gymnastic", "dance", "ballet", "martial", "karate", "piano", "guitar",
+  "violin", "singing", "choir", "music", "art", "painting", "drawing",
+  "drama", "theatre", "tutor", "maths", "math", "english", "coding",
+  "programming", "reading", "homework", "class", "lesson", "coach",
+  "training", "camp", "holiday", "mindful", "confidence", "emotional",
+  "yoga", "chess", "cooking", "craft", "robot", "stem", "circus",
+];
+
+function isVagueMessage(message: string): boolean {
+  const lower = message.toLowerCase();
+  const hasAge =
+    /\b\d+\b/.test(message) ||
+    /toddler|preschool|teenager|infant|baby|year old|years old/i.test(lower);
+  const hasArea = CPT_SUBURBS.some((s) => lower.includes(s));
+  const hasActivity = ACTIVITY_WORDS.some((a) => lower.includes(a));
+  return !hasAge && !hasArea && !hasActivity;
+}
+
+// ── Server-side age extraction (used to pre-filter the model's catalog) ──
+
+function extractAgeFromMessage(message: string): { min: number; max: number } | null {
+  const lower = message.toLowerCase();
+
+  // "ages 5-10", "ages 5 to 10", "5-10 years"
+  const rangeMatch = lower.match(/(?:ages?|aged|from)\s+(\d{1,2})\s*(?:-|to|–)\s*(\d{1,2})/);
+  if (rangeMatch) {
+    const a = parseInt(rangeMatch[1], 10);
+    const b = parseInt(rangeMatch[2], 10);
+    return { min: Math.min(a, b), max: Math.max(a, b) };
+  }
+
+  // "my 7 year old", "7-year-old", "a 13 year old"
+  const singleMatch = lower.match(/(\d{1,2})\s*-?\s*year[s]?\s*-?\s*old/);
+  if (singleMatch) {
+    const a = parseInt(singleMatch[1], 10);
+    return { min: a, max: a };
+  }
+
+  // Age-group words
+  const words: [RegExp, number, number][] = [
+    [/toddler/, 2, 4],
+    [/preschool|pre-school|nursery/, 3, 5],
+    [/kindergart/, 4, 6],
+    [/teenager|teens\b/, 13, 17],
+    [/infant|baby/, 0, 2],
+    [/primary school/, 6, 12],
+    [/high school/, 13, 18],
+  ];
+  for (const [re, min, max] of words) {
+    if (re.test(lower)) return { min, max };
+  }
+
+  return null;
+}
+
 // ── POST Handler ──
 
 export async function POST(request: Request) {
@@ -475,11 +550,27 @@ export async function POST(request: Request) {
     return a.name.localeCompare(b.name);
   });
 
+  // Step 2b: Age-aware catalog — when we know the child's age (from the
+  // message text or the child profile), exclude providers whose age range
+  // misses it BEFORE the model sees the catalog. This prevents the model
+  // picking or mentioning age-inappropriate providers (e.g. a 12–15
+  // programme for a 7-year-old). Server-side age filter in Step 5 remains
+  // as a backup.
+  const messageAge = extractAgeFromMessage(message);
+  const preAgeMin = messageAge?.min ?? childContext?.age ?? null;
+  const preAgeMax = messageAge?.max ?? preAgeMin;
+  const catalogProviders =
+    preAgeMin == null
+      ? allProviders
+      : allProviders.filter(
+          (p) => p.ageMin <= (preAgeMax ?? preAgeMin) && p.ageMax >= preAgeMin
+        );
+
   // Step 3: One concierge call — extract intent, pick matches, write the reply
   const concierge = await conciergeQuery({
     message,
     child: childContext,
-    providers: allProviders,
+    providers: catalogProviders,
   });
 
   // Fallback extracted query so scoring always runs
@@ -495,6 +586,25 @@ export async function POST(request: Request) {
     maxPrice: null,
   };
 
+  // Step 3b: Vague-request safety net. Detection uses the raw message
+  // (server-side), so even if the model wrongly recommends something for a
+  // vague query we force clarification: no provider picks + a follow-up.
+  const vague =
+    isVagueMessage(message) ||
+    (!extracted?.category &&
+      !extracted?.activityType &&
+      extracted?.ageMin == null &&
+      extracted?.ageMax == null &&
+      !extracted?.location);
+
+  if (vague && concierge) {
+    concierge.chosenIndexes = [];
+    if (!concierge.followUp) {
+      concierge.followUp =
+        "What age is your child, what do they enjoy, and which area are you in?";
+    }
+  }
+
   // Step 4: Score every provider deterministically (validation layer)
   const scored = allProviders
     .map((provider) => {
@@ -507,8 +617,17 @@ export async function POST(request: Request) {
     })
     .sort((a, b) => b.score - a.score);
 
-  // Step 5: Select matches — concierge's picks first, then best scorers
+  // Step 5: Select matches — concierge's picks first, then best scorers.
+  // Server-side age filter: a pick whose age range excludes the known child
+  // age is dropped (the model sometimes ignores the STRICT AGE RULE).
   const CLOSE_SCORE = 10;
+  const knownAgeMin =
+    extracted?.ageMin ?? messageAge?.min ?? childContext?.age ?? null;
+  const knownAgeMax =
+    extracted?.ageMax ?? messageAge?.max ?? knownAgeMin;
+  const ageOverlap = (p: ScorableProvider) =>
+    knownAgeMin == null ||
+    (p.ageMin <= (knownAgeMax ?? knownAgeMin) && p.ageMax >= knownAgeMin);
   let matches: { provider: ScorableProvider; score: number; reasons: string[] }[];
 
   if (concierge && concierge.chosenIndexes.length > 0) {
@@ -516,6 +635,7 @@ export async function POST(request: Request) {
       .map((idx) => {
         const p = allProviders[idx];
         if (!p) return null;
+        if (!ageOverlap(p)) return null; // age mismatch → drop the pick
         const existing = scored.find((s) => s.provider.id === p.id);
         if (existing) return existing;
         return {
@@ -525,15 +645,20 @@ export async function POST(request: Request) {
       })
       .filter((s): s is { provider: ScorableProvider; score: number; reasons: string[] } => s !== null);
 
-    // Fill up to 5 with the highest-scoring others
+    // Fill up to 5 with the highest-scoring others (age-filtered too)
     const chosenIds = new Set(chosen.map((c) => c.provider.id));
     const fillers = scored
-      .filter((s) => !chosenIds.has(s.provider.id) && s.score >= CLOSE_SCORE)
+      .filter(
+        (s) =>
+          !chosenIds.has(s.provider.id) &&
+          ageOverlap(s.provider) &&
+          s.score >= CLOSE_SCORE
+      )
       .slice(0, 5 - chosen.length);
     matches = [...chosen, ...fillers].slice(0, 5);
   } else {
     matches = scored
-      .filter((s) => s.score >= CLOSE_SCORE)
+      .filter((s) => ageOverlap(s.provider) && s.score >= CLOSE_SCORE)
       .slice(0, 5);
   }
 

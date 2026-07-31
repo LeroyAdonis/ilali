@@ -55,7 +55,7 @@ export function getAIConfig(): AIConfig {
 
 async function attemptChat(
   cfg: AIConfig,
-  opts: Omit<ChatOptions, "model"> & { timeoutMs: number }
+  opts: Omit<ChatOptions, "model"> & { timeoutMs: number; modelOverride?: string }
 ): Promise<string | null> {
   const {
     systemPrompt,
@@ -64,7 +64,10 @@ async function attemptChat(
     maxTokens = 400,
     timeoutMs,
     responseFormat,
+    modelOverride,
   } = opts;
+
+  const model = modelOverride ?? cfg.model;
 
   if (!cfg.apiKey) {
     console.warn(`[ai] No API key for ${cfg.provider} — set NVIDIA_API_KEY (free) or DEEPSEEK_API_KEY`);
@@ -82,7 +85,7 @@ async function attemptChat(
         Authorization: `Bearer ${cfg.apiKey}`,
       },
       body: JSON.stringify({
-        model: cfg.model,
+        model,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userMessage },
@@ -116,13 +119,14 @@ async function attemptChat(
 }
 
 export async function chat(opts: ChatOptions): Promise<string | null> {
-  const {
-    model: _model,
-    timeoutMs = 5000,
-    ...rest
-  } = opts;
+  const { timeoutMs = 5000, ...rest } = opts;
 
-  const primary = getAIConfig();
+  const base = getAIConfig();
+  // Per-call model override (e.g. concierge uses a benchmarked winner)
+  const primary: AIConfig =
+    opts.model && opts.model !== base.model
+      ? { ...base, model: opts.model }
+      : base;
   const fallback: AIConfig | null =
     primary.provider === "nvidia" && process.env.DEEPSEEK_API_KEY
       ? {

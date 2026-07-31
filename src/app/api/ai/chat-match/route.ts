@@ -252,7 +252,7 @@ Respond with ONLY valid JSON (no markdown, no commentary):
 Rules:
 - extracted: map the parent's request to fields. Categories: "sports", "arts-culture", "education", "music-lessons", "emotional-intelligence", "holiday-programs" ("soccer"→"sports", "piano"→"music-lessons", "tutoring"/"coding"→"education", "painting"/"drama"→"arts-culture", "mindfulness"/"confidence"→"emotional-intelligence", "holiday camp"→"holiday-programs"). activityType is the specific activity in lowercase ("soccer", "swimming", "piano"). Ages: "my 7 year old" → 7/7; "ages 5-10" → 5/10; "my teenager" → 13/17; "toddler" → 2/4. days: full weekday names ("Monday"...). timeSlot: 24h ("15:00" for 3pm, "after school" → "14:00"). location: Cape Town suburb (Sea Point, Claremont, Rondebosch, Durbanville, Muizenberg, etc). maxPrice in Rands ("under R200" → 200, "free" → 0). When the child context gives age/suburb and the message doesn't, use those. Null when unsure — never invent.
 - chosen: the 1-3 catalog NUMBERS that best fit the parent's needs (age range, activity, location, price). Prefer exact activity matches. STRICT AGE RULE: never pick a provider whose age range does not include the child's age — if the parent said an age (or the child context has one), every pick MUST cover that age. When no catalog entry covers the child's age for their activity, set chosen to [] and offer alternatives instead. Empty [] ONLY when nothing in the catalog is a reasonable fit.
-- message: warm, plain South African English, 2-4 sentences, max 90 words. No emojis, no bullet lists, no headers. GOOD matches → name 1-3 providers with ONE specific reason each (age, location, price, or the activity itself); use the child's name naturally if known. NO matches → be honest and gentle ("there isn't much {activity} for {age}-year-olds in {area} yet"), suggest 1-2 alternative directions with a reason each, and set followUp. 
+- message: warm, plain South African English, 2-4 sentences, max 90 words. No emojis, no bullet lists, no headers. GOOD matches → name 1-3 providers with ONE specific reason each (age, location, price, or the activity itself); use the child's name naturally if known. NO matches → be honest and gentle ("there isn't much {activity} for {age}-year-olds in {area} yet"), then name 2-3 SPECIFIC alternative activities from the catalog with one reason each (e.g. "Little Kickers has soccer for 3-year-olds"), and ALWAYS set followUp to a concrete question. NEVER say "check for updates", "keep checking", or "in the future" — offer real options that exist now.
 - VAGUE request (the parent did NOT name a specific activity, age, or area): DO NOT recommend any provider and set chosen to []. Instead reply with a friendly one-liner asking for the child's age, what they enjoy, and their area, and set followUp to that question. Never guess an activity for a vague request.
 - When mentioning a price, copy it EXACTLY as printed in the catalog (e.g. "R2500 per session") — never round, convert, or interpret it. Never invent a price, day-of-week, age, or location not shown. Do NOT mention schedules, times, or session details unless they are shown in the catalog.
 - alternatives: when chosen is empty, suggest 2-4 category directions that exist in the catalog (e.g. "Sports programs", "Music Lessons", "Holiday Programs"). Otherwise null.
@@ -603,6 +603,11 @@ export async function POST(request: Request) {
       concierge.followUp =
         "What age is your child, what do they enjoy, and which area are you in?";
     }
+  } else if (concierge && concierge.chosenIndexes.length === 0 && !concierge.followUp) {
+    // No-match guarantee: always end with a concrete question so the
+    // conversation keeps moving instead of dead-ending.
+    const topic = extracted?.activityType ?? "similar activities";
+    concierge.followUp = `Would you like me to look for ${topic} in nearby areas, or suggest something similar?`;
   }
 
   // Step 4: Score every provider deterministically (validation layer)

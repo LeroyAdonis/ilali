@@ -12,6 +12,8 @@ import {
   rewardRedemptions,
   users,
   childProfiles,
+  providerVerifications,
+  providerVouches,
 } from "./schema";
 import {
   eq,
@@ -329,6 +331,59 @@ export async function getRideRequests(filters: RideRequestFilters = {}) {
     }
 
     return await query.where(and(...conditions));
+  } catch {
+    return [];
+  }
+}
+
+// ── Map View: Verification statuses + suburb density ──
+
+export async function getProviderVerificationStatuses(): Promise<
+  { providerId: string; status: string | null }[]
+> {
+  try {
+    return await db
+      .select({
+        providerId: providerVerifications.providerId,
+        status: providerVerifications.status,
+      })
+      .from(providerVerifications);
+  } catch {
+    return [];
+  }
+}
+
+export async function getProviderVouchCounts(): Promise<
+  { providerId: string; count: number }[]
+> {
+  try {
+    return await db
+      .select({
+        providerId: providerVouches.providerId,
+        count: sql<number>`count(*)`,
+      })
+      .from(providerVouches)
+      .groupBy(providerVouches.providerId);
+  } catch {
+    return [];
+  }
+}
+
+export async function getSuburbDensity(): Promise<
+  { suburb: string; count: number }[]
+> {
+  try {
+    const rows = await db
+      .select({
+        suburb: childProfiles.suburb,
+        count: sql<number>`count(*)`,
+      })
+      .from(childProfiles)
+      .where(isNotNull(childProfiles.suburb))
+      .groupBy(childProfiles.suburb)
+      .orderBy(desc(sql`count(*)`));
+
+    return rows.map((r) => ({ suburb: r.suburb ?? "Unknown", count: r.count }));
   } catch {
     return [];
   }

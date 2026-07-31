@@ -5,7 +5,7 @@ import {
   mockProviderById,
   mockProviderBySlug,
 } from "./mock/providers";
-import { mockParentById } from "./mock/parents";
+import { mockParentById, mockParents } from "./mock/parents";
 import {
   mockClubEvents,
   clubEventsByProviderId,
@@ -36,6 +36,9 @@ import {
   getRewardBalance as dbGetRewardBalance,
   getRewardRedemptions as dbGetRewardRedemptions,
   getClubStats as dbGetClubStats,
+  getProviderVerificationStatuses as dbGetProviderVerificationStatuses,
+  getProviderVouchCounts as dbGetProviderVouchCounts,
+  getSuburbDensity as dbGetSuburbDensity,
 } from "./db/queries";
 
 // Re-export filter types so consumers don't need dual imports
@@ -330,6 +333,38 @@ function mockGetRewardRedemptions(userId: string): RewardRedemption[] {
   );
 }
 
+// ── Mock Map View functions ──
+
+function mockGetProviderVerificationStatuses(): {
+  providerId: string;
+  status: string;
+}[] {
+  // Mock providers carry a `verified` boolean — surface it as an approved
+  // verification so the map can show green pins in mock mode.
+  return mockProviders
+    .filter((p) => p.verified)
+    .map((p) => ({ providerId: p.id, status: "approved" }));
+}
+
+function mockGetProviderVouchCounts(): { providerId: string; count: number }[] {
+  // No mock vouches defined yet — tier promotion needs a real DB.
+  return [];
+}
+
+function mockGetSuburbDensity(): { suburb: string; count: number }[] {
+  // One parent per suburb (parents' children all share the parent's suburb).
+  const counts = new Map<string, number>();
+  for (const parent of mockParents) {
+    const suburb = parent.children[0]?.suburb;
+    if (suburb) {
+      counts.set(suburb, (counts.get(suburb) ?? 0) + 1);
+    }
+  }
+  return [...counts.entries()]
+    .map(([suburb, count]) => ({ suburb, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
 function mockGetClubStats(providerId: string): ClubStats {
   const memberships = membershipsByProviderId[providerId] ?? [];
 
@@ -414,4 +449,27 @@ export async function getRewardRedemptions(
 export async function getClubStats(providerId: string): Promise<ClubStats> {
   if (USE_MOCK) return mockGetClubStats(providerId);
   return dbGetClubStats(providerId);
+}
+
+// ── Map View ──
+
+export async function getProviderVerificationStatuses(): Promise<
+  { providerId: string; status: string | null }[]
+> {
+  if (USE_MOCK) return mockGetProviderVerificationStatuses();
+  return dbGetProviderVerificationStatuses();
+}
+
+export async function getProviderVouchCounts(): Promise<
+  { providerId: string; count: number }[]
+> {
+  if (USE_MOCK) return mockGetProviderVouchCounts();
+  return dbGetProviderVouchCounts();
+}
+
+export async function getSuburbDensity(): Promise<
+  { suburb: string; count: number }[]
+> {
+  if (USE_MOCK) return mockGetSuburbDensity();
+  return dbGetSuburbDensity();
 }

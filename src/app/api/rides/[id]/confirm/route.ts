@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { rideRequests } from "@/lib/db/schema";
+import { selfBaseUrl } from "@/lib/rewards/self-url";
 import { eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
-
-const RIDE_REWARD_POINTS = 50;
 
 /**
  * POST /api/rides/[id]/confirm
@@ -13,8 +12,8 @@ const RIDE_REWARD_POINTS = 50;
  * Two-sided confirmation — each parent confirms the ride happened from
  * their own side (requester_confirmed / claimer_confirmed). When BOTH
  * sides have confirmed, status becomes "completed" and both parents are
- * awarded points via POST /api/rewards/earn (defensive — that endpoint
- * lands in Task 6; a 404 here must not block the flow).
+ * awarded 50 pts each via POST /api/rewards/earn (fire-and-forget — a
+ * rewards failure must not block the ride flow).
  */
 export async function POST(
   request: NextRequest,
@@ -112,11 +111,15 @@ export async function POST(
         .set({ status: "completed" })
         .where(eq(rideRequests.id, id));
 
-      // Award points to BOTH parents (defensive — /api/rewards/earn is
-      // Task 6; it may 404 today, which must not break the ride flow).
-      // TODO(Task 6): align body shape with the rewards earn endpoint once
-      // it lands. 50 pts each for a completed lift share.
-      await awardRidePoints(id, ride.parentId, ride.claimedBy ?? "");
+      // Award 50 pts to BOTH parents (fire-and-forget — /api/rewards/earn
+      // derives the value from its server-side map; a failure here must
+      // not break the ride flow).
+      await awardRidePoints(
+        request,
+        id,
+        ride.parentId,
+        ride.claimedBy ?? ""
+      );
     }
 
     return NextResponse.json({
@@ -134,26 +137,30 @@ export async function POST(
 
 /** Fire-and-forget reward grant — never blocks or fails the confirm flow. */
 async function awardRidePoints(
+  request: NextRequest,
   referenceId: string,
   requesterId: string,
   claimerId: string
 ): Promise<void> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ??
-    "http://localhost:3001";
-
   const earn = async (userId: string) => {
     try {
-      await fetch(`${baseUrl}/api/rewards/earn`, {
+      const res = await fetch(`${selfBaseUrl(request)}/api/rewards/earn`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          // Forward the confirming parent's session cookie so the earn
+          // endpoint authenticates; the explicit userId targets the
+          // award at each parent of the completed ride.
+          Cookie: request.headers.get("cookie") ?? "",
+        },
         body: JSON.stringify({
           action: "lift",
           referenceId,
           userId,
-          amount: RIDE_REWARD_POINTS,
         }),
       });
+      // Consume the body so the connection is released promptly.
+      await res.arrayBuffer();
     } catch {
       // Rewards endpoint unavailable — ride completion still succeeds.
     }

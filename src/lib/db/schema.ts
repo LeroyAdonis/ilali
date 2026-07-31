@@ -7,6 +7,7 @@ import {
   timestamp,
   uuid,
   jsonb,
+  unique,
 } from "drizzle-orm/pg-core";
 
 // ── Categories (managed, not user-creatable) ──
@@ -224,4 +225,91 @@ export const notificationPreferences = pgTable("notification_preferences", {
   notifyRewards: boolean("notify_rewards").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// ── Community Layer: Club Events ──
+export const clubEvents = pgTable("club_events", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  providerId: uuid("provider_id")
+    .notNull()
+    .references(() => providers.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  eventType: text("event_type").notNull(), // 'practice' | 'game' | 'event' | 'other'
+  startTime: timestamp("start_time").notNull(),
+  endTime: timestamp("end_time"),
+  location: text("location"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ── Community Layer: Club Memberships ──
+export const clubMemberships = pgTable(
+  "club_memberships",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    providerId: uuid("provider_id")
+      .notNull()
+      .references(() => providers.id, { onDelete: "cascade" }),
+    parentId: text("parent_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    childIds: uuid("child_ids").array().notNull(),
+    role: text("role").default("parent"), // 'parent' | 'volunteer' | 'organizer'
+    joinedAt: timestamp("joined_at").defaultNow(),
+  },
+  (t) => [unique().on(t.providerId, t.parentId)],
+);
+
+// ── Community Layer: Ride Requests ──
+export const rideRequests = pgTable("ride_requests", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  eventId: uuid("event_id")
+    .notNull()
+    .references(() => clubEvents.id, { onDelete: "cascade" }),
+  parentId: text("parent_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  childId: uuid("child_id")
+    .notNull()
+    .references(() => childProfiles.id, { onDelete: "cascade" }),
+  direction: text("direction").notNull(), // 'to' | 'from'
+  status: text("status").default("open"), // 'open' | 'claimed' | 'completed'
+  claimedBy: text("claimed_by").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ── Community Layer: Club Messages ──
+export const clubMessages = pgTable("club_messages", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  clubId: uuid("club_id")
+    .notNull()
+    .references(() => providers.id, { onDelete: "cascade" }),
+  senderId: text("sender_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ── Rewards: Points Ledger ──
+export const rewardPoints = pgTable("reward_points", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  amount: integer("amount").notNull(),
+  action: text("action").notNull(),
+  referenceId: text("reference_id"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ── Rewards: Redemptions ──
+export const rewardRedemptions = pgTable("reward_redemptions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  pointsSpent: integer("points_spent").notNull(),
+  rewardType: text("reward_type").notNull(),
+  providerId: uuid("provider_id").references(() => providers.id),
+  createdAt: timestamp("created_at").defaultNow(),
 });

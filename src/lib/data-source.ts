@@ -251,10 +251,18 @@ function mockGetClubMemberships(providerId: string): ClubMembershipWithParent[] 
   const memberships = membershipsByProviderId[providerId] ?? [];
 
   return memberships
-    .map((m) => ({
-      ...m,
-      parentName: mockParentById(m.parentId)?.name ?? "Unknown parent",
-    }))
+    .map((m) => {
+      const parent = mockParentById(m.parentId);
+      const kids = (parent?.children ?? []).filter((c) =>
+        m.childIds.includes(c.id)
+      );
+      return {
+        ...m,
+        parentName: parent?.name ?? "Unknown parent",
+        suburb: kids[0]?.suburb ?? null,
+        childNames: kids.map((c) => c.name),
+      };
+    })
     .sort((a, b) => a.joinedAt.getTime() - b.joinedAt.getTime());
 }
 

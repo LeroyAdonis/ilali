@@ -209,7 +209,7 @@ export async function getClubEvents(providerId: string) {
 
 export async function getClubMemberships(providerId: string) {
   try {
-    return await db
+    const rows = await db
       .select({
         id: clubMemberships.id,
         providerId: clubMemberships.providerId,
@@ -223,6 +223,35 @@ export async function getClubMemberships(providerId: string) {
       .innerJoin(users, eq(clubMemberships.parentId, users.id))
       .where(eq(clubMemberships.providerId, providerId))
       .orderBy(asc(clubMemberships.joinedAt));
+
+    // Enrich with child names + suburb (best-effort, additive)
+    const parentIds = [...new Set(rows.map((r) => r.parentId))];
+    let childRows: {
+      id: string;
+      parentId: string;
+      name: string;
+      suburb: string | null;
+    }[] = [];
+    if (parentIds.length > 0) {
+      childRows = await db
+        .select({
+          id: childProfiles.id,
+          parentId: childProfiles.parentId,
+          name: childProfiles.name,
+          suburb: childProfiles.suburb,
+        })
+        .from(childProfiles)
+        .where(inArray(childProfiles.parentId, parentIds));
+    }
+
+    return rows.map((r) => {
+      const kids = childRows.filter((c) => c.parentId === r.parentId);
+      return {
+        ...r,
+        suburb: kids[0]?.suburb ?? null,
+        childNames: kids.map((c) => c.name),
+      };
+    });
   } catch {
     return [];
   }

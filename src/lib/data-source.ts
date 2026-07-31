@@ -5,6 +5,19 @@ import {
   mockProviderById,
   mockProviderBySlug,
 } from "./mock/providers";
+import { mockParentById, mockParents } from "./mock/parents";
+import {
+  mockClubEvents,
+  clubEventsByProviderId,
+  membershipsByProviderId,
+  messagesByClubId,
+} from "./mock/communities";
+import { mockRideRequests } from "./mock/communities";
+import {
+  mockRewardPoints,
+  rewardPointsByUserId,
+  rewardRedemptionsByUserId,
+} from "./mock/rewards";
 
 // ── Real DB query imports ──
 import {
@@ -15,16 +28,48 @@ import {
   getCategories as dbGetCategories,
   searchProviders as dbSearchProviders,
   getSimilarProviders as dbGetSimilarProviders,
+  getClubEvents as dbGetClubEvents,
+  getClubMemberships as dbGetClubMemberships,
+  getClubMessages as dbGetClubMessages,
+  getRideRequests as dbGetRideRequests,
+  getRewardPoints as dbGetRewardPoints,
+  getRewardBalance as dbGetRewardBalance,
+  getRewardRedemptions as dbGetRewardRedemptions,
+  getClubStats as dbGetClubStats,
+  getProviderVerificationStatuses as dbGetProviderVerificationStatuses,
+  getProviderVouchCounts as dbGetProviderVouchCounts,
+  getSuburbDensity as dbGetSuburbDensity,
 } from "./db/queries";
 
 // Re-export filter types so consumers don't need dual imports
-export type { ProviderFilters, SearchFilters } from "./db/queries";
+export type {
+  ProviderFilters,
+  SearchFilters,
+  RideRequestFilters,
+  ClubStats,
+} from "./db/queries";
 
 // ── Types ──
 type Provider = InferSelectModel<typeof providers>;
 type Venue = InferSelectModel<typeof venues>;
 type Category = InferSelectModel<typeof categories>;
 type VenueWithAmenities = Venue & { amenities: string[] };
+
+// Community + rewards shapes derived from the DB query return types
+export type ClubEvent = Awaited<ReturnType<typeof dbGetClubEvents>>[number];
+export type ClubMembershipWithParent = Awaited<
+  ReturnType<typeof dbGetClubMemberships>
+>[number];
+export type ClubMessageWithSender = Awaited<
+  ReturnType<typeof dbGetClubMessages>
+>[number];
+export type RideRequestWithNames = Awaited<
+  ReturnType<typeof dbGetRideRequests>
+>[number];
+export type RewardPoint = Awaited<ReturnType<typeof dbGetRewardPoints>>[number];
+export type RewardRedemption = Awaited<
+  ReturnType<typeof dbGetRewardRedemptions>
+>[number];
 
 // ── USE_MOCK Toggle ──
 const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
@@ -46,7 +91,12 @@ const mockCategories: Category[] = [
 
 // ── Mock Provider Filter Functions ──
 
-import type { ProviderFilters, SearchFilters } from "./db/queries";
+import type {
+  ProviderFilters,
+  SearchFilters,
+  RideRequestFilters,
+  ClubStats,
+} from "./db/queries";
 
 function mockGetProviders(filters?: ProviderFilters): Provider[] {
   let results = [...mockProviders];
@@ -183,4 +233,243 @@ export async function searchProviders(query: string, filters?: SearchFilters): P
 export async function getSimilarProviders(providerId: string, limit?: number): Promise<Provider[]> {
   if (USE_MOCK) return mockGetSimilarProviders(providerId, limit);
   return dbGetSimilarProviders(providerId, limit);
+}
+
+// ── Mock Community + Rewards Functions ──
+
+function mockGetClubEvents(providerId: string): ClubEvent[] {
+  const events = clubEventsByProviderId[providerId] ?? [];
+  const now = Date.now();
+
+  // Upcoming events first, then past events — each chronological
+  return [...events].sort((a, b) => {
+    const aUpcoming = a.startTime.getTime() >= now ? 0 : 1;
+    const bUpcoming = b.startTime.getTime() >= now ? 0 : 1;
+    if (aUpcoming !== bUpcoming) return aUpcoming - bUpcoming;
+    return a.startTime.getTime() - b.startTime.getTime();
+  });
+}
+
+function mockGetClubMemberships(providerId: string): ClubMembershipWithParent[] {
+  const memberships = membershipsByProviderId[providerId] ?? [];
+
+  return memberships
+    .map((m) => {
+      const parent = mockParentById(m.parentId);
+      const kids = (parent?.children ?? []).filter((c) =>
+        m.childIds.includes(c.id)
+      );
+      return {
+        ...m,
+        parentName: parent?.name ?? "Unknown parent",
+        suburb: kids[0]?.suburb ?? null,
+        childNames: kids.map((c) => c.name),
+      };
+    })
+    .sort((a, b) => a.joinedAt.getTime() - b.joinedAt.getTime());
+}
+
+function mockGetClubMessages(clubId: string, limit = 50): ClubMessageWithSender[] {
+  const messages = messagesByClubId[clubId] ?? [];
+
+  return messages
+    .map((m) => ({
+      ...m,
+      senderName: mockParentById(m.senderId)?.name ?? "Club member",
+    }))
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, limit);
+}
+
+function mockGetRideRequests(
+  filters?: RideRequestFilters
+): RideRequestWithNames[] {
+  let requests = [...mockRideRequests];
+
+  if (filters?.eventId) {
+    requests = requests.filter((r) => r.eventId === filters.eventId);
+  }
+  if (filters?.providerId) {
+    const eventIds = new Set(
+      (clubEventsByProviderId[filters.providerId] ?? []).map((e) => e.id)
+    );
+    requests = requests.filter((r) => eventIds.has(r.eventId));
+  }
+
+  return requests
+    .map((r) => {
+      const event = mockClubEvents.find((e) => e.id === r.eventId);
+      const parent = mockParentById(r.parentId);
+      return {
+        ...r,
+        eventTitle: event?.title ?? "Club event",
+        parentName: parent?.name ?? "Unknown parent",
+        childName:
+          parent?.children.find((c) => c.id === r.childId)?.name ?? "",
+        claimedByName: r.claimedBy
+          ? (mockParentById(r.claimedBy)?.name ?? null)
+          : null,
+      };
+    })
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+}
+
+function mockGetRewardPoints(userId: string): RewardPoint[] {
+  return [...(rewardPointsByUserId[userId] ?? [])].sort(
+    (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+  );
+}
+
+function mockGetRewardBalance(userId: string): number {
+  return (rewardPointsByUserId[userId] ?? []).reduce(
+    (sum, p) => sum + p.amount,
+    0
+  );
+}
+
+function mockGetRewardRedemptions(userId: string): RewardRedemption[] {
+  return [...(rewardRedemptionsByUserId[userId] ?? [])].sort(
+    (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+  );
+}
+
+// ── Mock Map View functions ──
+
+function mockGetProviderVerificationStatuses(): {
+  providerId: string;
+  status: string;
+}[] {
+  // Mock providers carry a `verified` boolean — surface it as an approved
+  // verification so the map can show green pins in mock mode.
+  return mockProviders
+    .filter((p) => p.verified)
+    .map((p) => ({ providerId: p.id, status: "approved" }));
+}
+
+function mockGetProviderVouchCounts(): { providerId: string; count: number }[] {
+  // No mock vouches defined yet — tier promotion needs a real DB.
+  return [];
+}
+
+function mockGetSuburbDensity(): { suburb: string; count: number }[] {
+  // One parent per suburb (parents' children all share the parent's suburb).
+  const counts = new Map<string, number>();
+  for (const parent of mockParents) {
+    const suburb = parent.children[0]?.suburb;
+    if (suburb) {
+      counts.set(suburb, (counts.get(suburb) ?? 0) + 1);
+    }
+  }
+  return [...counts.entries()]
+    .map(([suburb, count]) => ({ suburb, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+function mockGetClubStats(providerId: string): ClubStats {
+  const memberships = membershipsByProviderId[providerId] ?? [];
+
+  // Families by suburb — each member family's suburb (from their children)
+  const suburbCounts = new Map<string, number>();
+  for (const m of memberships) {
+    const parent = mockParentById(m.parentId);
+    const suburb = parent?.children[0]?.suburb;
+    if (suburb) {
+      suburbCounts.set(suburb, (suburbCounts.get(suburb) ?? 0) + 1);
+    }
+  }
+
+  const familiesBySuburb = [...suburbCounts.entries()]
+    .map(([suburb, count]) => ({ suburb, count }))
+    .sort((a, b) => b.count - a.count);
+
+  const topVolunteers = memberships
+    .filter((m) => m.role !== "parent")
+    .map((m) => ({
+      parentId: m.parentId,
+      parentName: mockParentById(m.parentId)?.name ?? "Unknown parent",
+      role: m.role,
+      joinedAt: m.joinedAt,
+    }))
+    .sort((a, b) => a.joinedAt.getTime() - b.joinedAt.getTime())
+    .slice(0, 5);
+
+  return {
+    memberFamilies: memberships.length,
+    familiesBySuburb,
+    topVolunteers,
+  };
+}
+
+// ── Unified Community + Rewards API ──
+
+export async function getClubEvents(providerId: string): Promise<ClubEvent[]> {
+  if (USE_MOCK) return mockGetClubEvents(providerId);
+  return dbGetClubEvents(providerId);
+}
+
+export async function getClubMemberships(
+  providerId: string
+): Promise<ClubMembershipWithParent[]> {
+  if (USE_MOCK) return mockGetClubMemberships(providerId);
+  return dbGetClubMemberships(providerId);
+}
+
+export async function getClubMessages(
+  clubId: string,
+  limit?: number
+): Promise<ClubMessageWithSender[]> {
+  if (USE_MOCK) return mockGetClubMessages(clubId, limit);
+  return dbGetClubMessages(clubId, limit);
+}
+
+export async function getRideRequests(
+  filters?: RideRequestFilters
+): Promise<RideRequestWithNames[]> {
+  if (USE_MOCK) return mockGetRideRequests(filters);
+  return dbGetRideRequests(filters);
+}
+
+export async function getRewardPoints(userId: string): Promise<RewardPoint[]> {
+  if (USE_MOCK) return mockGetRewardPoints(userId);
+  return dbGetRewardPoints(userId);
+}
+
+export async function getRewardBalance(userId: string): Promise<number> {
+  if (USE_MOCK) return mockGetRewardBalance(userId);
+  return dbGetRewardBalance(userId);
+}
+
+export async function getRewardRedemptions(
+  userId: string
+): Promise<RewardRedemption[]> {
+  if (USE_MOCK) return mockGetRewardRedemptions(userId);
+  return dbGetRewardRedemptions(userId);
+}
+
+export async function getClubStats(providerId: string): Promise<ClubStats> {
+  if (USE_MOCK) return mockGetClubStats(providerId);
+  return dbGetClubStats(providerId);
+}
+
+// ── Map View ──
+
+export async function getProviderVerificationStatuses(): Promise<
+  { providerId: string; status: string | null }[]
+> {
+  if (USE_MOCK) return mockGetProviderVerificationStatuses();
+  return dbGetProviderVerificationStatuses();
+}
+
+export async function getProviderVouchCounts(): Promise<
+  { providerId: string; count: number }[]
+> {
+  if (USE_MOCK) return mockGetProviderVouchCounts();
+  return dbGetProviderVouchCounts();
+}
+
+export async function getSuburbDensity(): Promise<
+  { suburb: string; count: number }[]
+> {
+  if (USE_MOCK) return mockGetSuburbDensity();
+  return dbGetSuburbDensity();
 }

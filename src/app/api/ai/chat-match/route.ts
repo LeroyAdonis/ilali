@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
 import { chat } from "@/lib/ai/client";
-import {
-  getProviders,
-  searchProviders,
-  getCategories,
-} from "@/lib/data-source";
+import { getProviders, getCategories } from "@/lib/data-source";
 import { eq } from "drizzle-orm";
 import type { ChildProfile } from "@/lib/db/types";
 
@@ -22,12 +18,40 @@ interface ChatExtractedQuery {
 }
 
 interface ChatChildContext {
+  name: string | null;
   age: number;
   interests: string[] | null;
   suburb: string | null;
 }
 
-// ── Available Categories from the brief ──
+interface ScorableProvider {
+  id: string;
+  name: string;
+  description?: string | null;
+  category: string;
+  ageMin: number;
+  ageMax: number;
+  tags: string[] | null;
+  location: string;
+  priceValue: number;
+  isFree: boolean | null;
+  featured?: boolean | null;
+}
+
+interface ConciergeReply {
+  message: string;
+  followUp: string | null;
+}
+
+interface ConciergeResult {
+  extracted: ChatExtractedQuery | null;
+  chosenIndexes: number[];
+  message: string;
+  followUp: string | null;
+  alternatives: string[] | null;
+}
+
+// ── Available Categories ──
 
 const CATEGORY_IDS = [
   "sports",
@@ -37,6 +61,17 @@ const CATEGORY_IDS = [
   "emotional-intelligence",
   "holiday-programs",
 ] as const;
+
+const CATEGORY_LABELS: Record<string, string> = {
+  sports: "Sports",
+  "arts-culture": "Arts & Culture",
+  education: "Education",
+  "music-lessons": "Music Lessons",
+  "emotional-intelligence": "Emotional Intelligence",
+  "holiday-programs": "Holiday Programs",
+};
+
+const CATALOG_LIMIT = 60;
 
 // ── Child Profile Helpers (lazy-load DB to survive build w/o DATABASE_URL) ──
 
@@ -96,45 +131,134 @@ async function getChildrenByParent(
   }
 }
 
-// ── Step 1: AI Query Extraction ──
+// ── Extraction sanitizer (shared with concierge result) ──
 
-async function extractQuery(
-  message: string
-): Promise<ChatExtractedQuery | null> {
-  const systemPrompt = `You are an activity search assistant for ILALI, a children's activities marketplace in Cape Town, South Africa.
+function sanitizeExtracted(raw: unknown): ChatExtractedQuery | null {
+  if (!raw || typeof raw !== "object") return null;
+  const r = raw as Record<string, unknown>;
+  return {
+    category:
+      typeof r.category === "string" &&
+      (CATEGORY_IDS as readonly string[]).includes(r.category)
+        ? r.category
+        : null,
+    activityType:
+      typeof r.activityType === "string" ? r.activityType : null,
+    ageMin: typeof r.ageMin === "number" ? r.ageMin : null,
+    ageMax: typeof r.ageMax === "number" ? r.ageMax : null,
+    days: Array.isArray(r.days)
+      ? r.days.filter((d: unknown) => typeof d === "string")
+      : [],
+    timeSlot: typeof r.timeSlot === "string" ? r.timeSlot : null,
+    location: typeof r.location === "string" ? r.location : null,
+    maxPrice: typeof r.maxPrice === "number" ? r.maxPrice : null,
+  };
+}
 
-Extract structured search parameters from the parent's message. Return ONLY valid JSON (no markdown, no explanation).
+// ── Alternative direction normalisation ──
 
-Categories available: "sports", "arts-culture", "education", "music-lessons", "emotional-intelligence", "holiday-programs"
+function normalizeAlternatives(
+  raw: string[] | null,
+  categoryNames: string[],
+  searchedCat: string | null
+): string[] {
+  if (!raw || raw.length === 0) return [];
+  const out: string[] = [];
+  for (const alt of raw) {
+    const a = alt.toLowerCase().trim();
+    const match = categoryNames.find((name) => {
+      const n = name.toLowerCase();
+      return n.includes(a) || a.includes(n);
+    });
+    if (
+      match &&
+      !out.includes(match) &&
+      match.toLowerCase() !== searchedCat?.toLowerCase()
+    ) {
+      out.push(match);
+    }
+    if (out.length >= 4) break;
+  }
+  return out;
+}
 
-Return:
+// ── Step 1: Concierge — single LLM call: extract + pick + reply ──
+
+async function conciergeQuery(input: {
+  message: string;
+  child: ChatChildContext | null;
+  providers: ScorableProvider[];
+}): Promise<ConciergeResult | null> {
+  const childLine = input.child
+    ? `Child context: ${input.child.name ? input.child.name + ", " : ""}${input.child.age} years old${input.child.suburb ? `, lives in ${input.child.suburb}` : ""}${input.child.interests?.length ? `, interested in ${input.child.interests.join(", ")}` : ""}. Use these as defaults when the message is vague.`
+    : "No child profile attached.";
+
+  // Compact numbered catalog for reliable id-referencing
+  const catalog = input.providers
+    .slice(0, CATALOG_LIMIT)
+    .map((p, i) => ({
+      i,
+      name: p.name,
+      category: CATEGORY_LABELS[p.category] ?? p.category,
+      location: p.location,
+      ages: `${p.ageMin}–${p.ageMax}`,
+      price:
+        p.isFree || p.priceValue === 0
+          ? "Free"
+          : `R${Math.round(p.priceValue / 100)}`,
+      tags: (p.tags ?? []).slice(0, 4).join(", "),
+      blurb: (p.description ?? "").slice(0, 90),
+    }));
+
+  const catalogLines = catalog
+    .map(
+      (c) =>
+        `${c.i}. ${c.name} | ${c.category} | ${c.location} | ages ${c.ages} | ${c.price}${c.tags ? ` | ${c.tags}` : ""}${c.blurb ? ` | ${c.blurb}` : ""}`
+    )
+    .join("\n");
+
+  const systemPrompt = `You are the ILALI Concierge — a warm, practical helper for parents finding children's extramural activities in Cape Town, South Africa.
+
+The parent asked: "${input.message}"
+${childLine}
+
+Here is the full catalog of activities available right now (numbered):
+${catalogLines}
+
+Respond with ONLY valid JSON (no markdown, no commentary):
 {
-  "category": string | null,
-  "activityType": string | null,
-  "ageMin": number | null,
-  "ageMax": number | null,
-  "days": string[],
-  "timeSlot": string | null,
-  "location": string | null,
-  "maxPrice": number | null
+  "extracted": {
+    "category": string|null,
+    "activityType": string|null,
+    "ageMin": number|null,
+    "ageMax": number|null,
+    "days": string[],
+    "timeSlot": string|null,
+    "location": string|null,
+    "maxPrice": number|null
+  },
+  "chosen": number[],
+  "message": string,
+  "followUp": string|null,
+  "alternatives": string[]|null
 }
 
 Rules:
-- Extract category from what the parent is looking for ("soccer" → "sports", "piano" → "music-lessons", "tutoring" → "education")
-- Extract activityType as the specific activity name (e.g., "soccer", "swimming", "piano")
-- Extract age from phrases like "13-year-old", "for my 7 year old", "ages 5-10", "my teenager"
-- For "days", extract mentioned days as full names: "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-- For "timeSlot", extract time in 24h format (e.g., "15:00" for 3pm). Return as string.
-- For "location", match to a Cape Town suburb if mentioned
-- For "maxPrice", extract from phrases like "under R200", "affordable", "R150 or less" — return as number in Rands
-- If unsure about any field, set to null`;
+- extracted: map the parent's request to fields. Categories: "sports", "arts-culture", "education", "music-lessons", "emotional-intelligence", "holiday-programs" ("soccer"→"sports", "piano"→"music-lessons", "tutoring"/"coding"→"education", "painting"/"drama"→"arts-culture", "mindfulness"/"confidence"→"emotional-intelligence", "holiday camp"→"holiday-programs"). activityType is the specific activity in lowercase ("soccer", "swimming", "piano"). Ages: "my 7 year old" → 7/7; "ages 5-10" → 5/10; "my teenager" → 13/17; "toddler" → 2/4. days: full weekday names ("Monday"...). timeSlot: 24h ("15:00" for 3pm, "after school" → "14:00"). location: Cape Town suburb (Sea Point, Claremont, Rondebosch, Durbanville, Muizenberg, etc). maxPrice in Rands ("under R200" → 200, "free" → 0). When the child context gives age/suburb and the message doesn't, use those. Null when unsure — never invent.
+- chosen: the 1-3 catalog NUMBERS that best fit the parent's needs (age range, activity, location, price). Prefer exact activity matches. Empty [] ONLY when nothing in the catalog is a reasonable fit.
+- message: warm, plain South African English, 2-4 sentences, max 90 words. No emojis, no bullet lists, no headers. GOOD matches → name 1-3 providers with ONE specific reason each (age, location, price, or the activity itself); use the child's name naturally if known. NO matches → be honest and gentle ("there isn't much {activity} for {age}-year-olds in {area} yet"), suggest 1-2 alternative directions with a reason each, and set followUp. VAGUE request (no activity, age, or area) → friendly one-liner asking for the child's age, what they enjoy, and their area; set followUp to that question.
+- When mentioning a price, copy it EXACTLY as printed in the catalog (e.g. "R2500 per session") — never round, convert, or interpret it. Never invent a price, day-of-week, age, or location not shown.
+- alternatives: when chosen is empty, suggest 2-4 category directions that exist in the catalog (e.g. "Sports programs", "Music Lessons", "Holiday Programs"). Otherwise null.
+- followUp: one short question (max 12 words) to continue the conversation, or null when results are clear.
+- Never invent providers, prices, locations, or ages not in the catalog. Only reference catalog numbers in chosen.`;
 
   const content = await chat({
     systemPrompt,
-    userMessage: message,
-    temperature: 0.1,
-    maxTokens: 350,
-    timeoutMs: 5000,
+    userMessage: input.message,
+    temperature: 0.3,
+    maxTokens: 1200,
+    timeoutMs: 20000,
+    responseFormat: "json",
   });
 
   if (!content) return null;
@@ -144,50 +268,38 @@ Rules:
       .replace(/```json\s*/g, "")
       .replace(/```\s*/g, "")
       .trim();
+    const result = JSON.parse(cleaned) as Record<string, unknown>;
 
-    const result = JSON.parse(cleaned);
+    const chosenRaw = Array.isArray(result.chosen)
+      ? result.chosen
+      : [];
+    const chosenIndexes = chosenRaw.filter(
+      (n): n is number =>
+        typeof n === "number" &&
+        Number.isInteger(n) &&
+        n >= 0 &&
+        n < catalog.length
+    );
 
     return {
-      category:
-        typeof result.category === "string" &&
-        (CATEGORY_IDS as readonly string[]).includes(result.category)
-          ? result.category
-          : null,
-      activityType:
-        typeof result.activityType === "string"
-          ? result.activityType
-          : null,
-      ageMin: typeof result.ageMin === "number" ? result.ageMin : null,
-      ageMax: typeof result.ageMax === "number" ? result.ageMax : null,
-      days: Array.isArray(result.days)
-        ? result.days.filter((d: unknown) => typeof d === "string")
-        : [],
-      timeSlot:
-        typeof result.timeSlot === "string" ? result.timeSlot : null,
-      location:
-        typeof result.location === "string" ? result.location : null,
-      maxPrice:
-        typeof result.maxPrice === "number" ? result.maxPrice : null,
+      extracted: sanitizeExtracted(result.extracted),
+      chosenIndexes: Array.from(new Set(chosenIndexes)).slice(0, 5),
+      message: typeof result.message === "string" ? result.message : "",
+      followUp:
+        typeof result.followUp === "string" ? result.followUp : null,
+      alternatives: Array.isArray(result.alternatives)
+        ? result.alternatives
+            .filter((a): a is string => typeof a === "string")
+            .slice(0, 4)
+        : null,
     };
   } catch {
-    console.warn("[chat-match] Failed to parse AI response");
+    console.warn("[chat-match] Failed to parse concierge response");
     return null;
   }
 }
 
-// ── Step 2: Provider Scoring ──
-
-interface ScorableProvider {
-  id: string;
-  name: string;
-  category: string;
-  ageMin: number;
-  ageMax: number;
-  tags: string[] | null;
-  location: string;
-  priceValue: number;
-  isFree: boolean | null;
-}
+// ── Step 2: Deterministic scoring (validation + fill) ──
 
 function scoreProviderMatch(
   provider: ScorableProvider,
@@ -331,15 +443,13 @@ export async function POST(request: Request) {
     );
   }
 
-  // Step 1: Extract structured query via AI
-  const extracted = await extractQuery(message);
-
-  // Step 2: Load child profile context if available
+  // Step 1: Load child profile context if available
   let childContext: ChatChildContext | null = null;
   if (body.childId) {
     const profile = await getChildProfile(body.childId);
     if (profile) {
       childContext = {
+        name: profile.name,
         age: profile.age,
         interests: profile.interests,
         suburb: profile.suburb,
@@ -350,6 +460,7 @@ export async function POST(request: Request) {
     if (children.length > 0) {
       // Use first child as context (parent can switch in UI)
       childContext = {
+        name: children[0].name,
         age: children[0].age,
         interests: children[0].interests,
         suburb: children[0].suburb,
@@ -357,65 +468,22 @@ export async function POST(request: Request) {
     }
   }
 
-  // Merge child age into extracted query for filtering
-  const queryAgeMin =
-    extracted?.ageMin ?? childContext?.age ?? undefined;
-  const queryAgeMax =
-    extracted?.ageMax ?? childContext?.age ?? undefined;
+  // Step 2: Load the provider catalog (featured first)
+  const allProviders = (await getProviders()) as unknown as ScorableProvider[];
+  allProviders.sort((a, b) => {
+    if (!!a.featured !== !!b.featured) return a.featured ? -1 : 1;
+    return a.name.localeCompare(b.name);
+  });
 
-  // Step 3: Fetch providers
-  let providerResults: ScorableProvider[];
+  // Step 3: One concierge call — extract intent, pick matches, write the reply
+  const concierge = await conciergeQuery({
+    message,
+    child: childContext,
+    providers: allProviders,
+  });
 
-  if (extracted) {
-    // Targeted fetch using extracted filters
-    providerResults = (await getProviders({
-      category: extracted.category ?? undefined,
-      ageMin: queryAgeMin,
-      ageMax: queryAgeMax,
-      location:
-        extracted.location ?? childContext?.suburb ?? undefined,
-      maxPrice:
-        extracted.maxPrice !== null
-          ? extracted.maxPrice * 100
-          : undefined,
-    })) as unknown as ScorableProvider[];
-
-    // If no results with filters, broaden: try just category
-    if (
-      providerResults.length === 0 &&
-      extracted.category
-    ) {
-      providerResults = (await getProviders({
-        category: extracted.category,
-      })) as unknown as ScorableProvider[];
-    }
-
-    // If still nothing, fall back to full text search on the original message
-    if (providerResults.length === 0) {
-      providerResults =
-        (await searchProviders(
-          extracted.activityType || message
-        )) as unknown as ScorableProvider[];
-    }
-
-    // Last resort: get all providers
-    if (providerResults.length === 0) {
-      providerResults =
-        (await getProviders()) as unknown as ScorableProvider[];
-    }
-  } else {
-    // AI extraction failed — fall back to keyword search
-    providerResults =
-      (await searchProviders(message)) as unknown as ScorableProvider[];
-
-    // If still nothing, get all
-    if (providerResults.length === 0) {
-      providerResults =
-        (await getProviders()) as unknown as ScorableProvider[];
-    }
-  }
-
-  // Build a fallback extracted query so scoring always runs
+  // Fallback extracted query so scoring always runs
+  const extracted = concierge?.extracted ?? null;
   const effectiveExtracted: ChatExtractedQuery = extracted ?? {
     category: null,
     activityType: null,
@@ -427,8 +495,8 @@ export async function POST(request: Request) {
     maxPrice: null,
   };
 
-  // Step 4: Score all providers
-  const scored = providerResults
+  // Step 4: Score every provider deterministically (validation layer)
+  const scored = allProviders
     .map((provider) => {
       const { score, reasons } = scoreProviderMatch(
         provider,
@@ -439,36 +507,74 @@ export async function POST(request: Request) {
     })
     .sort((a, b) => b.score - a.score);
 
-  // Step 5: Filter to top matches (min score 20)
-  const MIN_SCORE = 20;
-  const goodMatches = scored
-    .filter((s) => s.score >= MIN_SCORE)
-    .slice(0, 5);
+  // Step 5: Select matches — concierge's picks first, then best scorers
+  const CLOSE_SCORE = 10;
+  let matches: { provider: ScorableProvider; score: number; reasons: string[] }[];
 
-  // Step 6: Generate alternatives if no good matches
+  if (concierge && concierge.chosenIndexes.length > 0) {
+    const chosen = concierge.chosenIndexes
+      .map((idx) => {
+        const p = allProviders[idx];
+        if (!p) return null;
+        const existing = scored.find((s) => s.provider.id === p.id);
+        if (existing) return existing;
+        return {
+          provider: p,
+          ...scoreProviderMatch(p, effectiveExtracted, childContext),
+        };
+      })
+      .filter((s): s is { provider: ScorableProvider; score: number; reasons: string[] } => s !== null);
+
+    // Fill up to 5 with the highest-scoring others
+    const chosenIds = new Set(chosen.map((c) => c.provider.id));
+    const fillers = scored
+      .filter((s) => !chosenIds.has(s.provider.id) && s.score >= CLOSE_SCORE)
+      .slice(0, 5 - chosen.length);
+    matches = [...chosen, ...fillers].slice(0, 5);
+  } else {
+    matches = scored
+      .filter((s) => s.score >= CLOSE_SCORE)
+      .slice(0, 5);
+  }
+
+  // Step 6: Alternatives — concierge's directions (normalised to real
+  // category names so pills link correctly), else deterministic fallback
   let alternatives: string[] | null = null;
-  if (goodMatches.length === 0) {
+
+  const categoryNames = (await getCategories().catch(() => [] as { name: string; id: string }[])).map((c) => c.name);
+  const modelAlts = normalizeAlternatives(
+    concierge?.alternatives ?? null,
+    categoryNames,
+    extracted?.category ?? null
+  );
+
+  if (modelAlts.length > 0) {
+    alternatives = modelAlts;
+    // Pad to 4 with other categories
+    const altCatIds = new Set<string>(CATEGORY_IDS);
+    const fallbackCats = (await getCategories().catch(() => [] as { name: string; id: string }[]))
+      .filter((c) => c.id !== extracted?.category && altCatIds.has(c.id))
+      .map((c) => c.name);
+    for (const f of fallbackCats) {
+      if (!alternatives.includes(f) && alternatives.length < 4) {
+        alternatives.push(f);
+      }
+    }
+  } else if (matches.length === 0) {
+    // No picks, no model directions — fall back to deterministic categories
     try {
       const cats = await getCategories();
       const searchedCat = extracted?.category;
-      const altCatIds = new Set([
-        "sports",
-        "arts-culture",
-        "education",
-        "music-lessons",
-        "emotional-intelligence",
-        "holiday-programs",
-      ]);
-      alternatives = cats
-        .filter(
-          (c) =>
-            c.id !== searchedCat &&
-            altCatIds.has(c.id)
-        )
+      const altCatIds = new Set<string>(CATEGORY_IDS);
+      const fallback = cats
+        .filter((c) => c.id !== searchedCat && altCatIds.has(c.id))
         .slice(0, 4)
         .map((c) => c.name);
+      if (fallback.length > 0) alternatives = fallback;
     } catch {
-      // If categories unavailable, provide static fallback
+      // keep null
+    }
+    if (!alternatives) {
       alternatives = [
         "Sports programs",
         "Arts & Culture classes",
@@ -479,16 +585,19 @@ export async function POST(request: Request) {
   }
 
   // Step 7: Shape the final response
+  const reply: ConciergeReply | null = concierge
+    ? { message: concierge.message, followUp: concierge.followUp }
+    : null;
+
   return NextResponse.json({
-    matches: goodMatches.map((s) => ({
+    matches: matches.map((s) => ({
       provider: s.provider,
       score: s.score,
       reasons:
-        s.reasons.length > 0
-          ? s.reasons
-          : ["General match"],
+        s.reasons.length > 0 ? s.reasons : ["General match"],
     })),
     alternatives,
     extractedQuery: extracted,
+    reply,
   });
 }

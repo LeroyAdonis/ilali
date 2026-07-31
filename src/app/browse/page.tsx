@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import SearchBar from "@/components/SearchBar";
+import AIChatPanel from "@/components/chat/AIChatPanel";
 import FilterBar from "@/components/FilterBar";
 import ProviderCard from "@/components/ProviderCard";
 import Footer from "@/components/Footer";
@@ -153,9 +153,10 @@ function ResultsSection({
             </p>
           </div>
           <div className="mt-8">
-            <Suspense fallback={<div className="h-16 w-full" />}>
-              <SearchBar variant="large" />
-            </Suspense>
+            <AIChatPanel
+              showHeading={false}
+              placeholder="Ask ILALI — e.g. “swimming for my 6 year old near Sea Point on Saturdays”"
+            />
           </div>
         </div>
       </section>

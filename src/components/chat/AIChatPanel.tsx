@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import ProviderCard from "@/components/ProviderCard";
 import Link from "next/link";
+import { useSession } from "@/lib/auth-client";
 import type { Provider } from "@/lib/types";
 
 // ── Types ──
@@ -25,7 +26,15 @@ interface ChatMessage {
   content: string;
   matches?: MatchResult[];
   alternatives?: string[];
+  followUp?: string | null;
   error?: string;
+}
+
+interface AIChatPanelProps {
+  heading?: string;
+  subheading?: string;
+  showHeading?: boolean;
+  placeholder?: string;
 }
 
 // ── Animated Dots ──
@@ -42,7 +51,12 @@ function LoadingDots() {
 
 // ── Component ──
 
-export default function AIChatPanel() {
+export default function AIChatPanel({
+  heading = "Find the perfect activity",
+  subheading = "Describe what you're looking for and our AI will match you with the best providers",
+  showHeading = true,
+  placeholder = "Find an activity for my child...",
+}: AIChatPanelProps) {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
@@ -51,6 +65,9 @@ export default function AIChatPanel() {
   const abortRef = useRef<AbortController | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Signed-in parents get their child profile used as context automatically
+  const { data: session } = useSession();
 
   // ── Auto-scroll to bottom ──
   useEffect(() => {
@@ -95,7 +112,10 @@ export default function AIChatPanel() {
       const res = await fetch("/api/ai/chat-match", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed }),
+        body: JSON.stringify({
+          message: trimmed,
+          ...(session?.user?.id ? { parentId: session.user.id } : {}),
+        }),
         signal: controller.signal,
       });
 
@@ -108,33 +128,27 @@ export default function AIChatPanel() {
       }
 
       const data = await res.json();
+      const reply = data.reply;
+      const matches: MatchResult[] = data.matches ?? [];
+      const alternatives: string[] = data.alternatives ?? [];
 
-      if (data.matches && data.matches.length > 0) {
-        setMessages((prev) => [
-          ...prev,
-          {
-            type: "ai",
-            content: `Found ${data.matches.length} match${
-              data.matches.length > 1 ? "es" : ""
-            } for "${trimmed}"`,
-            matches: data.matches,
-          },
-        ]);
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          {
-            type: "ai",
-            content: "No exact matches found. Try these instead:",
-            alternatives: data.alternatives ?? [
-              "Sports programs",
-              "Arts & Culture classes",
-              "Music Lessons",
-              "Holiday Programs",
-            ],
-          },
-        ]);
-      }
+      const fallbackContent =
+        matches.length > 0
+          ? `Found ${matches.length} match${
+              matches.length > 1 ? "es" : ""
+            } for "${trimmed}"`
+          : "No exact matches found. Try these instead:";
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: "ai",
+          content: reply?.message?.trim() || fallbackContent,
+          matches: matches.length > 0 ? matches : undefined,
+          alternatives: alternatives.length > 0 ? alternatives : undefined,
+          followUp: reply?.followUp ?? null,
+        },
+      ]);
     } catch (err: unknown) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return; // Silently ignore aborted requests
@@ -158,7 +172,7 @@ export default function AIChatPanel() {
       }
       setLoading(false);
     }
-  }, [input, loading]);
+  }, [input, loading, session?.user?.id]);
 
   // ── Retry last query ──
   const retryLast = useCallback(() => {
@@ -206,15 +220,14 @@ export default function AIChatPanel() {
   return (
     <section className="mx-auto w-full max-w-2xl">
       {/* ── Heading ── */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-          Find the perfect activity
-        </h2>
-        <p className="mt-2 text-base text-slate-500">
-          Describe what you&apos;re looking for and our AI will match you with
-          the best providers
-        </p>
-      </div>
+      {showHeading && (
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            {heading}
+          </h2>
+          <p className="mt-2 text-base text-slate-500">{subheading}</p>
+        </div>
+      )}
 
       {/* ── Chat Card ── */}
       <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -256,42 +269,62 @@ export default function AIChatPanel() {
                           </button>
                         </div>
                       </div>
-                    ) : msg.matches ? (
-                      /* ── Results: provider cards ── */
-                      <div className="space-y-2">
-                        <p className="text-sm text-slate-600">{msg.content}</p>
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          {msg.matches.map((match) => (
-                            <ProviderCard
-                              key={match.provider.id}
-                              provider={match.provider}
-                              matchScore={match.score}
-                              matchReasons={match.reasons}
-                            />
-                          ))}
-                        </div>
-                      </div>
                     ) : (
-                      /* ── No results: alternatives ── */
-                      <div className="space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
-                        <p className="text-sm font-medium text-amber-800">
-                          No exact matches found. Try these instead:
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {msg.alternatives?.map((alt) => (
-                            <Link
-                              key={alt}
-                              href={`/browse?category=${encodeURIComponent(
-                                alt.toLowerCase().replace(/\s+/g, "-")
-                              )}`}
-                              className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-white px-3.5 py-1.5 text-xs font-medium text-amber-700 transition-all hover:border-amber-400 hover:bg-amber-50"
-                            >
-                              {alt}
-                              <ChevronRight className="h-3 w-3" />
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
+                      <>
+                        {/* ── Concierge message ── */}
+                        {msg.content && (
+                          <div className="rounded-2xl rounded-bl-md bg-slate-50 px-4 py-3">
+                            <p className="whitespace-pre-line text-sm leading-relaxed text-slate-700">
+                              {msg.content}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* ── Results: provider cards ── */}
+                        {msg.matches && msg.matches.length > 0 && (
+                          <div className="grid gap-3 sm:grid-cols-2">
+                            {msg.matches.map((match) => (
+                              <ProviderCard
+                                key={match.provider.id}
+                                provider={match.provider}
+                                matchScore={match.score}
+                                matchReasons={match.reasons}
+                              />
+                            ))}
+                          </div>
+                        )}
+
+                        {/* ── No results: alternative directions ── */}
+                        {msg.alternatives && msg.alternatives.length > 0 && (
+                          <div className="space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
+                            <p className="text-sm font-medium text-amber-800">
+                              Worth exploring instead:
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {msg.alternatives.map((alt) => (
+                                <Link
+                                  key={alt}
+                                  href={`/browse?category=${encodeURIComponent(
+                                    alt.toLowerCase().replace(/\s+/g, "-")
+                                  )}`}
+                                  className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-white px-3.5 py-1.5 text-xs font-medium text-amber-700 transition-all hover:border-amber-400 hover:bg-amber-50"
+                                >
+                                  {alt}
+                                  <ChevronRight className="h-3 w-3" />
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* ── Follow-up question ── */}
+                        {msg.followUp && (
+                          <p className="flex items-start gap-1.5 text-xs text-slate-500">
+                            <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ilali-500" />
+                            {msg.followUp}
+                          </p>
+                        )}
+                      </>
                     )}
                   </div>
                 )}
@@ -320,7 +353,7 @@ export default function AIChatPanel() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Find an activity for my child..."
+              placeholder={placeholder}
               disabled={loading}
               rows={1}
               maxLength={500}

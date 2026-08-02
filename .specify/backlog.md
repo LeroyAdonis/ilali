@@ -6,13 +6,12 @@ Backlog of out-of-scope / proposed items. Each item has a status: `proposed` (va
 
 ## Item: Restyle interior pages to logo-true palette
 
-**Status:** proposed
+**Status: DONE (2026-08-02, commit `1f94539`, tag `v20260802-interior-restyle`)**
 
-The 2026-08-02 design restyle (commit `a84ee00`) covered the **landing page** (`src/app/page.tsx`), the shared **Header/Footer**, and added the new tokens to `globals.css`. Interior pages (`/browse`, `/home`, `/clubs/*`, `/map`, `/admin/*`, etc.) still use the legacy `ilali-*`/`sunset-*`/`warm-*` tokens and the old slate-based components (`CTASection.tsx`, `ProviderCard.tsx`, `Hero.tsx`, `StatsBar.tsx`, `FilterBar.tsx`).
-
-**Trigger to revisit:** Next time Leroy says "restyle the interior" or "make the app match the landing page", or when the next marketing push needs visual consistency.
-
-**Scope estimate:** swap tokens in shared components + key pages; keep all logic/links intact. Same design-only pipeline (tsc + lint delta 0 + build).
+All 51 interior pages + 27 shared components restyled via 3-agent fan-out:
+slate-* → ink/paper tokens, Bricolage display headings, gradients → solid
+`bg-teal-deep`. tsc clean, build passes, E2E 15 pass / 6 pre-existing fails
+(0 new). Landing + Header/Footer were done earlier (commit `a84ee00`).
 
 ---
 

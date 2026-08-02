@@ -66,33 +66,33 @@ const bottomLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-900 text-white">
+    <footer className="border-t border-ink/10 bg-paper-warm text-ink-soft">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6 lg:gap-8">
           {/* Brand Column */}
           <div className="col-span-2 sm:col-span-3 lg:col-span-2">
             <Link href="/" className="inline-block hover:opacity-90 transition-opacity">
               <img
-                src="/images/brand/ilali-logo-38.png"
+                src="/images/brand/ilali-mark.svg"
                 alt="ILALI"
                 width={36}
                 height={36}
-                className="rounded-md"
+                className="rounded-[10px]"
               />
             </Link>
-            <p className="mt-3 text-sm leading-relaxed text-slate-400 max-w-xs">
+            <p className="mt-3 text-sm leading-relaxed text-ink-soft max-w-xs">
               A child-safety-first marketplace connecting families with vetted providers and activities. Building communities, enriching childhoods.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               <Link
                 href="/browse"
-                className="text-xs font-medium text-ilali-400 hover:text-ilali-300 transition-colors"
+                className="text-xs font-medium text-teal-deep hover:text-teal transition-colors"
               >
                 Browse activities &rarr;
               </Link>
               <Link
                 href="/for-providers"
-                className="text-xs font-medium text-ilali-400 hover:text-ilali-300 transition-colors"
+                className="text-xs font-medium text-teal-deep hover:text-teal transition-colors"
               >
                 List your activity &rarr;
               </Link>
@@ -102,7 +102,7 @@ export default function Footer() {
           {/* Link Columns */}
           {footerColumns.map((col) => (
             <div key={col.title}>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 mb-3">
+              <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-ink mb-3">
                 {col.title}
               </h3>
               <ul className="space-y-2">
@@ -110,7 +110,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-slate-400 hover:text-white transition-colors"
+                      className="text-sm text-ink-soft hover:text-teal-deep transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -123,9 +123,9 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-slate-800">
+      <div className="border-t border-ink/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-5 sm:flex-row sm:px-6 lg:px-8">
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-ink-soft/70">
             &copy; {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
           <div className="flex gap-5">
@@ -133,7 +133,7 @@ export default function Footer() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-xs text-slate-500 hover:text-white transition-colors"
+                className="text-xs text-ink-soft/70 hover:text-teal-deep transition-colors"
               >
                 {link.label}
               </Link>

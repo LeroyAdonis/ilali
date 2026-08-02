@@ -4,6 +4,23 @@ Backlog of out-of-scope / proposed items. Each item has a status: `proposed` (va
 
 ---
 
+## Item: Investigate "ILALI still looks the same" (Leroy's feedback 2026-08-02)
+
+**Status:** proposed
+
+After the full logo-true restyle shipped (landing + interior, tags
+`v20260802-design-restyle` through `-interior-restyle`), Leroy said
+"KitFix was drastically improved and ILALI still looks the same." Prod
+HTML confirms the new design IS live (hero-kids image, Enter ILALI CTA,
+font-display on /browse). So this is likely one of:
+1. **Browser cache** — hard-refresh / incognito check first
+2. **Preview URL confusion** — user may be on preview.ilali.co (older build) not ilali.vercel.app
+3. **Interior pages too subtle** — token swap (slate→ink, Inter→Bricolage) reads less dramatic than KitFix's full-bleed photo hero; may need bolder interior treatment (photo headers, color accents) to feel "drastically improved"
+
+**Trigger to revisit:** Next session after this handoff; verify which of the three it is and act accordingly. Check this session for full context.
+
+---
+
 ## Item: Restyle interior pages to logo-true palette
 
 **Status: DONE (2026-08-02, commit `1f94539`, tag `v20260802-interior-restyle`)**

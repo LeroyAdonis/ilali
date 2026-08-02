@@ -104,8 +104,8 @@ export default function HowItWorksPage() {
           eyebrow="How it works"
           title={<>Simple for <span className="text-teal">parents</span>, powerful for <span className="text-purple">providers</span></>}
           subtitle="Whether you're a parent looking for activities or a provider wanting to grow your reach, we make it simple."
-          imageSrc="/images/hero/hero-home.jpg"
-          imageAlt="How ILALI works"
+          imageSrc="/images/hero/hero-how-it-works.jpg"
+          imageAlt="How ILALI works — connecting parents with providers"
         />
 
         {/* For Parents */}

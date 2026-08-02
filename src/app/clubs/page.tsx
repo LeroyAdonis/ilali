@@ -18,6 +18,7 @@ import {
   Car,
   ArrowRight,
   ArrowLeft,
+  Clock,
 } from "lucide-react";
 import { formatEventDate } from "@/lib/club-format";
 
@@ -102,6 +103,57 @@ export default async function ClubsPage() {
 
   const hasClubs = clubs.length > 0;
   const hasRides = openRides.length > 0;
+
+  // ── Activity feed data ──
+  const nowMs = Date.now();
+  const weekFromNow = nowMs + 7 * 86400000;
+
+  // Provider id → name lookup for event cards
+  const providerNameById = new Map(
+    providersWithMembers.map((p) => [p.id, p.name]),
+  );
+
+  // Upcoming events across all clubs (within 7 days)
+  const upcomingEvents = eventsByClub
+    .flat()
+    .filter((e) => {
+      const t = e.startTime.getTime();
+      return t >= nowMs && t <= weekFromNow;
+    })
+    .sort((a, b) => a.startTime.getTime() - b.startTime.getTime())
+    .slice(0, 5)
+    .map((e) => ({
+      type: "event" as const,
+      icon: "📅",
+      title: e.title,
+      subtitle: `${formatEventDate(e.startTime)}${e.location ? ` — ${e.location}` : ""}`,
+      providerName: providerNameById.get(e.providerId) ?? "A club",
+      time: e.startTime.getTime(),
+    }));
+
+  // Recent ride requests (newest first)
+  const recentRides = allRides
+    .sort((a, b) => (b.createdAt?.getTime() ?? 0) - (a.createdAt?.getTime() ?? 0))
+    .slice(0, 5)
+    .map((r) => ({
+      type: "ride" as const,
+      icon: "🚗",
+      title: `${r.parentName} needs a ride for ${r.childName || "their child"}`,
+      subtitle: r.eventTitle,
+      providerName: eventToSlug.get(r.eventId)
+        ? providersWithMembers.find(
+            (p) => p.slug === eventToSlug.get(r.eventId),
+          )?.name ?? "A club"
+        : "A club",
+      time: r.createdAt?.getTime() ?? 0,
+    }));
+
+  // Merge and sort by time (newest first)
+  const activityItems = [...recentRides, ...upcomingEvents]
+    .sort((a, b) => b.time - a.time)
+    .slice(0, 8);
+
+  const hasActivity = activityItems.length > 0;
 
   return (
     <>
@@ -238,6 +290,53 @@ export default async function ClubsPage() {
             )}
           </div>
         </section>
+
+        {/* ── Recent Activity ── */}
+        {hasActivity && (
+          <section
+            aria-labelledby="activity-heading"
+            className="bg-white border-t border-ink/5"
+          >
+            <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2
+                  id="activity-heading"
+                  className="font-display text-[clamp(1.3rem,2vw,1.6rem)] font-bold text-ink flex items-center gap-2"
+                >
+                  <Clock className="h-5 w-5 text-ilali-500" aria-hidden="true" />
+                  Recent Activity
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {activityItems.map((item, idx) => (
+                  <div
+                    key={`${item.type}-${idx}`}
+                    className="flex items-start gap-3 rounded-xl border border-ink/10 bg-paper-warm p-4 shadow-sm"
+                  >
+                    <span
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-lg"
+                      aria-hidden
+                    >
+                      {item.icon}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-ink truncate">
+                        {item.title}
+                      </p>
+                      <p className="mt-0.5 text-xs text-ink-faint truncate">
+                        {item.subtitle}
+                      </p>
+                      <p className="mt-1 text-[11px] font-medium text-ink-faint/70">
+                        {item.providerName}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* ── Ride-sharing board ── */}
         {hasRides ? (

@@ -128,6 +128,7 @@ export const navLinks = [
   { label: "Map", href: "/map" },
   { label: "Categories", href: "/categories" },
   { label: "Community", href: "/clubs" },
+  { label: "Rewards", href: "/rewards" },
   { label: "How It Works", href: "/how-it-works" },
   { label: "Ubuntu Rewards", href: "/ubuntu-rewards" },
 ];

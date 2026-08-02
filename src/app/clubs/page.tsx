@@ -1,6 +1,372 @@
-import { redirect } from "next/navigation";
+import Link from "next/link";
+import type { Metadata } from "next";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import InteriorHero from "@/components/InteriorHero";
+import {
+  getProviders,
+  getClubStats,
+  getClubEvents,
+  getRideRequests,
+  type ClubEvent,
+  type RideRequestWithNames,
+} from "@/lib/data-source";
+import {
+  Users,
+  CalendarDays,
+  MapPin,
+  Car,
+  ArrowRight,
+  ArrowLeft,
+} from "lucide-react";
+import { formatEventDate } from "@/lib/club-format";
 
-// Every provider is a club — the club index lives in the browse experience.
-export default function ClubsIndex() {
-  redirect("/browse");
+export const metadata: Metadata = {
+  title: "Community Hub | ILALI",
+  description:
+    "Find your club, share the ride — ILALI's community hub connects families through clubs, events, and ride-sharing in Cape Town.",
+};
+
+const ACCENT_ROTATION = ["teal", "gold", "purple", "orange"] as const;
+
+type Accent = (typeof ACCENT_ROTATION)[number];
+
+const ACCENT_BORDER: Record<Accent, string> = {
+  teal: "border-t-teal",
+  gold: "border-t-gold",
+  purple: "border-t-purple",
+  orange: "border-t-orange",
+};
+
+const ACCENT_DOT: Record<Accent, string> = {
+  teal: "bg-teal",
+  gold: "bg-gold",
+  purple: "bg-purple",
+  orange: "bg-orange",
+};
+
+const ACCENT_LINK: Record<Accent, string> = {
+  teal: "text-teal-deep hover:text-teal",
+  gold: "text-gold-deep-2 hover:text-gold",
+  purple: "text-purple-deep hover:text-purple",
+  orange: "text-orange hover:text-orange/80",
+};
+
+type ClubCard = {
+  provider: Awaited<ReturnType<typeof getProviders>>[number];
+  stats: Awaited<ReturnType<typeof getClubStats>>;
+  nextEvent: ClubEvent | null;
+};
+
+export default async function ClubsPage() {
+  // ── 1. Fetch all providers ──
+  const allProviders = await getProviders();
+
+  // ── 2. Stats for every provider (parallel) ──
+  const allStats = await Promise.all(
+    allProviders.map((p) => getClubStats(p.id)),
+  );
+
+  // ── 3. Filter to clubs with real members ──
+  const providersWithMembers = allProviders.filter(
+    (_, i) => allStats[i].memberFamilies > 0,
+  );
+  const filteredStats = allStats.filter((s) => s.memberFamilies > 0);
+
+  // ── 4. Get events for clubs with members ──
+  const eventsByClub = await Promise.all(
+    providersWithMembers.map((p) => getClubEvents(p.id)),
+  );
+
+  const now = Date.now();
+  const clubs: ClubCard[] = providersWithMembers.map((provider, i) => ({
+    provider,
+    stats: filteredStats[i],
+    nextEvent: eventsByClub[i].find((e) => e.startTime.getTime() >= now) ?? null,
+  }));
+
+  // ── 5. Open ride requests ──
+  const allRides = await getRideRequests();
+  const openRides: RideRequestWithNames[] = allRides.filter(
+    (r) => r.status === "open",
+  );
+
+  // ── 6. Build eventId → clubSlug lookup for ride cards ──
+  const eventToSlug = new Map<string, string>();
+  for (let i = 0; i < providersWithMembers.length; i++) {
+    const slug = providersWithMembers[i].slug;
+    for (const evt of eventsByClub[i]) {
+      eventToSlug.set(evt.id, slug);
+    }
+  }
+
+  const hasClubs = clubs.length > 0;
+  const hasRides = openRides.length > 0;
+
+  return (
+    <>
+      <Header />
+      <main className="flex-1">
+        {/* ── InteriorHero ── */}
+        <InteriorHero
+          eyebrow="Community"
+          title={
+            <>
+              Find your{" "}
+              <span className="text-teal">club</span>, share the{" "}
+              <span className="text-gold-deep">ride</span>
+            </>
+          }
+          subtitle="Every provider on ILALI is a club — with events, members, and ride-sharing. Find your crew and stay connected."
+          imageSrc="/images/hero/hero-clubs.jpg"
+          imageAlt="ILALI community clubs in Cape Town"
+        />
+
+        {/* ── Club cards grid ── */}
+        <section
+          aria-labelledby="clubs-heading"
+          className="bg-paper"
+        >
+          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2
+                id="clubs-heading"
+                className="font-display text-[clamp(1.3rem,2vw,1.6rem)] font-bold text-ink"
+              >
+                Active clubs
+              </h2>
+              {hasClubs && (
+                <span className="text-xs font-semibold text-ink-faint">
+                  {clubs.length} club{clubs.length !== 1 ? "s" : ""}
+                </span>
+              )}
+            </div>
+
+            {hasClubs ? (
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {clubs.map((club, idx) => {
+                  const accent = ACCENT_ROTATION[idx % ACCENT_ROTATION.length];
+                  const provider = club.provider;
+                  const categoryName =
+                    (provider as { category?: string }).category
+                      ?.split("-")
+                      .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
+                      .join(" ") ?? "Club";
+
+                  return (
+                    <Link
+                      key={provider.id}
+                      href={`/clubs/${provider.slug}`}
+                      className={`group flex flex-col rounded-[14px] border border-ink/10 bg-white overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-[2px] transition-all duration-200 border-t-[3px] ${ACCENT_BORDER[accent]}`}
+                    >
+                      {/* Card body */}
+                      <div className="flex flex-1 flex-col p-5">
+                        <h3 className="font-display text-[15px] font-bold text-ink leading-[1.3] group-hover:text-teal-deep transition-colors">
+                          {provider.name}
+                        </h3>
+                        <p className="mt-0.5 text-xs text-ink-faint">
+                          {categoryName}
+                        </p>
+
+                        {/* Stats row */}
+                        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-faint">
+                          <span className="flex items-center gap-1">
+                            <Users
+                              className="h-3.5 w-3.5 text-ilali-500"
+                              aria-hidden="true"
+                            />
+                            {club.stats.memberFamilies} member famil
+                            {club.stats.memberFamilies === 1 ? "y" : "ies"}
+                          </span>
+                          {club.nextEvent && (
+                            <span className="flex items-center gap-1">
+                              <CalendarDays
+                                className="h-3.5 w-3.5 text-ilali-500"
+                                aria-hidden="true"
+                              />
+                              {formatEventDate(club.nextEvent.startTime)}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Next event detail */}
+                        {club.nextEvent && (
+                          <div className="mt-2 flex items-start gap-2 rounded-lg bg-paper-warm p-2.5 text-xs">
+                            <div
+                              className={`mt-0.5 h-2 w-2 shrink-0 rounded-full ${ACCENT_DOT[accent]}`}
+                              aria-hidden="true"
+                            />
+                            <div className="min-w-0">
+                              <p className="font-semibold text-ink truncate">
+                                {club.nextEvent.title}
+                              </p>
+                              {club.nextEvent.location && (
+                                <p className="mt-0.5 flex items-center gap-1 text-[11px] text-ink-faint">
+                                  <MapPin className="h-3 w-3" aria-hidden="true" />
+                                  {club.nextEvent.location}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Accent bar + link */}
+                      <div
+                        className={`flex items-center justify-end gap-1 px-5 py-2.5 border-t border-ink/5 bg-paper-warm text-xs font-semibold ${ACCENT_LINK[accent]}`}
+                      >
+                        View club
+                        <span aria-hidden="true">→</span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="rounded-xl border border-dashed border-ink/10 bg-paper-warm p-10 text-center">
+                <Users
+                  className="mx-auto h-8 w-8 text-ink-faint"
+                  aria-hidden="true"
+                />
+                <p className="mt-3 text-sm font-medium text-ink-soft">
+                  No active clubs yet
+                </p>
+                <p className="mt-1 text-xs text-ink-faint">
+                  Clubs form when families join a provider. Be the first!
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ── Ride-sharing board ── */}
+        {hasRides ? (
+          <section
+            aria-labelledby="rides-heading"
+            className="bg-paper-warm border-t border-ink/5"
+          >
+            <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2
+                  id="rides-heading"
+                  className="font-display text-[clamp(1.3rem,2vw,1.6rem)] font-bold text-ink flex items-center gap-2"
+                >
+                  <Car className="h-5 w-5 text-gold" aria-hidden="true" />
+                  Ride-sharing board
+                </h2>
+                <span className="text-xs font-semibold text-ink-faint">
+                  {openRides.length} open request
+                  {openRides.length !== 1 ? "s" : ""}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {openRides.map((ride, idx) => {
+                  const accent = ACCENT_ROTATION[idx % ACCENT_ROTATION.length];
+                  const DirectionIcon =
+                    ride.direction === "to" ? ArrowRight : ArrowLeft;
+                  const clubSlug = eventToSlug.get(ride.eventId);
+
+                  return (
+                    <div
+                      key={ride.id}
+                      className={`flex flex-col rounded-[14px] border border-ink/10 bg-white shadow-sm border-t-[3px] ${ACCENT_BORDER[accent]} overflow-hidden`}
+                    >
+                      <div className="flex flex-1 flex-col p-4">
+                        {/* Route */}
+                        <div className="flex items-center gap-2">
+                          <DirectionIcon
+                            className="h-4 w-4 shrink-0 text-ilali-500"
+                            aria-hidden="true"
+                          />
+                          <span className="text-sm font-semibold text-ink">
+                            {ride.direction === "to"
+                              ? "Ride to event"
+                              : "Ride from event"}
+                          </span>
+                          <span className="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
+                            Open
+                          </span>
+                        </div>
+
+                        {/* Who + event */}
+                        <p className="mt-2 text-xs text-ink-soft leading-relaxed">
+                          <span className="font-semibold text-ink">
+                            {ride.parentName}
+                          </span>{" "}
+                          needs a ride for{" "}
+                          <span className="font-medium">{ride.childName}</span>
+                        </p>
+                        <p className="mt-1 text-[11px] text-ink-faint flex items-center gap-1">
+                          <CalendarDays className="h-3 w-3" aria-hidden="true" />
+                          {ride.eventTitle}
+                        </p>
+
+                        {/* Link to club */}
+                        {clubSlug ? (
+                          <Link
+                            href={`/clubs/${clubSlug}`}
+                            className={`mt-3 inline-flex items-center gap-1 self-start text-xs font-semibold ${ACCENT_LINK[accent]}`}
+                          >
+                            Claim this ride →
+                          </Link>
+                        ) : (
+                          <span className="mt-3 text-[11px] text-ink-faint italic">
+                            Visit a club to claim
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        ) : (
+          <section className="bg-paper-warm border-t border-ink/5">
+            <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+              <div className="rounded-xl border border-dashed border-ink/10 bg-white p-10 text-center">
+                <Car
+                  className="mx-auto h-8 w-8 text-ink-faint"
+                  aria-hidden="true"
+                />
+                <p className="mt-3 text-sm font-medium text-ink-soft">
+                  No ride requests yet
+                </p>
+                <p className="mt-1 text-xs text-ink-faint">
+                  Join a club and post your first ride request!
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── CTA band ── */}
+        <section className="border-t border-ink/5 bg-paper px-4 py-12 sm:px-6">
+          <div className="mx-auto max-w-7xl text-center">
+            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-gold-deep-2">
+              ★ IT TAKES A VILLAGE
+            </span>
+            <h2 className="font-display mt-2 text-[clamp(1.4rem,2.5vw,1.8rem)] font-bold text-ink">
+              Browse all{" "}
+              <span className="text-teal">vetted</span> providers
+            </h2>
+            <p className="mx-auto mt-2 max-w-[44ch] text-sm text-ink-faint">
+              Every listed provider on ILALI is also a club. Find activities
+              your kids will love — and a community to share the journey.
+            </p>
+            <div className="mt-5">
+              <Link
+                href="/browse"
+                className="inline-flex items-center gap-2 rounded-[10px] bg-gold px-8 py-3.5 text-[15px] font-semibold text-[#3A2402] shadow-[0_4px_0_rgba(224,143,16,0.28)] transition-transform hover:-translate-y-px"
+              >
+                Browse all activities →
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
 }

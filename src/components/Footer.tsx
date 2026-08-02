@@ -125,7 +125,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-ink/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-5 sm:flex-row sm:px-6 lg:px-8">
-          <p className="text-xs text-ink-soft/70">
+          <p className="text-xs text-ink-faint">
             &copy; {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
           <div className="flex gap-5">
@@ -133,7 +133,7 @@ export default function Footer() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-xs text-ink-soft/70 hover:text-teal-deep transition-colors"
+                className="text-xs text-ink-faint hover:text-teal-deep transition-colors"
               >
                 {link.label}
               </Link>

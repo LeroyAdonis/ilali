@@ -190,7 +190,7 @@ export default function LandingPage() {
                   I&apos;m a provider
                 </Link>
               </div>
-              <p className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-ink-soft">
+              <p className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-ink-faint">
                 <span className="text-teal-deep text-[13px]">✓</span> No credit card required
                 <span className="text-ink/15">·</span>
                 <span className="text-teal-deep text-[13px]">✓</span> Free to browse
@@ -325,9 +325,6 @@ export default function LandingPage() {
                 ★
               </span>
               <div>
-                <span className="inline-flex items-center gap-2.5 pb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-teal-deep">
-                  <span className="h-1.5 w-1.5 rounded-full bg-purple" /> For activity providers
-                </span>
                 <h2 className="font-display text-[clamp(2rem,3.5vw,2.8rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-ink">
                   Are you a <span className="text-gold-deep">provider?</span>
                 </h2>
@@ -367,9 +364,6 @@ export default function LandingPage() {
         {/* ───── FINAL CTA ───── */}
         <section className="px-4 py-24 sm:px-6 sm:py-28 lg:px-8">
           <div className="mx-auto max-w-7xl text-center">
-            <span className="inline-flex items-center justify-center gap-2.5 pb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-teal-deep">
-              <span className="h-1.5 w-1.5 rounded-full bg-gold" /> Your week, sorted
-            </span>
             <h2 className="mx-auto max-w-[18ch] font-display text-[clamp(2.6rem,5.5vw,4rem)] font-extrabold leading-[1.04] tracking-[-0.02em] text-ink">
               Ready to find your child&apos;s next <span className="text-gold-deep">adventure?</span>
             </h2>
@@ -409,12 +403,12 @@ export default function LandingPage() {
               />
               <span className="font-display text-[17px] font-extrabold text-ink">ILALI</span>
             </div>
-            <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-ink-soft">
+            <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-ink-faint">
               <Link href="/about" className="hover:text-teal-deep transition-colors">About</Link>
               <Link href="/contact" className="hover:text-teal-deep transition-colors">Contact</Link>
               <Link href="/privacy" className="hover:text-teal-deep transition-colors">Privacy</Link>
               <Link href="/terms" className="hover:text-teal-deep transition-colors">Terms</Link>
-              <span className="text-ink-soft/70">&copy; {new Date().getFullYear()} Arts4Youth</span>
+              <span className="text-ink-faint">&copy; {new Date().getFullYear()} Arts4Youth</span>
             </div>
           </div>
         </div>

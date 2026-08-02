@@ -4,9 +4,12 @@ import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProviderCard from "@/components/ProviderCard";
+import InteriorHero from "@/components/InteriorHero";
 import { categories } from "@/lib/constants";
 import { getProviders, getCategories } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
+
+const ACCENT_ROTATION = ["teal", "gold", "purple", "orange"] as const;
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -43,32 +46,24 @@ export default async function CategoryPage({ params }: Props) {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <Link
-              href="/categories"
-              className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-ilali-200 hover:text-white transition-colors"
-            >
-              ← All Categories
-            </Link>
-            <div className="flex items-center gap-4">
-              <span
-                className={`inline-flex h-14 w-14 items-center justify-center rounded-full text-2xl ${cat.color}`}
-              >
-                {cat.icon}
-              </span>
-              <div>
-                <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-                  {cat.name}
-                </h1>
-                <p className="mt-2 max-w-2xl text-base leading-relaxed text-ilali-100 sm:text-lg">
-                  {cat.description}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Hero — photo-backed with category image */}
+        <InteriorHero
+          eyebrow={cat.name}
+          title={<>{cat.icon} {cat.name}</>}
+          subtitle={cat.description}
+          imageSrc={`/images/providers/${slug}.jpg`}
+          imageAlt={`${cat.name} activities in Cape Town`}
+        />
+
+        {/* Back link */}
+        <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+          <Link
+            href="/categories"
+            className="inline-flex items-center gap-1 text-sm font-medium text-ink-faint hover:text-teal-deep transition-colors"
+          >
+            ← All Categories
+          </Link>
+        </div>
 
         {/* Results */}
         <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -82,8 +77,8 @@ export default async function CategoryPage({ params }: Props) {
 
           {filtered.length > 0 ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {filtered.map((provider) => (
-                <ProviderCard key={provider.id} provider={provider} />
+              {filtered.map((provider, idx) => (
+                <ProviderCard key={provider.id} provider={provider} accentColor={ACCENT_ROTATION[idx % ACCENT_ROTATION.length]} />
               ))}
             </div>
           ) : (

@@ -10,6 +10,15 @@ export const metadata: Metadata = {
     "List your children's activities on ILALI. Reach more families, manage bookings, and grow your business. R99/month + 10% commission.",
 };
 
+import InteriorHero from "@/components/InteriorHero";
+
+const BENEFIT_COLORS = [
+  { bar: "bg-teal", icon: "bg-teal/10 text-teal-deep", tag: "text-teal-deep-2" },
+  { bar: "bg-gold", icon: "bg-gold/10 text-gold-deep", tag: "text-gold-deep-2" },
+  { bar: "bg-purple", icon: "bg-purple/10 text-purple-deep", tag: "text-purple-deep" },
+  { bar: "bg-orange", icon: "bg-orange/10 text-orange", tag: "text-orange" },
+];
+
 const benefits = [
   {
     title: "Dashboard",
@@ -43,23 +52,13 @@ export default function ForProvidersPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-              List Your Activities
-            </h1>
-            <p className="mt-3 text-base leading-relaxed text-ink-soft sm:text-lg">
-              Join the platform that connects you with families looking for
-              quality children&apos;s activities in your area.
-            </p>
-            <a
-              href="#signup"
-              className="mt-8 inline-flex items-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-ilali-700 shadow-sm hover:bg-ilali-50 transition-colors"
-            >
-              Get Started Free
-            </a>
-          </div>
-        </section>
+        <InteriorHero
+          eyebrow="For Providers"
+          title={<>List your <span className="text-teal">activities</span>, grow your <span className="text-gold-deep">reach</span></>}
+          subtitle="Join the platform that connects you with families looking for quality children's activities in your area."
+          imageSrc="/images/hero/hero-for-providers.jpg"
+          imageAlt="Activity providers in Cape Town"
+        />
 
         {/* Benefits */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -72,22 +71,30 @@ export default function ForProvidersPage() {
             </p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {benefits.map((benefit) => (
+            {benefits.map((benefit, idx) => {
+              const c = BENEFIT_COLORS[idx % BENEFIT_COLORS.length];
+              return (
               <div
                 key={benefit.title}
-                className="rounded-xl border border-ink/10 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md"
+                className="rounded-xl border border-ink/10 bg-white shadow-sm transition-all duration-200 hover:shadow-md overflow-hidden"
               >
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ilali-100 text-2xl">
+                <div className={`h-[5px] w-full ${c.bar}`} />
+                <div className="p-6">
+                <span className={`inline-flex h-12 w-12 items-center justify-center rounded-full text-2xl ${c.icon}`}>
                   {benefit.icon}
                 </span>
-                <h3 className="mt-4 font-display text-lg font-semibold text-ink">
+                <h3 className="mt-4 font-display text-lg font-bold text-ink">
                   {benefit.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
                   {benefit.description}
                 </p>
+                <span className={`mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.16em] ${c.tag}`}>
+                  FEATURE {String(idx + 1).padStart(2, "0")}
+                </span>
+                </div>
               </div>
-            ))}
+            )})}
           </div>
         </section>
 

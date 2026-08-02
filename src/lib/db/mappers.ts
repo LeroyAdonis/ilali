@@ -31,7 +31,7 @@ export function mapProvider(
     price: dbRow.isFree ? "Free" : `R${dbRow.priceValue.toLocaleString()}`,
     priceValue: dbRow.priceValue,
     priceLabel: dbRow.priceLabel ?? "per session",
-    image: dbRow.imageUrl ?? "",
+    image: dbRow.imageUrl ?? `/images/providers/${dbRow.category}.jpg`,
     isFree: dbRow.isFree ?? false,
     featured: dbRow.featured ?? false,
     verified: dbRow.verified ?? false,

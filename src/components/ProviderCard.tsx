@@ -2,12 +2,21 @@ import Link from "next/link";
 import { MapPin, Star, CheckCircle, Sparkles } from "lucide-react";
 import type { Provider } from "@/lib/types";
 
+const ACCENT_COLORS = {
+  teal: "bg-teal",
+  gold: "bg-gold",
+  purple: "bg-purple",
+  orange: "bg-orange",
+} as const;
+
 interface ProviderCardProps {
   provider: Provider;
   matchScore?: number;
   matchReasons?: string[];
   /** Optional verification badge rendered by a parent server component */
   verificationBadge?: React.ReactNode;
+  /** Accent bar color — rotates through teal/gold/purple/orange */
+  accentColor?: keyof typeof ACCENT_COLORS;
 }
 
 export default function ProviderCard({
@@ -15,6 +24,7 @@ export default function ProviderCard({
   matchScore,
   matchReasons,
   verificationBadge,
+  accentColor = "teal",
 }: ProviderCardProps) {
   const {
     name,
@@ -35,12 +45,17 @@ export default function ProviderCard({
   // Determine trust badge
   const isVerified =
     (provider as Provider & { verified?: boolean }).verified ?? false;
+  const isTrusted =
+    (provider as Provider & { trusted?: boolean }).trusted ?? false;
 
   return (
     <Link
       href={`/activity/${slug}`}
-      className="group block rounded-xl border border-ink/10 bg-white shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden"
+      className="group flex flex-col rounded-xl border border-ink/10 bg-white shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden"
     >
+      {/* Accent bar — 5px color-wheel strip */}
+      <div className={`h-[5px] w-full flex-shrink-0 ${ACCENT_COLORS[accentColor]}`} />
+
       {/* Image / Placeholder */}
       <div className="relative h-44 w-full overflow-hidden bg-gradient-to-br from-ilali-200 to-sunset-200">
         {image ? (
@@ -58,25 +73,28 @@ export default function ProviderCard({
         )}
 
         {/* Trust badge — top left */}
-        <span
-          className={`absolute top-3 left-3 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm ${
-            isVerified
-              ? "bg-ilali-600/90 text-white"
-              : "bg-amber-400/90 text-amber-900"
-          }`}
-        >
-          {isVerified ? (
+        {isTrusted ? (
+          <span className="absolute top-3 left-3 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm bg-gold/90 text-[#3A2402]">
+            <span className="flex items-center gap-1">
+              <Star className="h-3 w-3 fill-[#3A2402] text-[#3A2402]" aria-hidden="true" />
+              Trusted
+            </span>
+          </span>
+        ) : isVerified ? (
+          <span className="absolute top-3 left-3 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm bg-purple/90 text-white">
             <span className="flex items-center gap-1">
               <CheckCircle className="h-3 w-3" aria-hidden="true" />
               Verified
             </span>
-          ) : (
+          </span>
+        ) : (
+          <span className="absolute top-3 left-3 rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm backdrop-blur-sm bg-orange/90 text-white">
             <span className="flex items-center gap-1">
               <Sparkles className="h-3 w-3" aria-hidden="true" />
               New
             </span>
-          )}
-        </span>
+          </span>
+        )}
 
         {/* Category badge */}
         <span className="absolute top-3 left-[100px] rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-ink-soft shadow-sm backdrop-blur-sm">
@@ -92,7 +110,7 @@ export default function ProviderCard({
       {/* Content */}
       <div className="p-4">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="text-sm font-semibold text-ink group-hover:text-ilali-600 transition-colors line-clamp-1">
+          <h3 className="font-display text-[15px] font-bold text-ink group-hover:text-ilali-600 transition-colors line-clamp-1">
             {name}
           </h3>
 

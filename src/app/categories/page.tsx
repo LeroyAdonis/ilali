@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CategoryCard from "@/components/CategoryCard";
+import InteriorHero from "@/components/InteriorHero";
+import Link from "next/link";
 import { categories } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -10,28 +12,31 @@ export const metadata: Metadata = {
     "Browse children's activities by category — Arts, Sports, Music, Education, Holiday Programs, and more in Cape Town.",
 };
 
+const ACCENT_ROTATION = ["teal", "gold", "purple", "orange"] as const;
+
 export default function CategoriesPage() {
   return (
     <>
       <Header />
       <main className="flex-1">
-        {/* Hero header */}
-        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-              Browse by Category
-            </h1>
-            <p className="mt-3 max-w-2xl text-base leading-relaxed text-ilali-100 sm:text-lg">
-              Find the perfect activity for your child — from sports and arts to
-              music and education.
-            </p>
-          </div>
-        </section>
+        {/* Interior Hero */}
+        <InteriorHero
+          eyebrow="Browse"
+          title={
+            <>
+              Every <span className="text-teal">activity</span>,{" "}
+              <span className="text-purple">sorted</span>
+            </>
+          }
+          subtitle="From arts and sports to music and holiday camps — find exactly what your child is looking for."
+          imageSrc="/images/hero/hero-categories.jpg"
+          imageAlt="Children's activities in Cape Town"
+        />
 
         {/* Category grid */}
         <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {categories.map((cat) => (
+            {categories.map((cat, idx) => (
               <CategoryCard
                 key={cat.id}
                 name={cat.name}
@@ -39,8 +44,40 @@ export default function CategoriesPage() {
                 colorClasses={cat.color}
                 description={cat.description}
                 href={`/category/${cat.slug}`}
+                accentColor={ACCENT_ROTATION[idx % ACCENT_ROTATION.length]}
               />
             ))}
+          </div>
+        </section>
+
+        {/* CTA Band */}
+        <section className="border-t border-ink/5 bg-paper-warm px-4 py-12 sm:px-6">
+          <div className="mx-auto max-w-7xl text-center">
+            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-gold-deep-2">
+              ★ CAN&apos;T DECIDE?
+            </span>
+            <h2 className="font-display mt-2 text-[clamp(1.4rem,2.5vw,1.8rem)] font-bold text-ink">
+              Let our AI find the{" "}
+              <span className="text-teal">perfect</span> match
+            </h2>
+            <p className="mx-auto mt-2 max-w-[44ch] text-sm text-ink-faint">
+              Tell us what your child loves, and ILALI&apos;s AI concierge will
+              match them with vetted activities.
+            </p>
+            <div className="mt-5 flex flex-wrap justify-center gap-3">
+              <Link
+                href="/browse"
+                className="inline-flex items-center gap-2 rounded-[10px] bg-gold px-8 py-3.5 text-[15px] font-semibold text-[#3A2402] shadow-[0_4px_0_rgba(224,143,16,0.28)] transition-transform hover:-translate-y-px"
+              >
+                Ask the AI Concierge 🤖
+              </Link>
+              <Link
+                href="/browse"
+                className="inline-flex items-center rounded-[10px] border border-ink/15 px-8 py-3.5 text-[15px] font-semibold text-ink transition-all hover:border-teal hover:text-teal-deep"
+              >
+                Browse all activities →
+              </Link>
+            </div>
           </div>
         </section>
       </main>

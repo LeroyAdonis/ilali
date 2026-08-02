@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import AIChatPanel from "@/components/chat/AIChatPanel";
 import FilterBar from "@/components/FilterBar";
 import ProviderCard from "@/components/ProviderCard";
+import InteriorHero from "@/components/InteriorHero";
 import Footer from "@/components/Footer";
 import VerificationBadge from "@/components/verification/VerificationBadge";
 import Link from "next/link";
@@ -129,35 +130,28 @@ function ResultsSection({
 
   return (
     <>
-      <section className="py-12 sm:py-16">
+      {/* Interior Hero */}
+      <InteriorHero
+        eyebrow="Discover"
+        title={
+          <>
+            Find the{" "}
+            <span className="text-teal">perfect</span> activity for your{" "}
+            <span className="text-gold-deep">child</span>
+          </>
+        }
+        subtitle="Browse hundreds of vetted children's activities across Cape Town. Every provider background-checked, every review from real families."
+        imageSrc="/images/hero/hero-browse.jpg"
+        imageAlt="Children discovering activities in Cape Town"
+      />
+
+      {/* AI Chat Panel */}
+      <section className="py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">
-              {activeCategory
-                ? `${
-                    providers.find((p) => p.categorySlug === activeCategory)
-                      ?.category || "Browse"
-                  } Activities`
-                : isAiMatch
-                  ? "AI-Powered Matches"
-                  : "Find the perfect activity"}
-            </h1>
-            <p className="mt-2 text-sm text-ink-faint">
-              {nl
-                ? `Showing matches for "${nl}"`
-                : hasActiveFilters
-                  ? `Showing ${filtered.length} ${
-                      filtered.length === 1 ? "activity" : "activities"
-                    }`
-                  : "Search from hundreds of vetted children's activities near you."}
-            </p>
-          </div>
-          <div className="mt-8">
-            <AIChatPanel
-              showHeading={false}
-              placeholder="Ask ILALI — e.g. “swimming for my 6 year old near Sea Point on Saturdays”"
-            />
-          </div>
+          <AIChatPanel
+            showHeading={false}
+            placeholder="Ask ILALI — e.g. “swimming for my 6 year old near Sea Point on Saturdays”"
+          />
         </div>
       </section>
 
@@ -271,20 +265,30 @@ function ResultsSection({
 
           <section className="py-10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">
-                New providers
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-teal-deep-2">
+                ★ JUST ADDED
+              </span>
+              <h2 className="font-display text-xl font-bold text-ink sm:text-2xl mt-2">
+                New this week
               </h2>
               <p className="mt-1 text-sm text-ink-faint">
-                Fresh activities added this week
+                Fresh activities from newly vetted providers.
               </p>
               <div className="mt-6 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
-                {newProviders.map((provider) => (
+                {newProviders.map((provider, idx) => (
                   <div
                     key={provider.id}
                     className="w-[280px] shrink-0 snap-start"
                   >
                     <ProviderCard
                       provider={provider}
+                      accentColor={
+                        ["teal", "gold", "purple", "orange"][idx % 4] as
+                          | "teal"
+                          | "gold"
+                          | "purple"
+                          | "orange"
+                      }
                       verificationBadge={
                         <Suspense fallback={null}>
                           <VerificationBadge providerId={provider.id} />
@@ -295,10 +299,17 @@ function ResultsSection({
                 ))}
               </div>
               <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
-                {newProviders.map((provider) => (
+                {newProviders.map((provider, idx) => (
                   <ProviderCard
                     key={provider.id}
                     provider={provider}
+                    accentColor={
+                      ["teal", "gold", "purple", "orange"][idx % 4] as
+                        | "teal"
+                        | "gold"
+                        | "purple"
+                        | "orange"
+                    }
                     verificationBadge={
                       <Suspense fallback={null}>
                         <VerificationBadge providerId={provider.id} />
@@ -312,20 +323,30 @@ function ResultsSection({
 
           <section className="py-10 bg-paper-warm">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-gold-deep-2">
+                ★ MOST POPULAR
+              </span>
+              <h2 className="font-display text-xl font-bold text-ink sm:text-2xl mt-2">
                 Local favourites
               </h2>
               <p className="mt-1 text-sm text-ink-faint">
                 Most popular activities in your area
               </p>
               <div className="mt-6 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
-                {localFavourites.map((provider) => (
+                {localFavourites.map((provider, idx) => (
                   <div
                     key={provider.id}
                     className="w-[280px] shrink-0 snap-start"
                   >
                     <ProviderCard
                       provider={provider}
+                      accentColor={
+                        ["teal", "gold", "purple", "orange"][idx % 4] as
+                          | "teal"
+                          | "gold"
+                          | "purple"
+                          | "orange"
+                      }
                       verificationBadge={
                         <Suspense fallback={null}>
                           <VerificationBadge providerId={provider.id} />
@@ -336,10 +357,17 @@ function ResultsSection({
                 ))}
               </div>
               <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
-                {localFavourites.map((provider) => (
+                {localFavourites.map((provider, idx) => (
                   <ProviderCard
                     key={provider.id}
                     provider={provider}
+                    accentColor={
+                      ["teal", "gold", "purple", "orange"][idx % 4] as
+                        | "teal"
+                        | "gold"
+                        | "purple"
+                        | "orange"
+                    }
                     verificationBadge={
                       <Suspense fallback={null}>
                         <VerificationBadge providerId={provider.id} />

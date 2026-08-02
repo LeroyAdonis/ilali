@@ -7,10 +7,13 @@ import TestimonialCarousel from "@/components/TestimonialCarousel";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import AIChatPanel from "@/components/chat/AIChatPanel";
+import InteriorHero from "@/components/InteriorHero";
 import { categories, stats } from "@/lib/constants";
 import { getProviders, getVenues, getCategories } from "@/lib/data-source";
 import { mapProvider, mapVenue } from "@/lib/db/mappers";
 import Link from "next/link";
+
+const ACCENT_ROTATION = ["teal", "gold", "purple", "orange"] as const;
 
 export const metadata: Metadata = {
   title: "Home | ILALI",
@@ -33,9 +36,18 @@ export default async function HomePage() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        {/* ───── HERO: AI Chat Panel ───── */}
-        <section className="relative overflow-hidden border-b border-ink/10 bg-paper-warm">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+        {/* ───── HERO: Photo-backed + AI Chat ───── */}
+        <InteriorHero
+          eyebrow="Welcome"
+          title={<>Find activities your <span className="text-gold-deep">kids</span> will <span className="text-teal">love</span></>}
+          subtitle="ILALI is Cape Town's trusted marketplace for children's activities. Every provider is background-checked, every review from a real family."
+          imageSrc="/images/hero/hero-home.jpg"
+          imageAlt="Family discovering activities in Cape Town"
+        />
+
+        {/* AI Chat Panel */}
+        <section className="border-b border-ink/10 bg-paper-warm">
+          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <AIChatPanel />
 
             {/* Trending tags */}
@@ -81,7 +93,7 @@ export default async function HomePage() {
               </Link>
             </div>
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-              {categories.map((cat) => (
+              {categories.map((cat, idx) => (
                 <CategoryCard
                   key={cat.id}
                   name={cat.name}
@@ -89,6 +101,7 @@ export default async function HomePage() {
                   colorClasses={cat.color}
                   description={cat.description}
                   href={`/category/${cat.slug}`}
+                  accentColor={ACCENT_ROTATION[idx % ACCENT_ROTATION.length]}
                 />
               ))}
             </div>
@@ -110,15 +123,15 @@ export default async function HomePage() {
               </Link>
             </div>
             <div className="mt-8 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
-              {newProviders.map((provider) => (
+              {newProviders.map((provider, idx) => (
                 <div key={provider.id} className="w-[280px] shrink-0 snap-start">
-                  <ProviderCard provider={provider} />
+                  <ProviderCard provider={provider} accentColor={ACCENT_ROTATION[idx % ACCENT_ROTATION.length]} />
                 </div>
               ))}
             </div>
             <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-8">
-              {newProviders.map((provider) => (
-                <ProviderCard key={provider.id} provider={provider} />
+              {newProviders.map((provider, idx) => (
+                <ProviderCard key={provider.id} provider={provider} accentColor={ACCENT_ROTATION[idx % ACCENT_ROTATION.length]} />
               ))}
             </div>
           </div>
@@ -139,15 +152,15 @@ export default async function HomePage() {
               </Link>
             </div>
             <div className="mt-8 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
-              {popularProviders.map((provider) => (
+              {popularProviders.map((provider, idx) => (
                 <div key={provider.id} className="w-[280px] shrink-0 snap-start">
-                  <ProviderCard provider={provider} />
+                  <ProviderCard provider={provider} accentColor={ACCENT_ROTATION[idx % ACCENT_ROTATION.length]} />
                 </div>
               ))}
             </div>
             <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-8">
-              {popularProviders.map((provider) => (
-                <ProviderCard key={provider.id} provider={provider} />
+              {popularProviders.map((provider, idx) => (
+                <ProviderCard key={provider.id} provider={provider} accentColor={ACCENT_ROTATION[idx % ACCENT_ROTATION.length]} />
               ))}
             </div>
           </div>

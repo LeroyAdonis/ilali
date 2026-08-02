@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import InteriorHero from "@/components/InteriorHero";
 
 export const metadata: Metadata = {
   title: "How It Works | ILALI",
@@ -56,23 +57,39 @@ const providerSteps = [
   },
 ];
 
+const stepColors = [
+  { ring: "border-teal/50 bg-teal/10 text-teal-deep", bar: "bg-teal", tag: "text-teal-deep-2" },
+  { ring: "border-purple/50 bg-purple/10 text-purple", bar: "bg-purple", tag: "text-purple-deep" },
+  { ring: "border-gold/50 bg-gold/10 text-gold-deep", bar: "bg-gold", tag: "text-gold-deep-2" },
+];
+
 function StepCard({
   step,
+  idx,
 }: {
   step: (typeof parentSteps)[number];
+  idx: number;
 }) {
+  const c = stepColors[idx % stepColors.length];
   return (
-    <div className="relative rounded-xl border border-ink/10 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md">
-      <div className="mb-4 flex items-center gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ilali-100 text-lg font-bold text-ilali-700">
-          {step.number}
+    <div className="relative rounded-xl border border-ink/10 bg-white shadow-sm transition-all duration-200 hover:shadow-md overflow-hidden">
+      {/* Accent bar */}
+      <div className={`h-[5px] w-full ${c.bar}`} />
+      <div className="p-6">
+        <div className="mb-4 flex items-center gap-3">
+          <span className={`flex h-10 w-10 items-center justify-center rounded-full border text-lg font-bold ${c.ring}`}>
+            {step.number}
+          </span>
+          <span className="text-2xl">{step.icon}</span>
+        </div>
+        <h3 className="font-display text-lg font-bold text-ink">{step.title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+          {step.description}
+        </p>
+        <span className={`mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.16em] ${c.tag}`}>
+          STEP {String(step.number).padStart(2, "0")}
         </span>
-        <span className="text-2xl">{step.icon}</span>
       </div>
-      <h3 className="font-display text-lg font-semibold text-ink">{step.title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-        {step.description}
-      </p>
     </div>
   );
 }
@@ -83,17 +100,13 @@ export default function HowItWorksPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-              How It Works
-            </h1>
-            <p className="mt-3 text-base leading-relaxed text-ink-soft sm:text-lg">
-              Whether you are a parent looking for activities or a provider
-              wanting to grow your reach, we make it simple.
-            </p>
-          </div>
-        </section>
+        <InteriorHero
+          eyebrow="How it works"
+          title={<>Simple for <span className="text-teal">parents</span>, powerful for <span className="text-purple">providers</span></>}
+          subtitle="Whether you're a parent looking for activities or a provider wanting to grow your reach, we make it simple."
+          imageSrc="/images/hero/hero-home.jpg"
+          imageAlt="How ILALI works"
+        />
 
         {/* For Parents */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -106,8 +119,8 @@ export default function HowItWorksPage() {
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
-            {parentSteps.map((step) => (
-              <StepCard key={step.number} step={step} />
+            {parentSteps.map((step, idx) => (
+              <StepCard key={step.number} step={step} idx={idx} />
             ))}
           </div>
         </section>
@@ -128,8 +141,8 @@ export default function HowItWorksPage() {
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
-            {providerSteps.map((step) => (
-              <StepCard key={step.number} step={step} />
+            {providerSteps.map((step, idx) => (
+              <StepCard key={step.number} step={step} idx={idx} />
             ))}
           </div>
 

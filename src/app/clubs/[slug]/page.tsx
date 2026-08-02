@@ -50,14 +50,14 @@ export default async function ClubHomePage({
         <section aria-labelledby="club-about">
           <h2
             id="club-about"
-            className="text-lg font-bold text-slate-900 mb-2"
+            className="font-display text-lg font-bold text-ink mb-2"
           >
             About this club
           </h2>
-          <p className="text-sm leading-relaxed text-slate-600">
+          <p className="text-sm leading-relaxed text-ink-soft">
             {provider.description}
           </p>
-          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-500">
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-ink-faint">
             <span className="flex items-center gap-1">
               <MapPin className="h-4 w-4 text-ilali-500" aria-hidden="true" />
               {provider.location}
@@ -81,7 +81,7 @@ export default async function ClubHomePage({
           <div className="flex items-center justify-between">
             <h2
               id="club-schedule"
-              className="text-lg font-bold text-slate-900 mb-2"
+              className="font-display text-lg font-bold text-ink mb-2"
             >
               Upcoming events
             </h2>
@@ -104,15 +104,15 @@ export default async function ClubHomePage({
               ))}
             </div>
           ) : (
-            <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center">
+            <div className="rounded-xl border border-dashed border-ink/10 bg-paper-warm p-6 text-center">
               <CalendarDays
-                className="mx-auto h-6 w-6 text-slate-400"
+                className="mx-auto h-6 w-6 text-ink-faint"
                 aria-hidden="true"
               />
-              <p className="mt-2 text-sm font-medium text-slate-600">
+              <p className="mt-2 text-sm font-medium text-ink-soft">
                 No upcoming events yet
               </p>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-ink-faint">
                 Check the full schedule for past sessions and more.
               </p>
             </div>
@@ -125,35 +125,35 @@ export default async function ClubHomePage({
         {/* Community panel */}
         <section
           aria-labelledby="club-community"
-          className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+          className="rounded-xl border border-ink/10 bg-white p-5 shadow-sm"
         >
           <h2
             id="club-community"
-            className="flex items-center gap-2 text-sm font-bold text-slate-900"
+            className="font-display flex items-center gap-2 text-sm font-bold text-ink"
           >
             <Users className="h-4 w-4 text-ilali-500" aria-hidden="true" />
             Community
           </h2>
-          <p className="mt-3 text-3xl font-extrabold text-slate-900">
+          <p className="mt-3 text-3xl font-extrabold text-ink">
             {stats.memberFamilies}
           </p>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-ink-faint">
             member famil{stats.memberFamilies === 1 ? "y" : "ies"} in this club
           </p>
 
           {stats.familiesBySuburb.length > 0 && (
             <div className="mt-4 space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+              <p className="text-xs font-semibold uppercase tracking-wide text-ink-faint">
                 Families by suburb
               </p>
               {stats.familiesBySuburb.slice(0, 4).map((row) => (
                 <div key={row.suburb} className="flex items-center gap-2">
                   <Home
-                    className="h-3.5 w-3.5 text-slate-400"
+                    className="h-3.5 w-3.5 text-ink-faint"
                     aria-hidden="true"
                   />
-                  <span className="text-sm text-slate-600">{row.suburb}</span>
-                  <span className="ml-auto text-xs font-semibold text-slate-500">
+                  <span className="text-sm text-ink-soft">{row.suburb}</span>
+                  <span className="ml-auto text-xs font-semibold text-ink-faint">
                     {row.count} famil{row.count === 1 ? "y" : "ies"}
                   </span>
                 </div>
@@ -173,11 +173,11 @@ export default async function ClubHomePage({
         {/* Rewards teaser — top volunteers */}
         <section
           aria-labelledby="club-volunteers"
-          className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+          className="rounded-xl border border-ink/10 bg-white p-5 shadow-sm"
         >
           <h2
             id="club-volunteers"
-            className="flex items-center gap-2 text-sm font-bold text-slate-900"
+            className="font-display flex items-center gap-2 text-sm font-bold text-ink"
           >
             <Trophy className="h-4 w-4 text-sunset-500" aria-hidden="true" />
             Top volunteers
@@ -186,11 +186,11 @@ export default async function ClubHomePage({
             <ul className="mt-3 space-y-3">
               {stats.topVolunteers.slice(0, 4).map((v) => (
                 <li key={v.parentId} className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-ilali-100 to-sunset-100 text-sm font-bold text-ilali-700">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal/10 text-sm font-bold text-ilali-700">
                     {(v.parentName ?? "?").charAt(0)}
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-slate-800">
+                    <p className="truncate text-sm font-semibold text-ink">
                       {v.parentName ?? "Club volunteer"}
                     </p>
                     <RoleBadge role={v.role} />
@@ -199,12 +199,12 @@ export default async function ClubHomePage({
               ))}
             </ul>
           ) : (
-            <p className="mt-3 flex items-center gap-1.5 text-xs text-slate-400">
+            <p className="mt-3 flex items-center gap-1.5 text-xs text-ink-faint">
               <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
               Be the first volunteer — earn points every season.
             </p>
           )}
-          <p className="mt-3 text-xs text-slate-400">
+          <p className="mt-3 text-xs text-ink-faint">
             Volunteers earn rewards for helping the club run.
           </p>
         </section>

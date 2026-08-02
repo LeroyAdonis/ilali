@@ -38,9 +38,9 @@ export default function VenuesPageClient({ venues }: VenuesPageClientProps) {
   return (
     <main className="flex-1">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-sunset-500 to-sunset-700 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+      <section className="bg-teal-deep px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
             Browse Venues
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-orange-100 sm:text-lg">
@@ -54,19 +54,19 @@ export default function VenuesPageClient({ venues }: VenuesPageClientProps) {
       <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         {/* Search bar */}
         <div className="relative mb-4">
-          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-faint" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search venues by name or location..."
-            className="block w-full rounded-xl border border-slate-200 bg-white py-3.5 pl-12 pr-4 text-sm text-slate-900 placeholder-slate-400 shadow-sm focus:border-sunset-500 focus:outline-none focus:ring-2 focus:ring-sunset-200"
+            className="block w-full rounded-xl border border-ink/10 bg-white py-3.5 pl-12 pr-4 text-sm text-ink placeholder-ink-faint shadow-sm focus:border-sunset-500 focus:outline-none focus:ring-2 focus:ring-sunset-200"
           />
         </div>
 
         {/* Location filter */}
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-xs font-medium text-slate-500">
+          <span className="text-xs font-medium text-ink-faint">
             Location:
           </span>
           {locations.map((loc) => (
@@ -77,7 +77,7 @@ export default function VenuesPageClient({ venues }: VenuesPageClientProps) {
               className={`rounded-full px-4 py-2 text-xs font-medium shadow-sm transition-colors ${
                 activeLocation === loc
                   ? "bg-sunset-500 text-white"
-                  : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300"
+                  : "border border-ink/10 bg-white text-ink-soft hover:bg-paper-warm hover:border-ink/10"
               }`}
             >
               {loc}
@@ -88,7 +88,7 @@ export default function VenuesPageClient({ venues }: VenuesPageClientProps) {
 
       {/* Venue grid */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="mb-4 text-sm text-slate-500">
+        <div className="mb-4 text-sm text-ink-faint">
           Showing {filtered.length} of {venues.length} venues
           {searchQuery && ` for "${searchQuery}"`}
           {activeLocation !== "All" && ` in ${activeLocation}`}
@@ -99,12 +99,12 @@ export default function VenuesPageClient({ venues }: VenuesPageClientProps) {
               <VenueCard key={venue.id} venue={venue} />
             ))
           ) : (
-            <div className="col-span-full rounded-xl border border-slate-200 bg-white p-12 text-center shadow-sm">
+            <div className="col-span-full rounded-xl border border-ink/10 bg-white p-12 text-center shadow-sm">
               <span className="text-4xl">📍</span>
-              <h3 className="mt-4 text-lg font-semibold text-slate-900">
+              <h3 className="mt-4 font-display text-lg font-semibold text-ink">
                 No venues found
               </h3>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-ink-faint">
                 Try adjusting your search or clearing filters.
               </p>
             </div>

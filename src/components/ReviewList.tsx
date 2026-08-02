@@ -39,8 +39,8 @@ interface ReviewListProps {
 export default function ReviewList({ reviews }: ReviewListProps) {
   if (reviews.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
-        <p className="text-sm text-slate-500">No reviews yet. Be the first to share your experience!</p>
+      <div className="rounded-xl border border-dashed border-ink/10 bg-paper-warm p-8 text-center">
+        <p className="text-sm text-ink-faint">No reviews yet. Be the first to share your experience!</p>
       </div>
     );
   }
@@ -51,12 +51,12 @@ export default function ReviewList({ reviews }: ReviewListProps) {
   return (
     <div>
       {/* Summary bar */}
-      <div className="mb-6 flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-4">
-        <span className="text-2xl font-extrabold text-slate-900">
+      <div className="mb-6 flex items-center gap-3 rounded-lg border border-ink/10 bg-white p-4">
+        <span className="text-2xl font-extrabold text-ink">
           {avgRating.toFixed(1)}
         </span>
         <Stars rating={Math.round(avgRating)} />
-        <span className="text-xs text-slate-400">
+        <span className="text-xs text-ink-faint">
           {reviews.length} review{reviews.length !== 1 ? "s" : ""}
         </span>
       </div>
@@ -66,21 +66,21 @@ export default function ReviewList({ reviews }: ReviewListProps) {
         {reviews.map((review) => (
           <div
             key={review.id}
-            className="rounded-lg border border-slate-200 bg-white p-4"
+            className="rounded-lg border border-ink/10 bg-white p-4"
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-slate-800">
+                <span className="text-sm font-semibold text-ink">
                   {review.userId || "Anonymous"}
                 </span>
                 <Stars rating={review.rating} />
               </div>
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-ink-faint">
                 {formatDate(review.createdAt)}
               </span>
             </div>
             {review.content && (
-              <p className="text-sm leading-relaxed text-slate-600">
+              <p className="text-sm leading-relaxed text-ink-soft">
                 {review.content}
               </p>
             )}

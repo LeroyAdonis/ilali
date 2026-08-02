@@ -42,10 +42,10 @@ export default function ProviderInquiryForm() {
     return (
       <div className="mx-auto max-w-lg text-center">
         <CheckCircle className="mx-auto h-12 w-12 text-ilali-500" />
-        <h3 className="mt-4 text-lg font-semibold text-slate-900">
+        <h3 className="mt-4 font-display text-lg font-semibold text-ink">
           Application submitted!
         </h3>
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-ink-faint">
           We&apos;ll review your application and get back to you within 2 business days.
         </p>
       </div>
@@ -55,7 +55,7 @@ export default function ProviderInquiryForm() {
   return (
     <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-slate-700">
+        <label htmlFor="name" className="block text-sm font-medium text-ink-soft">
           Full Name
         </label>
         <input
@@ -64,11 +64,11 @@ export default function ProviderInquiryForm() {
           type="text"
           required
           placeholder="Your full name"
-          className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+          className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
         />
       </div>
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-slate-700">
+        <label htmlFor="email" className="block text-sm font-medium text-ink-soft">
           Email Address
         </label>
         <input
@@ -77,11 +77,11 @@ export default function ProviderInquiryForm() {
           type="email"
           required
           placeholder="you@example.com"
-          className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+          className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
         />
       </div>
       <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-slate-700">
+        <label htmlFor="phone" className="block text-sm font-medium text-ink-soft">
           Phone Number
         </label>
         <input
@@ -89,18 +89,18 @@ export default function ProviderInquiryForm() {
           name="phone"
           type="tel"
           placeholder="+27 00 000 0000"
-          className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+          className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
         />
       </div>
       <div>
-        <label htmlFor="activityType" className="block text-sm font-medium text-slate-700">
+        <label htmlFor="activityType" className="block text-sm font-medium text-ink-soft">
           Activity Type
         </label>
         <select
           id="activityType"
           name="activityType"
           required
-          className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+          className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
         >
           <option value="">Select activity type...</option>
           <option value="sports">Sports</option>
@@ -119,7 +119,7 @@ export default function ProviderInquiryForm() {
       >
         {loading ? "Submitting…" : "Submit Application"}
       </button>
-      <p className="text-center text-xs text-slate-400">
+      <p className="text-center text-xs text-ink-faint">
         We&apos;ll review your application and get back to you within 2 business days.
       </p>
     </form>

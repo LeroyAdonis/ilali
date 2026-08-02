@@ -42,12 +42,12 @@ export default function PrivacyPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-ilali-600 to-ilali-800 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
               Privacy Policy
             </h1>
-            <p className="mt-3 max-w-2xl text-base leading-relaxed text-ilali-100 sm:text-lg">
+            <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink-soft sm:text-lg">
               How we collect, use, and protect your personal information.
             </p>
           </div>
@@ -56,7 +56,7 @@ export default function PrivacyPage() {
         {/* Last Updated */}
         <section className="mx-auto max-w-7xl px-4 pb-4 pt-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-ink-faint">
               Last updated: June 2026. This policy applies to all users of the
               ILALI platform.
             </p>
@@ -68,10 +68,10 @@ export default function PrivacyPage() {
           <div className="mx-auto max-w-3xl space-y-12">
             {sections.map((section, index) => (
               <div key={index}>
-                <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+                <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
                   {section.title}
                 </h2>
-                <p className="mt-4 text-base leading-relaxed text-slate-600">
+                <p className="mt-4 text-base leading-relaxed text-ink-soft">
                   {section.content}
                 </p>
               </div>

@@ -46,15 +46,15 @@ export default function WhyListPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-ilali-600 to-ilali-800 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="text-xs uppercase tracking-widest text-ilali-200 font-semibold">
+            <span className="text-xs uppercase tracking-widest text-ink-faint font-semibold">
               For providers
             </span>
-            <h1 className="mt-3 text-3xl font-extrabold text-white sm:text-4xl lg:text-5xl">
+            <h1 className="mt-3 font-display text-3xl font-extrabold text-ink sm:text-4xl lg:text-5xl">
               Why list your activity with <span className="text-warm-300">ILALI</span>?
             </h1>
-            <p className="mt-4 text-base leading-relaxed text-ilali-100 sm:text-lg">
+            <p className="mt-4 text-base leading-relaxed text-ink-soft sm:text-lg">
               Stop juggling social media, spreadsheets, and WhatsApp messages. One platform to manage
               it all — and reach families who are ready to book.
             </p>
@@ -68,7 +68,7 @@ export default function WhyListPage() {
               </Link>
               <Link
                 href="/browse"
-                className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full border border-ink/10 px-6 py-3 text-sm font-semibold text-ink hover:bg-teal/5 transition-colors"
               >
                 See what's listed
               </Link>
@@ -79,7 +79,7 @@ export default function WhyListPage() {
         {/* Benefits */}
         <section className="py-16 sm:py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="text-center font-display text-2xl font-bold text-ink sm:text-3xl">
               The ILALI advantage
             </h2>
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -105,12 +105,12 @@ export default function WhyListPage() {
                   desc: "Track views, bookings, and earnings with built-in analytics. Know what works and double down on it.",
                 },
               ].map((b) => (
-                <div key={b.title} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div key={b.title} className="rounded-xl border border-ink/10 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
                   <div className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-ilali-100 text-ilali-600 mb-3">
                     <b.icon className="h-5 w-5" />
                   </div>
-                  <h3 className="text-sm font-bold text-slate-900">{b.title}</h3>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-600">{b.desc}</p>
+                  <h3 className="font-display text-sm font-bold text-ink">{b.title}</h3>
+                  <p className="mt-1 text-xs leading-relaxed text-ink-soft">{b.desc}</p>
                 </div>
               ))}
             </div>
@@ -118,30 +118,30 @@ export default function WhyListPage() {
         </section>
 
         {/* Comparison */}
-        <section className="bg-slate-50 py-16 sm:py-20">
+        <section className="bg-paper-warm py-16 sm:py-20">
           <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="text-center font-display text-2xl font-bold text-ink sm:text-3xl">
               ILALI vs. the alternatives
             </h2>
-            <div className="mt-10 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-              <div className="grid grid-cols-3 gap-0 border-b border-slate-200 bg-slate-50 px-4 sm:px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <div className="mt-10 overflow-hidden rounded-xl border border-ink/10 bg-white shadow-sm">
+              <div className="grid grid-cols-3 gap-0 border-b border-ink/10 bg-paper-warm px-4 sm:px-6 py-3 text-xs font-semibold uppercase tracking-wider text-ink-faint">
                 <div className="col-span-1">Feature</div>
                 <div className="col-span-1 text-center text-ilali-600">ILALI</div>
-                <div className="col-span-1 text-center text-slate-400">Other platforms</div>
+                <div className="col-span-1 text-center text-ink-faint">Other platforms</div>
               </div>
               {comparisons.map((row, i) => (
                 <div
                   key={i}
                   className={`grid grid-cols-3 gap-0 px-4 sm:px-6 py-3 text-sm ${
-                    i % 2 === 0 ? "bg-white" : "bg-slate-50/50"
+                    i % 2 === 0 ? "bg-white" : "bg-paper-warm/50"
                   }`}
                 >
-                  <div className="col-span-1 text-slate-600">{row.ilali.split(" ")[0]}…</div>
+                  <div className="col-span-1 text-ink-soft">{row.ilali.split(" ")[0]}…</div>
                   <div className="col-span-1 flex items-center justify-center gap-1 text-ilali-600 text-xs">
                     <Check className="h-4 w-4" />
                     <span className="hidden sm:inline">{row.ilali}</span>
                   </div>
-                  <div className="col-span-1 text-center text-xs text-slate-400 line-clamp-1">{row.other}</div>
+                  <div className="col-span-1 text-center text-xs text-ink-faint line-clamp-1">{row.other}</div>
                 </div>
               ))}
             </div>
@@ -152,32 +152,32 @@ export default function WhyListPage() {
         <section className="py-16 sm:py-20">
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
             <div className="rounded-2xl bg-ilali-50 p-8 sm:p-12">
-              <p className="text-lg italic leading-relaxed text-slate-700">
+              <p className="text-lg italic leading-relaxed text-ink-soft">
                 &ldquo;ILALI transformed how we manage our classes. Instead of juggling WhatsApp groups
                 and spreadsheets, everything is in one place. Our bookings doubled in the first month.&rdquo;
               </p>
               <div className="mt-6">
-                <p className="text-sm font-bold text-slate-900">Sarah N.</p>
-                <p className="text-xs text-slate-500">Art Studio Cape Town</p>
+                <p className="text-sm font-bold text-ink">Sarah N.</p>
+                <p className="text-xs text-ink-faint">Art Studio Cape Town</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* FAQ */}
-        <section className="bg-slate-50 py-16 sm:py-20">
+        <section className="bg-paper-warm py-16 sm:py-20">
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl mb-10">
+            <h2 className="text-center font-display text-2xl font-bold text-ink sm:text-3xl mb-10">
               Frequently asked questions
             </h2>
             <div className="space-y-4">
               {faqs.map((faq) => (
-                <details key={faq.q} className="group rounded-xl border border-slate-200 bg-white p-4 open:shadow-sm transition-shadow">
-                  <summary className="flex items-center justify-between cursor-pointer text-sm font-semibold text-slate-900">
+                <details key={faq.q} className="group rounded-xl border border-ink/10 bg-white p-4 open:shadow-sm transition-shadow">
+                  <summary className="flex items-center justify-between cursor-pointer text-sm font-semibold text-ink">
                     {faq.q}
-                    <HelpCircle className="h-4 w-4 text-slate-400 group-open:rotate-180 transition-transform shrink-0" />
+                    <HelpCircle className="h-4 w-4 text-ink-faint group-open:rotate-180 transition-transform shrink-0" />
                   </summary>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600 border-t border-slate-100 pt-3">
+                  <p className="mt-3 text-sm leading-relaxed text-ink-soft border-t border-ink/10 pt-3">
                     {faq.a}
                   </p>
                 </details>
@@ -189,10 +189,10 @@ export default function WhyListPage() {
         {/* CTA */}
         <section className="py-16 sm:py-20">
           <div className="mx-auto max-w-lg px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               Ready to grow?
             </h2>
-            <p className="mt-3 text-sm text-slate-500">
+            <p className="mt-3 text-sm text-ink-faint">
               Join hundreds of providers on ILALI. First 30 days free — no strings attached.
             </p>
             <Link

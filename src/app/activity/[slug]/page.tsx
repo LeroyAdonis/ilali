@@ -72,7 +72,7 @@ export default async function ActivityPage({
         {/* Breadcrumb */}
         <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
           <nav
-            className="flex items-center gap-2 text-xs text-slate-500"
+            className="flex items-center gap-2 text-xs text-ink-faint"
             aria-label="Breadcrumb"
           >
             <Link
@@ -89,14 +89,14 @@ export default async function ActivityPage({
               Browse
             </Link>
             <span aria-hidden="true">/</span>
-            <span className="text-slate-800 font-medium">
+            <span className="text-ink font-medium">
               {provider.name}
             </span>
           </nav>
         </div>
 
         {/* Hero Image */}
-        <div className="relative mt-4 h-56 sm:h-72 lg:h-96 w-full overflow-hidden bg-gradient-to-br from-ilali-200 to-sunset-200">
+        <div className="relative mt-4 h-56 sm:h-72 lg:h-96 w-full overflow-hidden bg-paper-warm">
           {provider.image ? (
             <img
               src={provider.image}
@@ -122,10 +122,10 @@ export default async function ActivityPage({
                 className="shadow-sm backdrop-blur-sm text-xs"
               />
             </div>
-            <span className="inline-block rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 backdrop-blur-sm mb-2 ml-0">
+            <span className="inline-block rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink-soft backdrop-blur-sm mb-2 ml-0">
               {provider.category}
             </span>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-white drop-shadow-lg">
+            <h1 className="font-display text-2xl sm:text-4xl font-extrabold text-white drop-shadow-lg">
               {provider.name}
             </h1>
           </div>
@@ -137,13 +137,13 @@ export default async function ActivityPage({
             {/* Main info */}
             <div className="lg:col-span-2 space-y-6">
               <div>
-                <p className="text-sm text-slate-500 mb-1">
+                <p className="text-sm text-ink-faint mb-1">
                   by{" "}
-                  <span className="font-semibold text-slate-700">
+                  <span className="font-semibold text-ink-soft">
                     {provider.providerName}
                   </span>
                 </p>
-                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 mt-2">
+                <div className="flex flex-wrap items-center gap-4 text-sm text-ink-faint mt-2">
                   <span className="flex items-center gap-1">
                     <MapPin className="h-4 w-4 text-ilali-500" aria-hidden="true" />
                     {provider.location} · {provider.distance}
@@ -154,7 +154,7 @@ export default async function ActivityPage({
                       aria-hidden="true"
                     />
                     {provider.rating}
-                    <span className="text-slate-400">
+                    <span className="text-ink-faint">
                       ({provider.reviewCount} review
                       {provider.reviewCount !== 1 ? "s" : ""})
                     </span>
@@ -167,34 +167,34 @@ export default async function ActivityPage({
               </div>
 
               <div>
-                <h2 className="text-lg font-bold text-slate-900 mb-2">
+                <h2 className="font-display text-lg font-bold text-ink mb-2">
                   About this activity
                 </h2>
-                <p className="text-sm leading-relaxed text-slate-600">
+                <p className="text-sm leading-relaxed text-ink-soft">
                   {provider.description}
                 </p>
               </div>
 
               <div>
-                <h2 className="text-lg font-bold text-slate-900 mb-3">
+                <h2 className="font-display text-lg font-bold text-ink mb-3">
                   Schedule
                 </h2>
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <div className="flex items-center gap-2 text-sm text-slate-700">
+                <div className="rounded-xl border border-ink/10 bg-paper-warm p-4">
+                  <div className="flex items-center gap-2 text-sm text-ink-soft">
                     <Calendar className="h-4 w-4 text-ilali-500" aria-hidden="true" />
                     <span>Monday – Friday</span>
                   </div>
-                  <p className="mt-1 text-sm text-slate-500">
+                  <p className="mt-1 text-sm text-ink-faint">
                     9:00 AM – 5:00 PM
                   </p>
-                  <p className="mt-1 text-xs text-slate-400">
+                  <p className="mt-1 text-xs text-ink-faint">
                     Weekend sessions available on request
                   </p>
                 </div>
               </div>
 
               <div>
-                <h2 className="text-lg font-bold text-slate-900 mb-3">
+                <h2 className="font-display text-lg font-bold text-ink mb-3">
                   What&apos;s included
                 </h2>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -207,7 +207,7 @@ export default async function ActivityPage({
                   ].map((item) => (
                     <li
                       key={item}
-                      className="flex items-start gap-2 text-sm text-slate-600"
+                      className="flex items-start gap-2 text-sm text-ink-soft"
                     >
                       <Award
                         className="h-4 w-4 text-ilali-500 mt-0.5 shrink-0"
@@ -227,7 +227,7 @@ export default async function ActivityPage({
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              <div className="sticky top-24 rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+              <div className="sticky top-24 rounded-xl border border-ink/10 bg-white p-6 shadow-sm space-y-4">
                 <div className="mb-4">
                   {provider.isFree ? (
                     <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
@@ -235,17 +235,17 @@ export default async function ActivityPage({
                     </span>
                   ) : (
                     <>
-                      <span className="text-3xl font-extrabold text-slate-900">
+                      <span className="text-3xl font-extrabold text-ink">
                         {provider.price}
                       </span>
-                      <span className="ml-1 text-sm text-slate-500">
+                      <span className="ml-1 text-sm text-ink-faint">
                         {provider.priceLabel}
                       </span>
                     </>
                   )}
                 </div>
-                <p className="text-xs text-slate-400 mb-1">Age range</p>
-                <p className="text-sm font-medium text-slate-700 mb-4">
+                <p className="text-xs text-ink-faint mb-1">Age range</p>
+                <p className="text-sm font-medium text-ink-soft mb-4">
                   {provider.ageRange}
                 </p>
 
@@ -278,12 +278,12 @@ export default async function ActivityPage({
                   </div>
                 )}
 
-                <p className="mt-2 text-xs text-center text-slate-400">
+                <p className="mt-2 text-xs text-center text-ink-faint">
                   Sign in to save, book, or message the provider
                 </p>
                 <Link
                   href="/browse"
-                  className="mt-4 flex items-center justify-center gap-1 text-xs text-slate-500 hover:text-ilali-600 transition-colors"
+                  className="mt-4 flex items-center justify-center gap-1 text-xs text-ink-faint hover:text-ilali-600 transition-colors"
                 >
                   <ArrowLeft className="h-3 w-3" aria-hidden="true" />
                   Back to browse
@@ -294,11 +294,11 @@ export default async function ActivityPage({
 
           {/* T051: You Might Also Like */}
           {similarProviders.length > 0 && (
-            <section className="mt-16 border-t border-slate-200 pt-12">
-              <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
+            <section className="mt-16 border-t border-ink/10 pt-12">
+              <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">
                 You might also like
               </h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-ink-faint">
                 Other {provider.category.toLowerCase()} activities loved by
                 parents
               </p>

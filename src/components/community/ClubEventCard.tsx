@@ -23,7 +23,7 @@ const EVENT_TYPE_STYLES: Record<
   },
   other: {
     label: "Other",
-    className: "bg-slate-100 text-slate-600 border-slate-200",
+    className: "bg-paper-warm text-ink-soft border-ink/10",
   },
 };
 
@@ -47,13 +47,13 @@ export default function ClubEventCard({
   const typeStyle = EVENT_TYPE_STYLES[event.eventType] ?? EVENT_TYPE_STYLES.other;
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center">
+    <div className="flex flex-col gap-3 rounded-xl border border-ink/10 bg-white p-4 shadow-sm sm:flex-row sm:items-center">
       {/* Date block */}
-      <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-xl bg-gradient-to-br from-ilali-50 to-sunset-50 border border-slate-200">
-        <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+      <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-xl bg-gradient-to-br from-ilali-50 to-sunset-50 border border-ink/10">
+        <span className="text-[10px] font-semibold uppercase tracking-wide text-ink-faint">
           {event.startTime.toLocaleDateString("en-ZA", { month: "short" })}
         </span>
-        <span className="text-xl font-extrabold leading-none text-slate-900">
+        <span className="text-xl font-extrabold leading-none text-ink">
           {event.startTime.getDate()}
         </span>
       </div>
@@ -61,14 +61,14 @@ export default function ClubEventCard({
       {/* Details */}
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-sm font-bold text-slate-900">{event.title}</h3>
+          <h3 className="text-sm font-bold text-ink">{event.title}</h3>
           <span
             className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${typeStyle.className}`}
           >
             {typeStyle.label}
           </span>
         </div>
-        <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-faint">
           <span className="flex items-center gap-1">
             <CalendarDays className="h-3.5 w-3.5 text-ilali-500" aria-hidden="true" />
             {formatEventDate(event.startTime)}
@@ -85,7 +85,7 @@ export default function ClubEventCard({
           )}
         </div>
         {typeof memberFamilies === "number" && memberFamilies > 0 && (
-          <p className="mt-1.5 flex items-center gap-1 text-xs text-slate-400">
+          <p className="mt-1.5 flex items-center gap-1 text-xs text-ink-faint">
             <Users className="h-3.5 w-3.5" aria-hidden="true" />
             {memberFamilies} member famil{memberFamilies === 1 ? "y" : "ies"}
           </p>
@@ -98,7 +98,7 @@ export default function ClubEventCard({
           type="button"
           disabled
           title="Joining events arrives soon"
-          className="shrink-0 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-400 sm:self-center"
+          className="shrink-0 rounded-full border border-ink/10 bg-paper-warm px-4 py-2 text-xs font-semibold text-ink-faint sm:self-center"
         >
           Join
         </button>

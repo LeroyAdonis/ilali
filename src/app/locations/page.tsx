@@ -29,9 +29,9 @@ export default function LocationsPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-ilali-600 to-ilali-800 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
               Find activities near you
             </h1>
             <p className="mt-3 text-base leading-relaxed text-ilali-100 sm:text-lg">
@@ -44,10 +44,10 @@ export default function LocationsPage() {
         {/* Location Grid */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               Browse by Location
             </h2>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-ink-faint">
               Choose a neighbourhood to see what's available near you
             </p>
           </div>
@@ -56,12 +56,12 @@ export default function LocationsPage() {
               <a
                 key={location.slug}
                 href={`/browse?location=${location.slug}`}
-                className="group rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm transition-all duration-200 hover:shadow-md hover:border-ilali-300"
+                className="group rounded-xl border border-ink/10 bg-white p-6 text-center shadow-sm transition-all duration-200 hover:shadow-md hover:border-ilali-300"
               >
-                <h3 className="text-lg font-semibold text-slate-900 group-hover:text-ilali-600 transition-colors">
+                <h3 className="font-display text-lg font-semibold text-ink group-hover:text-ilali-600 transition-colors">
                   {location.name}
                 </h3>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-ink-faint">
                   Browse activities →
                 </p>
               </a>

@@ -14,8 +14,8 @@ export default async function ClubChatPage({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-bold text-slate-900">Club chat</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="font-display text-lg font-bold text-ink">Club chat</h2>
+        <p className="mt-1 text-sm text-ink-faint">
           Chat with other parents and the club organizers.
         </p>
       </div>

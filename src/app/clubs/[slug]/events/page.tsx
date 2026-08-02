@@ -47,8 +47,8 @@ export default async function ClubEventsPage({
   return (
     <div className="space-y-10">
       <div>
-        <h2 className="text-lg font-bold text-slate-900">Full schedule</h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <h2 className="font-display text-lg font-bold text-ink">Full schedule</h2>
+        <p className="mt-1 text-sm text-ink-faint">
           {events.length} event{events.length === 1 ? "" : "s"} — upcoming
           first. Joining events arrives soon.
         </p>
@@ -59,7 +59,7 @@ export default async function ClubEventsPage({
           <section key={key} aria-labelledby={`month-${key}`}>
             <h3
               id={`month-${key}`}
-              className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-slate-500"
+              className="mb-3 flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wide text-ink"
             >
               {group.upcoming && (
                 <span className="rounded-full bg-ilali-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-ilali-700">
@@ -81,15 +81,15 @@ export default async function ClubEventsPage({
           </section>
         ))
       ) : (
-        <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-10 text-center">
+        <div className="rounded-xl border border-dashed border-ink/10 bg-paper-warm p-10 text-center">
           <CalendarDays
-            className="mx-auto h-8 w-8 text-slate-400"
+            className="mx-auto h-8 w-8 text-ink-faint"
             aria-hidden="true"
           />
-          <p className="mt-3 text-sm font-medium text-slate-600">
+          <p className="mt-3 text-sm font-medium text-ink-soft">
             No events scheduled yet
           </p>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-xs text-ink-faint">
             The club will post practices, games and club days here.
           </p>
         </div>

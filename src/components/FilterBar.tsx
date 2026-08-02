@@ -85,14 +85,14 @@ function FilterDropdownMenu({
               className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
                 isSelected
                   ? "bg-ilali-50 text-ilali-700 font-medium"
-                  : "text-slate-600 hover:bg-slate-50"
+                  : "text-ink-soft hover:bg-paper-warm"
               }`}
             >
               <span
                 className={`inline-flex h-4 w-4 shrink-0 items-center justify-center rounded border ${
                   isSelected
                     ? "bg-ilali-500 border-ilali-500 text-white"
-                    : "border-slate-300"
+                    : "border-ink/10"
                 }`}
               >
                 {isSelected && "✓"}
@@ -104,10 +104,10 @@ function FilterDropdownMenu({
       </div>
 
       {activeCount > 0 && (
-        <div className="border-t border-slate-100 p-2">
+        <div className="border-t border-ink/10 p-2">
           <button
             onClick={onClear}
-            className="flex w-full items-center justify-center gap-1 rounded-lg px-3 py-2 text-xs font-medium text-slate-500 hover:bg-slate-50 transition-colors"
+            className="flex w-full items-center justify-center gap-1 rounded-lg px-3 py-2 text-xs font-medium text-ink-faint hover:bg-paper-warm transition-colors"
           >
             <X className="h-3 w-3" />
             Clear filter
@@ -273,14 +273,14 @@ export default function FilterBar({ categories: categoriesProp }: FilterBarProps
               className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-medium shadow-sm whitespace-nowrap shrink-0 transition-colors ${
                 activeCount > 0
                   ? "border-ilali-400 bg-ilali-50 text-ilali-700"
-                  : "border-slate-200 bg-white text-slate-700 hover:border-ilali-300 hover:text-ilali-600 hover:bg-ilali-50"
+                  : "border-ink/10 bg-white text-ink-soft hover:border-ilali-300 hover:text-ilali-600 hover:bg-ilali-50"
               } ${isOpen ? "ring-2 ring-ilali-200" : ""}`}
             >
               {label}
               <ChevronDown
                 className={`h-3.5 w-3.5 transition-transform ${
                   isOpen ? "rotate-180" : ""
-                } ${activeCount > 0 ? "text-ilali-500" : "text-slate-400"}`}
+                } ${activeCount > 0 ? "text-ilali-500" : "text-ink-faint"}`}
               />
             </button>
           );
@@ -291,7 +291,7 @@ export default function FilterBar({ categories: categoriesProp }: FilterBarProps
       {openDropdown && openConfig && (
         <div
           ref={menuRef}
-          className="fixed z-50 w-56 rounded-xl border border-slate-200 bg-white shadow-xl ring-1 ring-black/5"
+          className="fixed z-50 w-56 rounded-xl border border-ink/10 bg-white shadow-xl ring-1 ring-black/5"
           style={{ top: menuPosition.top, left: menuPosition.left }}
         >
           <FilterDropdownMenu
@@ -313,7 +313,7 @@ export default function FilterBar({ categories: categoriesProp }: FilterBarProps
               key={cat.id}
               href={`/browse?category=${cat.slug}`}
               className={`flex shrink-0 flex-col items-center gap-1.5 rounded-lg px-3 py-2 transition-colors ${
-                isActive ? "bg-ilali-50" : "hover:bg-slate-50"
+                isActive ? "bg-ilali-50" : "hover:bg-paper-warm"
               }`}
             >
               <div
@@ -325,7 +325,7 @@ export default function FilterBar({ categories: categoriesProp }: FilterBarProps
               </div>
               <span
                 className={`text-[10px] font-medium whitespace-nowrap ${
-                  isActive ? "text-ilali-700" : "text-slate-600"
+                  isActive ? "text-ilali-700" : "text-ink-soft"
                 }`}
               >
                 {cat.name}

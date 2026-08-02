@@ -48,7 +48,7 @@ export default async function ClubLayout({
         {/* Breadcrumb */}
         <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
           <nav
-            className="flex items-center gap-2 text-xs text-slate-500"
+            className="flex items-center gap-2 text-xs text-ink-faint"
             aria-label="Breadcrumb"
           >
             <Link
@@ -65,12 +65,12 @@ export default async function ClubLayout({
               Browse
             </Link>
             <span aria-hidden="true">/</span>
-            <span className="text-slate-800 font-medium">{provider.name}</span>
+            <span className="text-ink font-medium">{provider.name}</span>
           </nav>
         </div>
 
         {/* Hero header */}
-        <div className="relative mt-4 h-40 sm:h-48 w-full overflow-hidden bg-gradient-to-br from-ilali-200 to-sunset-200">
+        <div className="relative mt-4 h-40 sm:h-48 w-full overflow-hidden bg-teal/10">
           {provider.image ? (
             <img
               src={provider.image}
@@ -95,7 +95,7 @@ export default async function ClubLayout({
                 className="mb-2 shadow-sm backdrop-blur-sm text-xs"
               />
             </Suspense>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-white drop-shadow-lg">
+            <h1 className="font-display text-2xl sm:text-4xl font-extrabold text-white drop-shadow-lg">
               {provider.name}
             </h1>
             <p className="mt-1 text-xs sm:text-sm font-medium text-white/90 drop-shadow">

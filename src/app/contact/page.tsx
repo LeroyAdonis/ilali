@@ -15,12 +15,12 @@ export default function ContactPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-ilali-600 to-ilali-800 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
               Get in Touch
             </h1>
-            <p className="mt-3 text-base leading-relaxed text-ilali-100 sm:text-lg">
+            <p className="mt-3 text-base leading-relaxed text-ink-soft sm:text-lg">
               Have a question, suggestion, or need help? We&apos;re here for you.
             </p>
           </div>

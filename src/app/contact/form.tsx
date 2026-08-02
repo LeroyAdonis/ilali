@@ -42,10 +42,10 @@ export default function ContactForm() {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-lg text-center">
           <CheckCircle className="mx-auto h-12 w-12 text-ilali-500" />
-          <h2 className="mt-4 text-2xl font-bold text-slate-900">
+          <h2 className="mt-4 font-display text-2xl font-bold text-ink">
             Message sent!
           </h2>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-ink-faint">
             Thanks for reaching out. We typically respond within 24 hours
             during business days.
           </p>
@@ -57,13 +57,13 @@ export default function ContactForm() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-lg">
-        <p className="text-center text-sm text-slate-500">
+        <p className="text-center text-sm text-ink-faint">
           Fill in the form below and we&apos;ll get back to you as soon as
           possible.
         </p>
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-slate-700">
+            <label htmlFor="name" className="block text-sm font-medium text-ink-soft">
               Full Name
             </label>
             <input
@@ -72,11 +72,11 @@ export default function ContactForm() {
               type="text"
               required
               placeholder="Your full name"
-              className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+              className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-700">
+            <label htmlFor="email" className="block text-sm font-medium text-ink-soft">
               Email Address
             </label>
             <input
@@ -85,11 +85,11 @@ export default function ContactForm() {
               type="email"
               required
               placeholder="you@example.com"
-              className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+              className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
             />
           </div>
           <div>
-            <label htmlFor="message" className="block text-sm font-medium text-slate-700">
+            <label htmlFor="message" className="block text-sm font-medium text-ink-soft">
               Message
             </label>
             <textarea
@@ -98,7 +98,7 @@ export default function ContactForm() {
               rows={5}
               required
               placeholder="How can we help you?"
-              className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200 resize-y"
+              className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200 resize-y"
             />
           </div>
           {error && (
@@ -111,7 +111,7 @@ export default function ContactForm() {
           >
             {loading ? "Sending…" : "Send Message"}
           </button>
-          <p className="text-center text-xs text-slate-400">
+          <p className="text-center text-xs text-ink-faint">
             We typically respond within 24 hours during business days.
           </p>
         </form>

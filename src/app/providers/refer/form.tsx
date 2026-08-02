@@ -104,15 +104,15 @@ export default function ReferralForm() {
     return (
       <div className="text-center py-8">
         <CheckCircle className="mx-auto h-12 w-12 text-ilali-500" />
-        <h3 className="mt-4 text-lg font-semibold text-slate-900">
+        <h3 className="mt-4 font-display text-lg font-semibold text-ink">
           Referral submitted!
         </h3>
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-ink-faint">
           We&apos;ll reach out to{" "}
-          <span className="font-medium text-slate-700">{submittedProviderName}</span>{" "}
+          <span className="font-medium text-ink-soft">{submittedProviderName}</span>{" "}
           and invite them to list on ILALI.
         </p>
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-ink-faint">
           Thanks for helping us build a safer community. You&apos;ll earn
           Ubuntu Rewards once the provider completes their first booking.
         </p>
@@ -124,17 +124,17 @@ export default function ReferralForm() {
     fieldErrors[field]?.[0] ?? null;
 
   const inputClass = (field: keyof FormData) =>
-    `w-full rounded-lg border px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 transition-colors min-h-[44px] ${
+    `w-full rounded-lg border px-4 py-2.5 text-sm text-ink-soft placeholder-ink-faint focus:outline-none focus:ring-2 transition-colors min-h-[44px] ${
       fieldError(field)
         ? "border-red-400 focus:border-red-500 focus:ring-red-100"
-        : "border-slate-300 focus:border-ilali-400 focus:ring-ilali-100"
+        : "border-ink/10 focus:border-ilali-400 focus:ring-ilali-100"
     }`;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       {/* ── Your details ── */}
       <fieldset>
-        <legend className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">
+        <legend className="text-xs font-semibold uppercase tracking-wider text-ink-faint mb-3">
           Your details
         </legend>
         <div className="space-y-3">
@@ -173,7 +173,7 @@ export default function ReferralForm() {
 
       {/* ── Provider details ── */}
       <fieldset>
-        <legend className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">
+        <legend className="text-xs font-semibold uppercase tracking-wider text-ink-faint mb-3">
           Provider details
         </legend>
         <div className="space-y-3">

@@ -10,12 +10,12 @@ export default function Hero() {
         </span>
 
         {/* Heading */}
-        <h1 className="max-w-3xl text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+        <h1 className="max-w-3xl text-4xl font-extrabold tracking-tight text-ink sm:text-5xl lg:text-6xl">
           Find activities your kids will love
         </h1>
 
         {/* Description */}
-        <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft sm:text-lg">
           Discover vetted extramural activities in your community. Every
           provider is background-checked for your peace of mind.
         </p>
@@ -30,18 +30,18 @@ export default function Hero() {
           </Link>
           <Link
             href="/providers/signup"
-            className="rounded-full border-2 border-slate-300 bg-white px-8 py-3 text-sm font-semibold text-slate-700 hover:border-ilali-400 hover:text-ilali-600 transition-colors"
+            className="rounded-full border-2 border-ink/10 bg-white px-8 py-3 text-sm font-semibold text-ink-soft hover:border-ilali-400 hover:text-ilali-600 transition-colors"
           >
             List your activity
           </Link>
         </div>
 
         {/* Stats */}
-        <div className="mt-10 flex items-center gap-2 text-sm text-slate-500">
-          <span className="font-semibold text-slate-700">500+</span>
+        <div className="mt-10 flex items-center gap-2 text-sm text-ink-faint">
+          <span className="font-semibold text-ink-soft">500+</span>
           <span>providers</span>
-          <span className="mx-2 text-slate-300">|</span>
-          <span className="font-semibold text-slate-700">4.8</span>
+          <span className="mx-2 text-ink-faint">|</span>
+          <span className="font-semibold text-ink-soft">4.8</span>
           <span>avg rating</span>
         </div>
       </div>

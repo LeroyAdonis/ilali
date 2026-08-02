@@ -27,21 +27,21 @@ const NAV_LINKS = [
 ] as const;
 
 const navLinkClasses =
-  "flex h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors";
+  "flex h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium text-ink-soft hover:bg-paper-warm hover:text-ink transition-colors";
 
 export function AdminShell({ children, user }: AdminShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-paper-warm">
       {/* ============================================
           MOBILE TOP BAR (< 768px)
           ============================================ */}
-      <header className="fixed inset-x-0 top-0 z-30 flex h-14 items-center justify-between border-b border-slate-200 bg-white px-3 md:hidden">
+      <header className="fixed inset-x-0 top-0 z-30 flex h-14 items-center justify-between border-b border-ink/10 bg-white px-3 md:hidden">
         <button
           onClick={() => setSidebarOpen(true)}
           aria-label="Open menu"
-          className="flex h-11 w-11 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100"
+          className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-soft hover:bg-paper-warm"
         >
           <Menu className="h-5 w-5" />
         </button>
@@ -69,7 +69,7 @@ export function AdminShell({ children, user }: AdminShellProps) {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex h-14 items-center justify-between border-b border-slate-200 px-4">
+        <div className="flex h-14 items-center justify-between border-b border-ink/10 px-4">
           <Link
             href="/admin"
             className="text-lg font-bold text-ilali-600"
@@ -80,14 +80,14 @@ export function AdminShell({ children, user }: AdminShellProps) {
           <button
             onClick={() => setSidebarOpen(false)}
             aria-label="Close menu"
-            className="flex h-11 w-11 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100"
+            className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-faint hover:bg-paper-warm"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         <nav className="flex-1 space-y-1 p-4">
-          <p className="px-3 pt-4 pb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <p className="px-3 pt-4 pb-2 text-xs font-semibold text-ink-faint uppercase tracking-wider">
             Manage
           </p>
           {NAV_LINKS.map((link) => (
@@ -103,12 +103,12 @@ export function AdminShell({ children, user }: AdminShellProps) {
           ))}
         </nav>
 
-        <div className="border-t border-slate-200 p-4">
+        <div className="border-t border-ink/10 p-4">
           <div className="mb-3 px-3">
-            <p className="text-sm font-medium text-slate-900 truncate">
+            <p className="text-sm font-medium text-ink truncate">
               {user.name || "Admin"}
             </p>
-            <p className="text-xs text-slate-500 truncate">{user.email}</p>
+            <p className="text-xs text-ink-faint truncate">{user.email}</p>
           </div>
           <SignOutButtonFull className="flex h-11 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors" />
         </div>
@@ -117,15 +117,15 @@ export function AdminShell({ children, user }: AdminShellProps) {
       {/* ============================================
           DESKTOP SIDEBAR (≥ 768px)
           ============================================ */}
-      <aside className="hidden md:flex md:w-60 md:shrink-0 md:flex-col md:border-r md:border-slate-200 md:bg-white md:h-screen md:sticky md:top-0 md:overflow-y-auto">
-        <div className="flex h-16 items-center border-b border-slate-200 px-6">
+      <aside className="hidden md:flex md:w-60 md:shrink-0 md:flex-col md:border-r md:border-ink/10 md:bg-white md:h-screen md:sticky md:top-0 md:overflow-y-auto">
+        <div className="flex h-16 items-center border-b border-ink/10 px-6">
           <Link href="/admin" className="text-xl font-bold text-ilali-600">
             ILALI Admin
           </Link>
         </div>
 
         <nav className="flex-1 space-y-1 p-4">
-          <p className="px-3 pt-4 pb-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <p className="px-3 pt-4 pb-2 text-xs font-semibold text-ink-faint uppercase tracking-wider">
             Manage
           </p>
           {NAV_LINKS.map((link) => (
@@ -136,12 +136,12 @@ export function AdminShell({ children, user }: AdminShellProps) {
           ))}
         </nav>
 
-        <div className="border-t border-slate-200 p-4">
+        <div className="border-t border-ink/10 p-4">
           <div className="mb-3 px-3">
-            <p className="text-sm font-medium text-slate-900 truncate">
+            <p className="text-sm font-medium text-ink truncate">
               {user.name || "Admin"}
             </p>
-            <p className="text-xs text-slate-500 truncate">{user.email}</p>
+            <p className="text-xs text-ink-faint truncate">{user.email}</p>
           </div>
           <SignOutButtonFull className="flex h-11 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors" />
         </div>

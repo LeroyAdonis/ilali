@@ -199,16 +199,16 @@ export default function ClubChat({ clubId, clubName }: ClubChatProps) {
 
   // ── Render ──
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <section className="overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-sm">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/60 px-4 py-3 sm:px-5">
+      <div className="flex items-center justify-between border-b border-ink/10 bg-paper-warm/60 px-4 py-3 sm:px-5">
         <div className="flex items-center gap-2">
           <MessageSquare className="h-4 w-4 text-ilali-600" aria-hidden="true" />
-          <h3 className="text-sm font-semibold text-slate-800">
+          <h3 className="text-sm font-semibold text-ink">
             {clubName ? `${clubName} chat` : "Club chat"}
           </h3>
         </div>
-        <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-400">
+        <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-ink-faint">
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ilali-400 opacity-75" />
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-ilali-500" />
@@ -236,13 +236,13 @@ export default function ClubChat({ clubId, clubName }: ClubChatProps) {
         ) : error ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
             <AlertCircle className="h-8 w-8 text-red-400" aria-hidden="true" />
-            <p className="mt-3 text-sm font-medium text-slate-700">
+            <p className="mt-3 text-sm font-medium text-ink-soft">
               Couldn&apos;t load the chat
             </p>
-            <p className="mt-1 max-w-xs text-xs text-slate-400">{error}</p>
+            <p className="mt-1 max-w-xs text-xs text-ink-faint">{error}</p>
             <button
               onClick={loadMessages}
-              className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-ink/10 bg-white px-3.5 py-2 text-xs font-medium text-ink-soft transition-colors hover:bg-paper-warm"
             >
               <RefreshCw className="h-3.5 w-3.5" />
               Retry
@@ -250,11 +250,11 @@ export default function ClubChat({ clubId, clubName }: ClubChatProps) {
           </div>
         ) : messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
-            <MessageSquare className="h-8 w-8 text-slate-300" aria-hidden="true" />
-            <p className="mt-3 text-sm font-medium text-slate-600">
+            <MessageSquare className="h-8 w-8 text-ink-faint" aria-hidden="true" />
+            <p className="mt-3 text-sm font-medium text-ink-soft">
               No messages yet
             </p>
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-ink-faint">
               {signedIn
                 ? "Be the first to start the conversation."
                 : "Sign in to start the conversation."}
@@ -278,18 +278,18 @@ export default function ClubChat({ clubId, clubName }: ClubChatProps) {
                   </div>
                   <div
                     className={`min-w-0 flex-1 rounded-2xl px-4 py-2.5 ${
-                      isOwn ? "bg-ilali-50" : "bg-slate-50"
+                      isOwn ? "bg-ilali-50" : "bg-paper-warm"
                     }`}
                   >
                     <div className="flex items-baseline gap-2">
-                      <p className="text-xs font-semibold text-slate-800">
+                      <p className="text-xs font-semibold text-ink">
                         {isOwn ? "You" : (msg.senderName ?? "Club member")}
                       </p>
-                      <span className="text-[11px] text-slate-400">
+                      <span className="text-[11px] text-ink-faint">
                         {timeAgo(msg.createdAt, now)}
                       </span>
                     </div>
-                    <p className="mt-0.5 whitespace-pre-line text-sm leading-relaxed text-slate-600">
+                    <p className="mt-0.5 whitespace-pre-line text-sm leading-relaxed text-ink-soft">
                       {msg.content}
                     </p>
                   </div>
@@ -302,11 +302,11 @@ export default function ClubChat({ clubId, clubName }: ClubChatProps) {
       </div>
 
       {/* Composer / sign-in prompt */}
-      <div className="border-t border-slate-200 bg-slate-50 p-3 sm:p-4">
+      <div className="border-t border-ink/10 bg-paper-warm p-3 sm:p-4">
         {sessionPending ? null : !signedIn ? (
-          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-5 text-center">
-            <LogIn className="h-5 w-5 text-slate-400" aria-hidden="true" />
-            <p className="text-sm font-medium text-slate-700">
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-ink/10 bg-white px-4 py-5 text-center">
+            <LogIn className="h-5 w-5 text-ink-faint" aria-hidden="true" />
+            <p className="text-sm font-medium text-ink-soft">
               Sign in to join the conversation
             </p>
             <Link
@@ -333,7 +333,7 @@ export default function ClubChat({ clubId, clubName }: ClubChatProps) {
                 disabled={sending}
                 rows={1}
                 maxLength={MAX_CONTENT_LENGTH}
-                className="max-h-24 w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-all disabled:opacity-60"
+                className="max-h-24 w-full resize-none rounded-xl border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink-soft placeholder:text-ink-faint focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-all disabled:opacity-60"
                 style={{ minHeight: "2.75rem" }}
                 aria-label="Type a message"
               />
@@ -343,7 +343,7 @@ export default function ClubChat({ clubId, clubName }: ClubChatProps) {
                 className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all ${
                   canSend
                     ? "bg-ilali-600 text-white shadow-sm hover:bg-ilali-700 active:scale-95"
-                    : "cursor-not-allowed bg-slate-200 text-slate-400"
+                    : "cursor-not-allowed bg-paper-warm text-ink-faint"
                 }`}
                 aria-label="Send message"
               >

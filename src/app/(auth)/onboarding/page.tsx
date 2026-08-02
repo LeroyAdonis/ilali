@@ -202,7 +202,7 @@ export default function OnboardingPage() {
   const TOTAL_STEPS = 3;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-paper-warm px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-xl">
         {/* Logo */}
         <div className="mb-8 text-center">
@@ -220,14 +220,14 @@ export default function OnboardingPage() {
                   className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold transition-colors ${
                     step >= s
                       ? "bg-ilali-600 text-white"
-                      : "border-2 border-slate-300 bg-white text-slate-400"
+                      : "border-2 border-ink/10 bg-white text-ink-faint"
                   }`}
                 >
                   {step > s ? <Check className="h-4 w-4" /> : s}
                 </div>
                 <span
                   className={`mt-1.5 text-xs font-medium ${
-                    step >= s ? "text-ilali-600" : "text-slate-400"
+                    step >= s ? "text-ilali-600" : "text-ink-faint"
                   }`}
                 >
                   {s === 1 ? "Welcome" : s === 2 ? "Children" : "Preferences"}
@@ -237,7 +237,7 @@ export default function OnboardingPage() {
           </div>
           {/* Connector lines */}
           <div className="relative mt-[-1.75rem] px-10">
-            <div className="h-0.5 bg-slate-200">
+            <div className="h-0.5 bg-paper-warm">
               <div
                 className="h-full bg-ilali-600 transition-all duration-300"
                 style={{ width: `${((step - 1) / (TOTAL_STEPS - 1)) * 100}%` }}
@@ -247,21 +247,21 @@ export default function OnboardingPage() {
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <div className="rounded-2xl border border-ink/10 bg-white p-8 shadow-sm">
           {/* ── STEP 1: Welcome ── */}
           {step === 1 && (
             <div className="text-center">
               <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-ilali-50 text-4xl">
                 👋
               </div>
-              <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+              <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">
                 Welcome to ILALI!
               </h1>
-              <p className="mt-4 text-base leading-relaxed text-slate-600">
+              <p className="mt-4 text-base leading-relaxed text-ink-soft">
                 Let&apos;s set up profiles for your children so we can find the
                 perfect activities for them.
               </p>
-              <div className="mt-6 space-y-3 text-left text-sm text-slate-500">
+              <div className="mt-6 space-y-3 text-left text-sm text-ink-faint">
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ilali-100 text-xs font-bold text-ilali-700">
                     1
@@ -296,13 +296,13 @@ export default function OnboardingPage() {
           {step === 2 && (
             <div>
               <div className="mb-6 text-center">
-                <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">
                   Step 2 of 3
                 </p>
-                <h2 className="mt-1 text-xl font-bold text-slate-900">
+                <h2 className="mt-1 font-display text-xl font-bold text-ink">
                   Tell us about your children
                 </h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-ink-faint">
                   Add each child so we can match the right activities
                 </p>
               </div>
@@ -317,17 +317,17 @@ export default function OnboardingPage() {
                 {children.map((child, index) => (
                   <div
                     key={index}
-                    className="rounded-xl border border-slate-200 bg-slate-50/50 p-5"
+                    className="rounded-xl border border-ink/10 bg-paper-warm/50 p-5"
                   >
                     <div className="mb-4 flex items-center justify-between">
-                      <h3 className="text-sm font-semibold text-slate-700">
+                      <h3 className="font-display text-sm font-semibold text-ink">
                         Child {index + 1}
                       </h3>
                       {children.length > 1 && (
                         <button
                           type="button"
                           onClick={() => removeChild(index)}
-                          className="rounded-lg p-1 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                          className="rounded-lg p-1 text-ink-faint transition-colors hover:bg-red-50 hover:text-red-500"
                           aria-label="Remove child"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -338,7 +338,7 @@ export default function OnboardingPage() {
                     <div className="space-y-4">
                       {/* Name */}
                       <div>
-                        <label className="block text-xs font-medium text-slate-600">
+                        <label className="block text-xs font-medium text-ink-soft">
                           Name
                         </label>
                         <input
@@ -346,13 +346,13 @@ export default function OnboardingPage() {
                           value={child.name}
                           onChange={(e) => updateChild(index, "name", e.target.value)}
                           placeholder="Child's name"
-                          className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                          className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
                         />
                       </div>
 
                       {/* Age */}
                       <div>
-                        <label className="block text-xs font-medium text-slate-600">
+                        <label className="block text-xs font-medium text-ink-soft">
                           Age
                         </label>
                         <input
@@ -362,13 +362,13 @@ export default function OnboardingPage() {
                           value={child.age}
                           onChange={(e) => updateChild(index, "age", e.target.value)}
                           placeholder="1–18"
-                          className="mt-1 block w-24 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                          className="mt-1 block w-24 rounded-lg border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
                         />
                       </div>
 
                       {/* Interests */}
                       <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-2">
+                        <label className="block text-xs font-medium text-ink-soft mb-2">
                           Interests
                         </label>
                         <div className="flex flex-wrap gap-2">
@@ -382,7 +382,7 @@ export default function OnboardingPage() {
                                 className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                                   selected
                                     ? "bg-ilali-100 text-ilali-700 border border-ilali-300"
-                                    : "border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50"
+                                    : "border border-ink/10 bg-white text-ink-faint hover:border-ink/10 hover:bg-paper-warm"
                                 }`}
                               >
                                 {interest}
@@ -394,7 +394,7 @@ export default function OnboardingPage() {
 
                       {/* Suburb */}
                       <div>
-                        <label className="block text-xs font-medium text-slate-600">
+                        <label className="block text-xs font-medium text-ink-soft">
                           Suburb (optional)
                         </label>
                         <input
@@ -402,13 +402,13 @@ export default function OnboardingPage() {
                           value={child.suburb}
                           onChange={(e) => updateChild(index, "suburb", e.target.value)}
                           placeholder="e.g. Rondebosch"
-                          className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                          className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
                         />
                       </div>
 
                       {/* Availability — Days */}
                       <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1.5">
+                        <label className="block text-xs font-medium text-ink-soft mb-1.5">
                           Available days
                         </label>
                         <div className="flex flex-wrap gap-1.5">
@@ -422,7 +422,7 @@ export default function OnboardingPage() {
                                 className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
                                   selected
                                     ? "bg-ilali-600 text-white"
-                                    : "border border-slate-200 bg-white text-slate-500 hover:border-slate-300"
+                                    : "border border-ink/10 bg-white text-ink-faint hover:border-ink/10"
                                 }`}
                               >
                                 {day.slice(0, 3)}
@@ -434,7 +434,7 @@ export default function OnboardingPage() {
 
                       {/* Availability — Time preference */}
                       <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1.5">
+                        <label className="block text-xs font-medium text-ink-soft mb-1.5">
                           Preferred time
                         </label>
                         <div className="flex gap-2">
@@ -448,7 +448,7 @@ export default function OnboardingPage() {
                                 className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                                   selected
                                     ? "bg-sunset-100 text-sunset-700 border border-sunset-300"
-                                    : "border border-slate-200 bg-white text-slate-500 hover:border-slate-300"
+                                    : "border border-ink/10 bg-white text-ink-faint hover:border-ink/10"
                                 }`}
                               >
                                 {slot}
@@ -477,7 +477,7 @@ export default function OnboardingPage() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-700"
+                  className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium text-ink-faint transition-colors hover:text-ink-soft"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   Back
@@ -499,13 +499,13 @@ export default function OnboardingPage() {
           {step === 3 && (
             <div>
               <div className="mb-8 text-center">
-                <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">
                   Step 3 of 3
                 </p>
-                <h2 className="mt-1 text-xl font-bold text-slate-900">
+                <h2 className="mt-1 font-display text-xl font-bold text-ink">
                   Almost done!
                 </h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-ink-faint">
                   Tell us how you&apos;d like to hear from us
                 </p>
               </div>
@@ -518,12 +518,12 @@ export default function OnboardingPage() {
 
               <div className="space-y-5">
                 {/* Toggle 1: New activities match */}
-                <label className="flex items-start gap-3 rounded-xl border border-slate-200 p-4 transition-colors hover:bg-slate-50 cursor-pointer">
+                <label className="flex items-start gap-3 rounded-xl border border-ink/10 p-4 transition-colors hover:bg-paper-warm cursor-pointer">
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-sm font-medium text-ink">
                       Notify me when new activities match my children
                     </p>
-                    <p className="mt-0.5 text-xs text-slate-500">
+                    <p className="mt-0.5 text-xs text-ink-faint">
                       Get alerts when providers near you list activities your children would love
                     </p>
                   </div>
@@ -540,7 +540,7 @@ export default function OnboardingPage() {
                     className={`relative mt-0.5 inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
                       preferences.notifyNewProviders
                         ? "bg-ilali-600"
-                        : "bg-slate-300"
+                        : "bg-paper-warm"
                     }`}
                   >
                     <span
@@ -554,12 +554,12 @@ export default function OnboardingPage() {
                 </label>
 
                 {/* Toggle 2: Community events */}
-                <label className="flex items-start gap-3 rounded-xl border border-slate-200 p-4 transition-colors hover:bg-slate-50 cursor-pointer">
+                <label className="flex items-start gap-3 rounded-xl border border-ink/10 p-4 transition-colors hover:bg-paper-warm cursor-pointer">
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-sm font-medium text-ink">
                       Notify me about community events and chats
                     </p>
-                    <p className="mt-0.5 text-xs text-slate-500">
+                    <p className="mt-0.5 text-xs text-ink-faint">
                       Stay in the loop with ILALI community happenings and parent discussions
                     </p>
                   </div>
@@ -576,7 +576,7 @@ export default function OnboardingPage() {
                     className={`relative mt-0.5 inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
                       preferences.notifyCommunity
                         ? "bg-ilali-600"
-                        : "bg-slate-300"
+                        : "bg-paper-warm"
                     }`}
                   >
                     <span
@@ -590,14 +590,14 @@ export default function OnboardingPage() {
                 </label>
 
                 {/* Toggle 3: Share suburb */}
-                <label className="flex items-start gap-3 rounded-xl border border-slate-200 p-4 transition-colors hover:bg-slate-50 cursor-pointer">
+                <label className="flex items-start gap-3 rounded-xl border border-ink/10 p-4 transition-colors hover:bg-paper-warm cursor-pointer">
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-sm font-medium text-ink">
                       Share my suburb for community features
                     </p>
-                    <p className="mt-0.5 text-xs text-slate-500">
+                    <p className="mt-0.5 text-xs text-ink-faint">
                       Help us connect you with nearby families and local activities.
-                      <span className="ml-1 text-slate-400">— Only your suburb is shared, never your exact address</span>
+                      <span className="ml-1 text-ink-faint">— Only your suburb is shared, never your exact address</span>
                     </p>
                   </div>
                   <button
@@ -611,7 +611,7 @@ export default function OnboardingPage() {
                       }))
                     }
                     className={`relative mt-0.5 inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
-                      preferences.notifyRewards ? "bg-ilali-600" : "bg-slate-300"
+                      preferences.notifyRewards ? "bg-ilali-600" : "bg-paper-warm"
                     }`}
                   >
                     <span
@@ -628,7 +628,7 @@ export default function OnboardingPage() {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-700"
+                  className="inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium text-ink-faint transition-colors hover:text-ink-soft"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   Back
@@ -652,7 +652,7 @@ export default function OnboardingPage() {
         </div>
 
         {/* Footer link */}
-        <p className="mt-6 text-center text-xs text-slate-400">
+        <p className="mt-6 text-center text-xs text-ink-faint">
           You can update your children&apos;s profiles and notification preferences anytime from your account settings.
         </p>
       </div>

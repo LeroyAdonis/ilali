@@ -63,12 +63,12 @@ export default function HelpCentrePage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-ilali-600 to-ilali-800 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
               Help Centre
             </h1>
-            <p className="mt-3 text-base leading-relaxed text-ilali-100 sm:text-lg">
+            <p className="mt-3 text-base leading-relaxed text-ink-soft sm:text-lg">
               Find answers to common questions. If you need more help, our
               team is here for you.
             </p>
@@ -89,7 +89,7 @@ export default function HelpCentrePage() {
             <div className="mx-auto max-w-3xl">
               <div className="flex items-center gap-3 mb-6">
                 <span className="text-2xl">{cat.icon}</span>
-                <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+                <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
                   {cat.title}
                 </h2>
               </div>
@@ -97,18 +97,18 @@ export default function HelpCentrePage() {
                 {cat.questions.map((item) => (
                   <details
                     key={item.q}
-                    className="group rounded-xl border border-slate-200 bg-white shadow-sm open:shadow-md transition-shadow"
+                    className="group rounded-xl border border-ink/10 bg-white shadow-sm open:shadow-md transition-shadow"
                   >
-                    <summary className="flex cursor-pointer items-center justify-between px-6 py-4 text-sm font-semibold text-slate-900 hover:text-ilali-600 transition-colors">
+                    <summary className="flex cursor-pointer items-center justify-between px-6 py-4 text-sm font-semibold text-ink hover:text-ilali-600 transition-colors">
                       {item.q}
-                      <span className="ml-4 shrink-0 text-slate-400 group-open:rotate-180 transition-transform">
+                      <span className="ml-4 shrink-0 text-ink-faint group-open:rotate-180 transition-transform">
                         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                         </svg>
                       </span>
                     </summary>
-                    <div className="border-t border-slate-100 px-6 py-4">
-                      <p className="text-sm leading-relaxed text-slate-600">
+                    <div className="border-t border-ink/10 px-6 py-4">
+                      <p className="text-sm leading-relaxed text-ink-soft">
                         {item.a}
                       </p>
                     </div>
@@ -121,16 +121,16 @@ export default function HelpCentrePage() {
 
         {/* Divider */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <hr className="border-slate-200" />
+          <hr className="border-ink/10" />
         </div>
 
         {/* Still Need Help? */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="rounded-2xl bg-gradient-to-br from-sunset-50 to-warm-50 px-6 py-12 text-center shadow-sm sm:px-12">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+          <div className="rounded-2xl bg-paper-warm px-6 py-12 text-center shadow-sm sm:px-12">
+            <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               Still Need Help?
             </h2>
-            <p className="mx-auto mt-3 max-w-lg text-base leading-relaxed text-slate-600">
+            <p className="mx-auto mt-3 max-w-lg text-base leading-relaxed text-ink-soft">
               Can't find what you're looking for? Our support team is ready
               to help. We typically respond within 24 hours.
             </p>
@@ -143,7 +143,7 @@ export default function HelpCentrePage() {
               </a>
               <a
                 href="mailto:support@ilali.co"
-                className="inline-flex items-center rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-ilali-400 hover:text-ilali-600"
+                className="inline-flex items-center rounded-full border border-ink/10 bg-white px-6 py-3 text-sm font-semibold text-ink-soft shadow-sm transition-colors hover:border-ilali-400 hover:text-ilali-600"
               >
                 Email support@ilali.co
               </a>

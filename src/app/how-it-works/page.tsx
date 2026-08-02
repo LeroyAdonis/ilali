@@ -62,15 +62,15 @@ function StepCard({
   step: (typeof parentSteps)[number];
 }) {
   return (
-    <div className="relative rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md">
+    <div className="relative rounded-xl border border-ink/10 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md">
       <div className="mb-4 flex items-center gap-3">
         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ilali-100 text-lg font-bold text-ilali-700">
           {step.number}
         </span>
         <span className="text-2xl">{step.icon}</span>
       </div>
-      <h3 className="text-lg font-semibold text-slate-900">{step.title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-slate-600">
+      <h3 className="font-display text-lg font-semibold text-ink">{step.title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-ink-soft">
         {step.description}
       </p>
     </div>
@@ -83,12 +83,12 @@ export default function HowItWorksPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-ilali-600 to-ilali-800 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
               How It Works
             </h1>
-            <p className="mt-3 text-base leading-relaxed text-ilali-100 sm:text-lg">
+            <p className="mt-3 text-base leading-relaxed text-ink-soft sm:text-lg">
               Whether you are a parent looking for activities or a provider
               wanting to grow your reach, we make it simple.
             </p>
@@ -98,10 +98,10 @@ export default function HowItWorksPage() {
         {/* For Parents */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               For Parents
             </h2>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-ink-faint">
               Three easy steps to get your child started
             </p>
           </div>
@@ -114,16 +114,16 @@ export default function HowItWorksPage() {
 
         {/* Divider */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <hr className="border-slate-200" />
+          <hr className="border-ink/10" />
         </div>
 
         {/* For Providers */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               For Providers
             </h2>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-ink-faint">
               Start reaching more families today
             </p>
           </div>

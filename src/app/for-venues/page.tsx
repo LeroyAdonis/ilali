@@ -60,9 +60,9 @@ export default function ForVenuesPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-sunset-500 to-sunset-700 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <section className="bg-teal-deep px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            <h1 className="font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
               Partner With Us
             </h1>
             <p className="mt-3 text-base leading-relaxed text-orange-100 sm:text-lg">
@@ -81,10 +81,10 @@ export default function ForVenuesPage() {
         {/* Benefits */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               Why Partner With ILALI?
             </h2>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-ink-faint">
               Unlock the full potential of your space
             </p>
           </div>
@@ -92,15 +92,15 @@ export default function ForVenuesPage() {
             {benefits.map((benefit) => (
               <div
                 key={benefit.title}
-                className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md"
+                className="rounded-xl border border-ink/10 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md"
               >
                 <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-sunset-100 text-2xl">
                   {benefit.icon}
                 </span>
-                <h3 className="mt-4 text-lg font-semibold text-slate-900">
+                <h3 className="mt-4 font-display text-lg font-semibold text-ink">
                   {benefit.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
                   {benefit.description}
                 </p>
               </div>
@@ -110,16 +110,16 @@ export default function ForVenuesPage() {
 
         {/* Divider */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <hr className="border-slate-200" />
+          <hr className="border-ink/10" />
         </div>
 
         {/* How It Works */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               How It Works
             </h2>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-ink-faint">
               Getting started is easy
             </p>
           </div>
@@ -127,15 +127,15 @@ export default function ForVenuesPage() {
             {steps.map((step) => (
               <div
                 key={step.number}
-                className="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm"
+                className="rounded-xl border border-ink/10 bg-white p-6 text-center shadow-sm"
               >
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-sunset-100 text-lg font-bold text-sunset-700">
                   {step.number}
                 </span>
-                <h3 className="mt-4 text-lg font-semibold text-slate-900">
+                <h3 className="mt-4 font-display text-lg font-semibold text-ink">
                   {step.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
                   {step.description}
                 </p>
               </div>
@@ -145,7 +145,7 @@ export default function ForVenuesPage() {
 
         {/* Divider */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <hr className="border-slate-200" />
+          <hr className="border-ink/10" />
         </div>
 
         {/* Apply Form */}
@@ -154,10 +154,10 @@ export default function ForVenuesPage() {
           className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8"
         >
           <div className="mx-auto max-w-lg">
-            <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="text-center font-display text-2xl font-bold text-ink sm:text-3xl">
               Apply to Partner
             </h2>
-            <p className="mt-2 text-center text-sm text-slate-500">
+            <p className="mt-2 text-center text-sm text-ink-faint">
               Tell us about your venue and we'll be in touch.
             </p>
             <VenuePartnerForm />

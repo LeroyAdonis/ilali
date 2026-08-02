@@ -123,64 +123,64 @@ export default async function NewProviderPage({
   return (
     <div className="max-w-3xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">
+        <h1 className="font-display text-2xl font-bold text-ink">
           Create Provider Profile
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-ink-faint">
           Add a new activity provider to the ILALI platform.
         </p>
       </div>
 
       <form action={createProvider} className="space-y-8">
         {/* Basic Info */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">
+        <div className="rounded-xl border border-ink/10 bg-white p-6">
+          <h2 className="mb-4 font-display text-lg font-semibold text-ink">
             Basic Information
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-ink-soft">
                 Activity Name *
               </label>
               <input
                 name="name"
                 required
                 defaultValue={prefill.name}
-                className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-ink-soft">
                 Provider Name *
               </label>
               <input
                 name="providerName"
                 required
                 defaultValue={prefill.providerName}
-                className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-ink-soft">
                 Slug
               </label>
               <input
                 name="slug"
                 defaultValue={slugify(prefill.name || "")}
-                className="mt-1 block w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm text-slate-500 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                className="mt-1 block w-full rounded-lg border border-ink/10 bg-paper-warm px-4 py-2.5 text-sm text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
               />
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-ink-faint">
                 Auto-generated from name
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-ink-soft">
                 Category *
               </label>
               <select
                 name="category"
                 required
-                className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
               >
                 <option value="">Select category</option>
                 {dbCategories.map((cat) => (
@@ -191,14 +191,14 @@ export default async function NewProviderPage({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-ink-soft">
                 Location *
               </label>
               <select
                 name="location"
                 required
                 defaultValue={prefill.location || "Claremont"}
-                className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
               >
                 <option value="">Select suburb</option>
                 {CT_SUBURBS.map((s) => (
@@ -210,26 +210,26 @@ export default async function NewProviderPage({
             </div>
           </div>
           <div className="mt-4">
-            <label className="block text-sm font-medium text-slate-700">
+            <label className="block text-sm font-medium text-ink-soft">
               Description
             </label>
             <textarea
               name="description"
               rows={3}
               defaultValue={prefill.description}
-              className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+              className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
             />
           </div>
         </div>
 
         {/* Age & Pricing */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">
+        <div className="rounded-xl border border-ink/10 bg-white p-6">
+          <h2 className="mb-4 font-display text-lg font-semibold text-ink">
             Age & Pricing
           </h2>
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-ink-soft">
                 Min Age *
               </label>
               <input
@@ -239,11 +239,11 @@ export default async function NewProviderPage({
                 max={18}
                 required
                 defaultValue={prefill.ageMin || 5}
-                className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-ink-soft">
                 Max Age *
               </label>
               <input
@@ -253,11 +253,11 @@ export default async function NewProviderPage({
                 max={18}
                 required
                 defaultValue={prefill.ageMax || 12}
-                className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-ink-soft">
                 Price (Rands) *
               </label>
               <input
@@ -271,33 +271,33 @@ export default async function NewProviderPage({
                     ? (prefill.priceValue / 100).toFixed(2)
                     : "0.00"
                 }
-                className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
               />
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-ink-faint">
                 Stored in cents. E.g., 150.00 = R150.00
               </p>
             </div>
           </div>
           <div className="mt-4">
-            <label className="block text-sm font-medium text-slate-700">
+            <label className="block text-sm font-medium text-ink-soft">
               Price Label
             </label>
             <input
               name="priceLabel"
               defaultValue="per session"
-              className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+              className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
             />
           </div>
         </div>
 
         {/* Media & Contact */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">
+        <div className="rounded-xl border border-ink/10 bg-white p-6">
+          <h2 className="mb-4 font-display text-lg font-semibold text-ink">
             Media & Contact
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-ink-soft">
                 Image URL
               </label>
               <input
@@ -305,11 +305,11 @@ export default async function NewProviderPage({
                 type="url"
                 defaultValue={prefill.imageUrl}
                 placeholder="https://example.com/image.jpg"
-                className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700">
+              <label className="block text-sm font-medium text-ink-soft">
                 Phone
               </label>
               <input
@@ -317,26 +317,26 @@ export default async function NewProviderPage({
                 type="tel"
                 defaultValue={prefill.phone}
                 placeholder="+27XXXXXXXXX"
-                className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
               />
             </div>
           </div>
         </div>
 
         {/* Tags */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">Tags</h2>
+        <div className="rounded-xl border border-ink/10 bg-white p-6">
+          <h2 className="mb-4 font-display text-lg font-semibold text-ink">Tags</h2>
           <div className="flex flex-wrap gap-2">
             {ACTIVITY_TAGS.map((tag) => (
               <label
                 key={tag}
-                className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50 cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-lg border border-ink/10 bg-white px-3 py-1.5 text-sm text-ink-soft hover:bg-paper-warm cursor-pointer"
               >
                 <input
                   type="checkbox"
                   name="tags"
                   value={tag.toLowerCase()}
-                  className="h-3.5 w-3.5 rounded border-slate-300 text-ilali-600 focus:ring-ilali-500"
+                  className="h-3.5 w-3.5 rounded border-ink/10 text-ilali-600 focus:ring-ilali-500"
                 />
                 {tag}
               </label>
@@ -345,8 +345,8 @@ export default async function NewProviderPage({
         </div>
 
         {/* Flags */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">
+        <div className="rounded-xl border border-ink/10 bg-white p-6">
+          <h2 className="mb-4 font-display text-lg font-semibold text-ink">
             Settings
           </h2>
           <div className="flex items-center gap-6">
@@ -354,17 +354,17 @@ export default async function NewProviderPage({
               <input
                 type="checkbox"
                 name="verified"
-                className="h-4 w-4 rounded border-slate-300 text-ilali-600 focus:ring-ilali-500"
+                className="h-4 w-4 rounded border-ink/10 text-ilali-600 focus:ring-ilali-500"
               />
-              <span className="text-sm text-slate-700">Verified</span>
+              <span className="text-sm text-ink-soft">Verified</span>
             </label>
             <label className="inline-flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 name="featured"
-                className="h-4 w-4 rounded border-slate-300 text-ilali-600 focus:ring-ilali-500"
+                className="h-4 w-4 rounded border-ink/10 text-ilali-600 focus:ring-ilali-500"
               />
-              <span className="text-sm text-slate-700">Featured</span>
+              <span className="text-sm text-ink-soft">Featured</span>
             </label>
           </div>
         </div>
@@ -373,7 +373,7 @@ export default async function NewProviderPage({
         <div className="flex items-center justify-end gap-3">
           <a
             href="/admin/providers"
-            className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+            className="rounded-lg border border-ink/10 px-4 py-2.5 text-sm font-medium text-ink-soft hover:bg-paper-warm transition-colors"
           >
             Cancel
           </a>

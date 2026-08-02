@@ -44,7 +44,7 @@ export default async function CategoryPage({ params }: Props) {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-ilali-600 to-ilali-800 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <Link
               href="/categories"
@@ -59,7 +59,7 @@ export default async function CategoryPage({ params }: Props) {
                 {cat.icon}
               </span>
               <div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+                <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
                   {cat.name}
                 </h1>
                 <p className="mt-2 max-w-2xl text-base leading-relaxed text-ilali-100 sm:text-lg">
@@ -72,7 +72,7 @@ export default async function CategoryPage({ params }: Props) {
 
         {/* Results */}
         <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <div className="mb-6 text-sm text-slate-500">
+          <div className="mb-6 text-sm text-ink-faint">
             {filtered.length === 0
               ? "No activities found in this category yet."
               : `Showing ${filtered.length} ${
@@ -87,12 +87,12 @@ export default async function CategoryPage({ params }: Props) {
               ))}
             </div>
           ) : (
-            <div className="rounded-xl border border-slate-200 bg-white p-12 text-center shadow-sm">
+            <div className="rounded-xl border border-ink/10 bg-white p-12 text-center shadow-sm">
               <span className="text-4xl">{cat.icon}</span>
-              <h3 className="mt-4 text-lg font-semibold text-slate-900">
+              <h3 className="mt-4 font-display text-lg font-semibold text-ink">
                 No activities yet
               </h3>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-ink-faint">
                 We&apos;re adding new providers in this category soon. Check
                 back later or browse other categories.
               </p>

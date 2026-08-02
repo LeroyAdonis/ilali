@@ -39,7 +39,7 @@ export default function ProviderCard({
   return (
     <Link
       href={`/activity/${slug}`}
-      className="group block rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden"
+      className="group block rounded-xl border border-ink/10 bg-white shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden"
     >
       {/* Image / Placeholder */}
       <div className="relative h-44 w-full overflow-hidden bg-gradient-to-br from-ilali-200 to-sunset-200">
@@ -79,12 +79,12 @@ export default function ProviderCard({
         </span>
 
         {/* Category badge */}
-        <span className="absolute top-3 left-[100px] rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm backdrop-blur-sm">
+        <span className="absolute top-3 left-[100px] rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-ink-soft shadow-sm backdrop-blur-sm">
           {category}
         </span>
 
         {/* Age range badge */}
-        <span className="absolute top-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm backdrop-blur-sm">
+        <span className="absolute top-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-ink-soft shadow-sm backdrop-blur-sm">
           {ageRange}
         </span>
       </div>
@@ -92,7 +92,7 @@ export default function ProviderCard({
       {/* Content */}
       <div className="p-4">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="text-sm font-semibold text-slate-900 group-hover:text-ilali-600 transition-colors line-clamp-1">
+          <h3 className="text-sm font-semibold text-ink group-hover:text-ilali-600 transition-colors line-clamp-1">
             {name}
           </h3>
 
@@ -104,7 +104,7 @@ export default function ProviderCard({
                   ? "bg-gradient-to-r from-ilali-500 to-ilali-600 text-white"
                   : matchScore >= 60
                     ? "bg-ilali-100 text-ilali-700"
-                    : "bg-slate-100 text-slate-600"
+                    : "bg-paper-warm text-ink-soft"
               }`}
             >
               {matchScore}% match
@@ -112,7 +112,7 @@ export default function ProviderCard({
           )}
         </div>
 
-        <p className="mt-0.5 text-xs text-slate-500">{providerName}</p>
+        <p className="mt-0.5 text-xs text-ink-faint">{providerName}</p>
 
         {/* Verification badge — injected by server parent */}
         {verificationBadge && (
@@ -134,8 +134,8 @@ export default function ProviderCard({
         )}
 
         {/* Location */}
-        <div className="mt-2 flex items-center gap-1 text-xs text-slate-500">
-          <MapPin className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+        <div className="mt-2 flex items-center gap-1 text-xs text-ink-faint">
+          <MapPin className="h-3.5 w-3.5 shrink-0 text-ink-faint" aria-hidden="true" />
           <span>
             {location} &middot; {distance}
           </span>
@@ -144,22 +144,22 @@ export default function ProviderCard({
         {/* Rating */}
         <div className="mt-2 flex items-center gap-1">
           <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" aria-hidden="true" />
-          <span className="text-sm font-semibold text-slate-800">{rating}</span>
-          <span className="text-xs text-slate-500">
+          <span className="text-sm font-semibold text-ink">{rating}</span>
+          <span className="text-xs text-ink-faint">
             ({reviewCount} review{reviewCount !== 1 ? "s" : ""})
           </span>
         </div>
 
         {/* Price / Free */}
-        <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
+        <div className="mt-3 flex items-center justify-between border-t border-ink/10 pt-3">
           {isFree ? (
             <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700">
               Free
             </span>
           ) : (
             <div>
-              <span className="text-sm font-bold text-slate-900">{price}</span>
-              <span className="ml-1 text-xs text-slate-500">{priceLabel}</span>
+              <span className="text-sm font-bold text-ink">{price}</span>
+              <span className="ml-1 text-xs text-ink-faint">{priceLabel}</span>
             </div>
           )}
           <span className="text-xs font-medium text-ilali-600 group-hover:underline">

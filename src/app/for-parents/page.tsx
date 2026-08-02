@@ -15,9 +15,9 @@ export default function ForParentsPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-ilali-600 to-ilali-800 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
               A parent&apos;s guide to ILALI
             </h1>
             <p className="mt-3 text-base leading-relaxed text-ilali-100 sm:text-lg">
@@ -31,10 +31,10 @@ export default function ForParentsPage() {
         {/* How vetting works */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               How vetting works
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">
+            <p className="mt-3 text-sm leading-relaxed text-ink-soft">
               Every provider on ILALI goes through a verification process before
               they can list activities. Here&apos;s what that means for your family:
             </p>
@@ -57,9 +57,9 @@ export default function ForParentsPage() {
                   a: "Each provider profile shows their vetting badge, how long they've been on ILALI, ratings from other parents, and a detailed description of their offering and credentials.",
                 },
               ].map((item) => (
-                <div key={item.q} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <h3 className="text-base font-semibold text-slate-900">{item.q}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.a}</p>
+                <div key={item.q} className="rounded-xl border border-ink/10 bg-white p-6 shadow-sm">
+                  <h3 className="font-display text-base font-semibold text-ink">{item.q}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{item.a}</p>
                 </div>
               ))}
             </div>
@@ -68,16 +68,16 @@ export default function ForParentsPage() {
 
         {/* Divider */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <hr className="border-slate-200" />
+          <hr className="border-ink/10" />
         </div>
 
         {/* Tips for choosing */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               Tips for choosing the right activity
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">
+            <p className="mt-3 text-sm leading-relaxed text-ink-soft">
               Not sure where to start? Here are a few things parents tell us
               make the biggest difference:
             </p>
@@ -106,12 +106,12 @@ export default function ForParentsPage() {
               ].map((tip) => (
                 <div
                   key={tip.title}
-                  className="flex gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+                  className="flex gap-4 rounded-xl border border-ink/10 bg-white p-5 shadow-sm"
                 >
                   <span className="mt-0.5 text-2xl">{tip.icon}</span>
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-900">{tip.title}</h3>
-                    <p className="mt-1 text-xs leading-relaxed text-slate-500">{tip.desc}</p>
+                    <h3 className="font-display text-sm font-semibold text-ink">{tip.title}</h3>
+                    <p className="mt-1 text-xs leading-relaxed text-ink-faint">{tip.desc}</p>
                   </div>
                 </div>
               ))}
@@ -121,16 +121,16 @@ export default function ForParentsPage() {
 
         {/* Divider */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <hr className="border-slate-200" />
+          <hr className="border-ink/10" />
         </div>
 
         {/* Ubuntu Rewards for parents */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               Earn while your kids grow
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-slate-600">
+            <p className="mt-3 text-sm leading-relaxed text-ink-soft">
               ILALI&apos;s Ubuntu Rewards programme means every booking does more
               than just keep your child busy — it earns points, unlocks
               discounts, and supports kids who wouldn&apos;t otherwise have access.
@@ -141,8 +141,8 @@ export default function ForParentsPage() {
                 { label: "Referral bonus", value: "50–200 pts" },
                 { label: "Community fund", value: "5% per booking" },
               ].map((item) => (
-                <div key={item.label} className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-center">
-                  <p className="text-xs text-slate-500">{item.label}</p>
+                <div key={item.label} className="rounded-lg border border-ink/10 bg-paper-warm p-4 text-center">
+                  <p className="text-xs text-ink-faint">{item.label}</p>
                   <p className="mt-1 text-lg font-bold text-ilali-700">{item.value}</p>
                 </div>
               ))}
@@ -160,13 +160,13 @@ export default function ForParentsPage() {
 
         {/* Divider */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <hr className="border-slate-200" />
+          <hr className="border-ink/10" />
         </div>
 
         {/* Getting started checklist */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               Getting started checklist
             </h2>
             <ul className="mt-8 space-y-4">
@@ -182,7 +182,7 @@ export default function ForParentsPage() {
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ilali-100 text-xs font-bold text-ilali-700">
                     {item.step}
                   </span>
-                  <span className="text-sm leading-relaxed text-slate-700">{item.text}</span>
+                  <span className="text-sm leading-relaxed text-ink-soft">{item.text}</span>
                 </li>
               ))}
             </ul>
@@ -191,8 +191,8 @@ export default function ForParentsPage() {
 
         {/* CTA */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="rounded-2xl bg-gradient-to-br from-ilali-500 to-ilali-700 px-6 py-12 text-center shadow-lg sm:px-12">
-            <h2 className="text-2xl font-bold text-white sm:text-3xl">
+          <div className="rounded-2xl bg-paper-warm px-6 py-12 text-center shadow-lg sm:px-12">
+            <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               Ready to find the perfect activity?
             </h2>
             <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-ilali-100">

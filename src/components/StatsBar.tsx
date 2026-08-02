@@ -13,7 +13,7 @@ export default function StatsBar() {
               <span className="text-3xl font-extrabold text-ilali-600 sm:text-4xl">
                 {stat.value}
               </span>
-              <span className="mt-1 text-sm font-medium text-slate-500">
+              <span className="mt-1 text-sm font-medium text-ink-faint">
                 {stat.label}
               </span>
             </div>

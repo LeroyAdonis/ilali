@@ -24,12 +24,12 @@ export default function ComingSoon({
         {icon}
       </span>
       <div className="mt-3 flex items-center justify-center gap-2">
-        <h3 className="text-base font-semibold text-slate-900">{title}</h3>
+        <h3 className="text-base font-semibold text-ink">{title}</h3>
         <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700">
           Coming soon
         </span>
       </div>
-      <p className="mt-2 text-sm leading-relaxed text-slate-600">
+      <p className="mt-2 text-sm leading-relaxed text-ink-soft">
         {description}
       </p>
       {linkHref && linkLabel && (

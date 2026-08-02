@@ -159,19 +159,19 @@ export default function ProviderSignupForm() {
       <section className="py-16 sm:py-20">
         <div className="mx-auto max-w-lg px-4 sm:px-6 lg:px-8 text-center">
           <CheckCircle className="mx-auto h-12 w-12 text-ilali-500" />
-          <h2 className="mt-4 text-2xl font-bold text-slate-900">
+          <h2 className="mt-4 font-display text-2xl font-bold text-ink">
             You&apos;re on the list!
           </h2>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-ink-faint">
             We&apos;ll review your application within 48 hours.
             You&apos;ll hear from us at{" "}
-            <span className="font-medium text-slate-700">{submittedEmail}</span>.
+            <span className="font-medium text-ink-soft">{submittedEmail}</span>.
           </p>
-          <p className="mt-3 text-sm text-slate-500">
+          <p className="mt-3 text-sm text-ink-faint">
             When approved, you&apos;ll get access to your own provider dashboard
             to manage listings, track enquiries, and update your profile.
           </p>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-ink-faint">
             You&apos;ll receive email updates about your application status.
           </p>
         </div>
@@ -183,25 +183,25 @@ export default function ProviderSignupForm() {
     fieldErrors[field]?.[0] ?? null;
 
   const inputClass = (field: keyof FormData) =>
-    `w-full rounded-lg border px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 transition-colors min-h-[44px] ${
+    `w-full rounded-lg border px-4 py-2.5 text-sm text-ink-soft placeholder-ink-faint focus:outline-none focus:ring-2 transition-colors min-h-[44px] ${
       fieldError(field)
         ? "border-red-400 focus:border-red-500 focus:ring-red-100"
-        : "border-slate-300 focus:border-ilali-400 focus:ring-ilali-100"
+        : "border-ink/10 focus:border-ilali-400 focus:ring-ilali-100"
     }`;
 
   return (
     <section className="py-16 sm:py-20">
       <div className="mx-auto max-w-lg px-4 sm:px-6 lg:px-8">
-        <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">
+        <h2 className="text-center font-display text-2xl font-bold text-ink sm:text-3xl">
           Get started today
         </h2>
-        <p className="mt-2 text-center text-sm text-slate-500">
+        <p className="mt-2 text-center text-sm text-ink-faint">
           Fill in your details and we&apos;ll be in touch.
         </p>
         <form onSubmit={handleSubmit} className="mt-8 space-y-4" noValidate>
           {/* ── Name ── */}
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="name">
+            <label className="block text-xs font-medium text-ink-soft mb-1" htmlFor="name">
               Full name
             </label>
             <input
@@ -221,7 +221,7 @@ export default function ProviderSignupForm() {
 
           {/* ── Email ── */}
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="email">
+            <label className="block text-xs font-medium text-ink-soft mb-1" htmlFor="email">
               Email address
             </label>
             <input
@@ -241,7 +241,7 @@ export default function ProviderSignupForm() {
 
           {/* ── Phone ── */}
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="phone">
+            <label className="block text-xs font-medium text-ink-soft mb-1" htmlFor="phone">
               Phone number
             </label>
             <input
@@ -261,7 +261,7 @@ export default function ProviderSignupForm() {
 
           {/* ── Activity Type ── */}
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="activityType">
+            <label className="block text-xs font-medium text-ink-soft mb-1" htmlFor="activityType">
               Activity type
             </label>
             <select
@@ -287,11 +287,11 @@ export default function ProviderSignupForm() {
           {/* ── Description ── */}
           <div>
             <label
-              className="block text-xs font-medium text-slate-700 mb-1"
+              className="block text-xs font-medium text-ink-soft mb-1"
               htmlFor="description"
             >
               Description{" "}
-              <span className="text-slate-400 font-normal">(optional)</span>
+              <span className="text-ink-faint font-normal">(optional)</span>
             </label>
             <textarea
               id="description"
@@ -306,9 +306,9 @@ export default function ProviderSignupForm() {
 
           {/* ── Location ── */}
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1" htmlFor="location">
+            <label className="block text-xs font-medium text-ink-soft mb-1" htmlFor="location">
               Location{" "}
-              <span className="text-slate-400 font-normal">(optional)</span>
+              <span className="text-ink-faint font-normal">(optional)</span>
             </label>
             <select
               id="location"
@@ -330,11 +330,11 @@ export default function ProviderSignupForm() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label
-                className="block text-xs font-medium text-slate-700 mb-1"
+                className="block text-xs font-medium text-ink-soft mb-1"
                 htmlFor="age_min"
               >
                 Min age{" "}
-                <span className="text-slate-400 font-normal">(optional)</span>
+                <span className="text-ink-faint font-normal">(optional)</span>
               </label>
               <input
                 id="age_min"
@@ -353,11 +353,11 @@ export default function ProviderSignupForm() {
             </div>
             <div>
               <label
-                className="block text-xs font-medium text-slate-700 mb-1"
+                className="block text-xs font-medium text-ink-soft mb-1"
                 htmlFor="age_max"
               >
                 Max age{" "}
-                <span className="text-slate-400 font-normal">(optional)</span>
+                <span className="text-ink-faint font-normal">(optional)</span>
               </label>
               <input
                 id="age_max"
@@ -379,11 +379,11 @@ export default function ProviderSignupForm() {
           {/* ── Price ── */}
           <div>
             <label
-              className="block text-xs font-medium text-slate-700 mb-1"
+              className="block text-xs font-medium text-ink-soft mb-1"
               htmlFor="price_value"
             >
               Price per session (R){" "}
-              <span className="text-slate-400 font-normal">(optional)</span>
+              <span className="text-ink-faint font-normal">(optional)</span>
             </label>
             <input
               id="price_value"
@@ -403,11 +403,11 @@ export default function ProviderSignupForm() {
           {/* ── Image URL ── */}
           <div>
             <label
-              className="block text-xs font-medium text-slate-700 mb-1"
+              className="block text-xs font-medium text-ink-soft mb-1"
               htmlFor="image_url"
             >
               Image URL{" "}
-              <span className="text-slate-400 font-normal">(optional)</span>
+              <span className="text-ink-faint font-normal">(optional)</span>
             </label>
             <input
               id="image_url"
@@ -438,7 +438,7 @@ export default function ProviderSignupForm() {
             <ArrowRight className="h-4 w-4" />
           </button>
 
-          <p className="text-xs text-center text-slate-400">
+          <p className="text-xs text-center text-ink-faint">
             By submitting, you agree to our{" "}
             <Link href="/terms" className="text-ilali-500 hover:underline">
               Terms

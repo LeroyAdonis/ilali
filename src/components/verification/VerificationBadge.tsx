@@ -79,7 +79,7 @@ const tierConfig: Record<
 > = {
   listed: {
     icon: null,
-    className: "bg-slate-100 text-slate-600",
+    className: "bg-paper-warm text-ink-soft",
   },
   verified: {
     icon: <ShieldCheck className="h-3 w-3" aria-hidden="true" />,

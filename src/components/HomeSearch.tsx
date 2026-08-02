@@ -20,7 +20,7 @@ export default function HomeSearch() {
   return (
     <form onSubmit={handleSubmit} className="relative mt-8">
       <svg
-        className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+        className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-faint"
         fill="none"
         viewBox="0 0 24 24"
         strokeWidth={2}
@@ -37,7 +37,7 @@ export default function HomeSearch() {
         placeholder="Search by activity, provider, or location..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full rounded-full border border-slate-300 bg-white py-4 pl-14 pr-4 text-base text-slate-700 shadow-sm placeholder:text-slate-400 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-all"
+        className="w-full rounded-full border border-ink/10 bg-white py-4 pl-14 pr-4 text-base text-ink-soft shadow-sm placeholder:text-ink-faint focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-all"
       />
     </form>
   );

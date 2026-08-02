@@ -60,9 +60,9 @@ export default function AIOnboardingForm() {
       <div className="bg-gradient-to-r from-ilali-50 to-sunset-50 px-6 py-5 border-b border-ilali-100">
         <div className="flex items-center gap-2 mb-1">
           <Sparkles className="h-5 w-5 text-ilali-600" />
-          <h3 className="text-lg font-bold text-slate-900">AI-Powered Setup</h3>
+          <h3 className="text-lg font-bold text-ink">AI-Powered Setup</h3>
         </div>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-ink-faint">
           Describe your activity in plain language and we&apos;ll auto-fill your listing —
           then you just review and submit.
         </p>
@@ -72,7 +72,7 @@ export default function AIOnboardingForm() {
         {!result ? (
           <form onSubmit={handleExtract} className="space-y-4">
             <div>
-              <label htmlFor="aiDescription" className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label htmlFor="aiDescription" className="block text-sm font-medium text-ink-soft mb-1.5">
                 Tell us about your activity
               </label>
               <textarea
@@ -81,9 +81,9 @@ export default function AIOnboardingForm() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder='e.g. "I run art classes for kids aged 5-10 in Muizenberg every Saturday. R100 per session, all materials included."'
-                className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-colors resize-y min-h-[44px]"
+                className="w-full rounded-lg border border-ink/10 px-4 py-3 text-sm text-ink-soft placeholder:text-ink-faint focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-colors resize-y min-h-[44px]"
               />
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-ink-faint">
                 Include: activity type, age range, location, price (if any), and what makes it special.
               </p>
             </div>
@@ -122,37 +122,37 @@ export default function AIOnboardingForm() {
             <div className="grid gap-3 sm:grid-cols-2">
               {result.name && (
                 <div className="flex items-start gap-2">
-                  <Tag className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
+                  <Tag className="h-4 w-4 text-ink-faint mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-slate-400">Activity name</p>
-                    <p className="text-sm font-medium text-slate-800">{result.name}</p>
+                    <p className="text-xs text-ink-faint">Activity name</p>
+                    <p className="text-sm font-medium text-ink">{result.name}</p>
                   </div>
                 </div>
               )}
               {result.category && (
                 <div className="flex items-start gap-2">
-                  <Tag className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
+                  <Tag className="h-4 w-4 text-ink-faint mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-slate-400">Category</p>
-                    <p className="text-sm font-medium text-slate-800">{result.category}</p>
+                    <p className="text-xs text-ink-faint">Category</p>
+                    <p className="text-sm font-medium text-ink">{result.category}</p>
                   </div>
                 </div>
               )}
               {result.location && (
                 <div className="flex items-start gap-2">
-                  <MapPin className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
+                  <MapPin className="h-4 w-4 text-ink-faint mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-slate-400">Location</p>
-                    <p className="text-sm font-medium text-slate-800">{result.location}</p>
+                    <p className="text-xs text-ink-faint">Location</p>
+                    <p className="text-sm font-medium text-ink">{result.location}</p>
                   </div>
                 </div>
               )}
               {(result.ageMin || result.ageMax) && (
                 <div className="flex items-start gap-2">
-                  <Clock className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
+                  <Clock className="h-4 w-4 text-ink-faint mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-slate-400">Age range</p>
-                    <p className="text-sm font-medium text-slate-800">
+                    <p className="text-xs text-ink-faint">Age range</p>
+                    <p className="text-sm font-medium text-ink">
                       {result.ageMin ?? "?"}–{result.ageMax ?? "?"} years
                     </p>
                   </div>
@@ -160,18 +160,18 @@ export default function AIOnboardingForm() {
               )}
               {result.priceValue != null && (
                 <div className="flex items-start gap-2">
-                  <Banknote className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
+                  <Banknote className="h-4 w-4 text-ink-faint mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-slate-400">Price</p>
-                    <p className="text-sm font-medium text-slate-800">R{result.priceValue}/session</p>
+                    <p className="text-xs text-ink-faint">Price</p>
+                    <p className="text-sm font-medium text-ink">R{result.priceValue}/session</p>
                   </div>
                 </div>
               )}
               {result.tags && result.tags.length > 0 && (
                 <div className="flex items-start gap-2 sm:col-span-2">
-                  <Tag className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
+                  <Tag className="h-4 w-4 text-ink-faint mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-slate-400">Tags</p>
+                    <p className="text-xs text-ink-faint">Tags</p>
                     <div className="flex flex-wrap gap-1.5 mt-1">
                       {result.tags.map((tag) => (
                         <span key={tag} className="rounded-full bg-ilali-100 px-2.5 py-0.5 text-xs font-medium text-ilali-700">
@@ -186,8 +186,8 @@ export default function AIOnboardingForm() {
 
             {result.description && (
               <div>
-                <p className="text-xs text-slate-400 mb-1">Description</p>
-                <p className="text-sm leading-relaxed text-slate-600">{result.description}</p>
+                <p className="text-xs text-ink-faint mb-1">Description</p>
+                <p className="text-sm leading-relaxed text-ink-soft">{result.description}</p>
               </div>
             )}
 
@@ -201,7 +201,7 @@ export default function AIOnboardingForm() {
               </a>
               <button
                 onClick={() => { setResult(null); setDescription(""); }}
-                className="text-sm text-slate-500 hover:text-slate-700 transition-colors min-h-[44px] px-4"
+                className="text-sm text-ink-faint hover:text-ink-soft transition-colors min-h-[44px] px-4"
               >
                 Try a different description
               </button>

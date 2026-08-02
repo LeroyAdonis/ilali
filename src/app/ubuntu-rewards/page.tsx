@@ -19,7 +19,7 @@ const tiers = [
   },
   {
     name: "Silver",
-    color: "from-slate-400 to-slate-300",
+    color: "from-ink/15 to-ink/5",
     badge: "🥈",
     points: "500 – 1,999",
     perks: [
@@ -96,7 +96,7 @@ export default function UbuntuRewardsPage() {
       <Header />
       <main className="flex-1">
         {/* ───── HERO ───── */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-ilali-700 via-ilali-600 to-sunset-600 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+        <section className="relative overflow-hidden bg-teal-deep px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
           {/* Decorative circles */}
           <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/5" />
           <div className="pointer-events-none absolute -bottom-32 -left-16 h-80 w-80 rounded-full bg-white/5" />
@@ -106,7 +106,7 @@ export default function UbuntuRewardsPage() {
               <span className="inline-block rounded-full bg-white/15 px-4 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
                 🏆 Introducing ILALI Ubuntu Rewards
               </span>
-              <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+              <h1 className="mt-6 font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Earn While Your Family{" "}
                 <span className="text-sunset-300">Learns &amp; Plays</span>
               </h1>
@@ -136,23 +136,23 @@ export default function UbuntuRewardsPage() {
         </section>
 
         {/* ───── SOCIAL PROOF BAR ───── */}
-        <section className="border-b border-slate-200 bg-white">
-          <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-slate-200 px-4 py-8 sm:grid-cols-4 sm:px-6 lg:px-8">
+        <section className="border-b border-ink/10 bg-white">
+          <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-ink/10 px-4 py-8 sm:grid-cols-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <p className="text-2xl font-extrabold text-ilali-700">2,400+</p>
-              <p className="text-sm text-slate-500">Active Members</p>
+              <p className="text-sm text-ink-faint">Active Members</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-extrabold text-ilali-700">12,500</p>
-              <p className="text-sm text-slate-500">Points Earned</p>
+              <p className="text-sm text-ink-faint">Points Earned</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-extrabold text-ilali-700">R8,200</p>
-              <p className="text-sm text-slate-500">Saved by Families</p>
+              <p className="text-sm text-ink-faint">Saved by Families</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-extrabold text-ilali-700">4.9★</p>
-              <p className="text-sm text-slate-500">Member Rating</p>
+              <p className="text-sm text-ink-faint">Member Rating</p>
             </div>
           </div>
         </section>
@@ -161,10 +161,10 @@ export default function UbuntuRewardsPage() {
         <section className="bg-ilali-50 px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+              <h2 className="font-display text-3xl font-extrabold text-ink sm:text-4xl">
                 <span className="text-ilali-600">Ubuntu</span>: I Am Because We Are
               </h2>
-              <p className="mt-4 text-lg leading-relaxed text-slate-600">
+              <p className="mt-4 text-lg leading-relaxed text-ink-soft">
                 Ubuntu Rewards isn&apos;t just a loyalty programme — it&apos;s a
                 promise. Every time you earn, a portion goes back into funding
                 activities for children who wouldn&apos;t otherwise have access.
@@ -181,8 +181,8 @@ export default function UbuntuRewardsPage() {
                   <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-ilali-100 text-3xl">
                     {item.icon}
                   </span>
-                  <h3 className="mt-4 text-lg font-semibold text-slate-900">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.desc}</p>
+                  <h3 className="mt-4 font-display text-lg font-semibold text-ink">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -193,10 +193,10 @@ export default function UbuntuRewardsPage() {
         <section id="how-it-works" className="px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+              <h2 className="font-display text-3xl font-extrabold text-ink sm:text-4xl">
                 Ways to Earn
               </h2>
-              <p className="mt-3 text-lg text-slate-600">
+              <p className="mt-3 text-lg text-ink-soft">
                 There are dozens of ways to earn points. Here are the most popular:
               </p>
             </div>
@@ -204,13 +204,13 @@ export default function UbuntuRewardsPage() {
               {waysToEarn.map((way) => (
                 <div
                   key={way.title}
-                  className="group rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-ilali-300 hover:shadow-md"
+                  className="group rounded-xl border border-ink/10 bg-white p-6 shadow-sm transition-all hover:border-ilali-300 hover:shadow-md"
                 >
                   <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-ilali-50 text-2xl transition-colors group-hover:bg-ilali-100">
                     {way.icon}
                   </span>
-                  <h3 className="mt-4 text-base font-semibold text-slate-900">{way.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{way.desc}</p>
+                  <h3 className="mt-4 font-display text-base font-semibold text-ink">{way.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{way.desc}</p>
                   <p className="mt-3 text-xs font-semibold uppercase tracking-wider text-ilali-600">
                     {way.rate}
                   </p>
@@ -221,13 +221,13 @@ export default function UbuntuRewardsPage() {
         </section>
 
         {/* ───── TIERS TABLE ───── */}
-        <section className="bg-slate-50 px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+        <section className="bg-paper-warm px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+              <h2 className="font-display text-3xl font-extrabold text-ink sm:text-4xl">
                 Reward Tiers
               </h2>
-              <p className="mt-3 text-lg text-slate-600">
+              <p className="mt-3 text-lg text-ink-soft">
                 The more you engage, the faster you climb. Each tier unlocks better perks.
               </p>
             </div>
@@ -238,7 +238,7 @@ export default function UbuntuRewardsPage() {
                   className={`relative rounded-2xl border-2 bg-white p-8 shadow-sm transition-all hover:shadow-lg ${
                     tier.popular
                       ? "border-ilali-500 ring-2 ring-ilali-200"
-                      : "border-slate-200"
+                      : "border-ink/10"
                   }`}
                 >
                   {tier.popular && (
@@ -248,12 +248,12 @@ export default function UbuntuRewardsPage() {
                   )}
                   <div className="text-center">
                     <span className="text-4xl">{tier.badge}</span>
-                    <h3 className="mt-3 text-xl font-bold text-slate-900">{tier.name}</h3>
+                    <h3 className="mt-3 font-display text-xl font-bold text-ink">{tier.name}</h3>
                     <p className="mt-1 text-sm font-semibold text-ilali-600">{tier.points} pts</p>
                   </div>
                   <ul className="mt-6 space-y-3">
                     {tier.perks.map((perk) => (
-                      <li key={perk} className="flex items-start gap-2 text-sm text-slate-700">
+                      <li key={perk} className="flex items-start gap-2 text-sm text-ink-soft">
                         <span className="mt-0.5 text-ilali-500">✓</span>
                         {perk}
                       </li>
@@ -269,10 +269,10 @@ export default function UbuntuRewardsPage() {
         <section className="px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+              <h2 className="font-display text-3xl font-extrabold text-ink sm:text-4xl">
                 What Members Say
               </h2>
-              <p className="mt-3 text-lg text-slate-600">
+              <p className="mt-3 text-lg text-ink-soft">
                 Join hundreds of families already earning rewards.
               </p>
             </div>
@@ -280,18 +280,18 @@ export default function UbuntuRewardsPage() {
               {testimonials.map((t) => (
                 <div
                   key={t.name}
-                  className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+                  className="rounded-xl border border-ink/10 bg-white p-6 shadow-sm"
                 >
                   <div className="flex items-center gap-1 text-sm text-yellow-400">
                     {"★".repeat(5)}
                   </div>
-                  <p className="mt-4 text-sm leading-relaxed text-slate-700 italic">
+                  <p className="mt-4 text-sm leading-relaxed text-ink-soft italic">
                     &ldquo;{t.quote}&rdquo;
                   </p>
-                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
+                  <div className="mt-4 flex items-center justify-between border-t border-ink/10 pt-4">
                     <div>
-                      <p className="text-sm font-semibold text-slate-900">{t.name}</p>
-                      <p className="text-xs text-slate-500">{t.role}</p>
+                      <p className="text-sm font-semibold text-ink">{t.name}</p>
+                      <p className="text-xs text-ink-faint">{t.role}</p>
                     </div>
                     <span className="rounded-full bg-ilali-50 px-3 py-1 text-xs font-semibold text-ilali-700">
                       {t.points}
@@ -307,10 +307,10 @@ export default function UbuntuRewardsPage() {
         <section className="bg-ilali-50 px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+              <h2 className="font-display text-3xl font-extrabold text-ink sm:text-4xl">
                 Questions?
               </h2>
-              <p className="mt-3 text-lg text-slate-600">
+              <p className="mt-3 text-lg text-ink-soft">
                 Everything you need to know about Ubuntu Rewards.
               </p>
             </div>
@@ -335,16 +335,16 @@ export default function UbuntuRewardsPage() {
               ].map((faq) => (
                 <details
                   key={faq.q}
-                  className="group rounded-xl border border-slate-200 bg-white shadow-sm transition-all open:border-ilali-300 open:ring-1 open:ring-ilali-200"
+                  className="group rounded-xl border border-ink/10 bg-white shadow-sm transition-all open:border-ilali-300 open:ring-1 open:ring-ilali-200"
                 >
-                  <summary className="flex cursor-pointer items-center justify-between px-6 py-4 text-base font-semibold text-slate-900 transition-colors hover:text-ilali-700">
+                  <summary className="flex cursor-pointer items-center justify-between px-6 py-4 text-base font-semibold text-ink transition-colors hover:text-ilali-700">
                     {faq.q}
-                    <span className="ml-4 text-xl text-slate-400 transition-transform group-open:rotate-45">
+                    <span className="ml-4 text-xl text-ink-faint transition-transform group-open:rotate-45">
                       +
                     </span>
                   </summary>
-                  <div className="border-t border-slate-100 px-6 pb-4 pt-3">
-                    <p className="text-sm leading-relaxed text-slate-600">{faq.a}</p>
+                  <div className="border-t border-ink/10 px-6 pb-4 pt-3">
+                    <p className="text-sm leading-relaxed text-ink-soft">{faq.a}</p>
                   </div>
                 </details>
               ))}
@@ -355,12 +355,12 @@ export default function UbuntuRewardsPage() {
         {/* ───── FINAL CTA ───── */}
         <section className="px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-ilali-600 via-ilali-700 to-sunset-700 px-8 py-16 text-center shadow-xl sm:px-16">
+            <div className="relative overflow-hidden rounded-3xl bg-teal-deep px-8 py-16 text-center shadow-xl sm:px-16">
               <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/5" />
               <div className="pointer-events-none absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-white/5" />
 
               <div className="relative">
-                <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+                <h2 className="font-display text-3xl font-extrabold text-white sm:text-4xl">
                   Ready to Start Earning?
                 </h2>
                 <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-ilali-100">

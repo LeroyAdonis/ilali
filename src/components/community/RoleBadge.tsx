@@ -18,7 +18,7 @@ const ROLE_STYLES: Record<
   parent: {
     label: "Parent",
     icon: <User className="h-3 w-3" aria-hidden="true" />,
-    className: "bg-slate-100 text-slate-600",
+    className: "bg-paper-warm text-ink-soft",
   },
 };
 

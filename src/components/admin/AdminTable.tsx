@@ -17,18 +17,18 @@ export function AdminTable({
   if (rows.length === 0) {
     return (
       <div className="px-4 py-12 text-center">
-        <p className="text-sm text-slate-500">{emptyMessage}</p>
+        <p className="text-sm text-ink-faint">{emptyMessage}</p>
       </div>
     );
   }
 
   const tableHead = (
     <thead>
-      <tr className="bg-slate-50/80 border-b border-slate-200">
+      <tr className="bg-paper-warm/80 border-b border-ink/10">
         {headers.map((header, i) => (
           <th
             key={i}
-            className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500"
+            className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-ink-faint"
           >
             {header}
           </th>
@@ -38,14 +38,14 @@ export function AdminTable({
   );
 
   const tableBody = (
-    <tbody className="divide-y divide-slate-100">
+    <tbody className="divide-y divide-ink/10">
       {rows.map((row, ri) => (
-        <tr key={ri} className="hover:bg-slate-50/50">
+        <tr key={ri} className="hover:bg-paper-warm/50">
           {row.map((cell, ci) => (
             <td
               key={ci}
-              className={`px-4 py-3 text-sm tabular-nums text-slate-600 ${
-                ci === 0 ? "font-medium text-slate-900" : ""
+              className={`px-4 py-3 text-sm tabular-nums text-ink-soft ${
+                ci === 0 ? "font-medium text-ink" : ""
               }`}
             >
               {cell}
@@ -68,7 +68,7 @@ export function AdminTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+    <div className="overflow-hidden rounded-xl border border-ink/10 bg-white">
       <div className="overflow-x-auto">
         <table className="w-full">
           {tableHead}

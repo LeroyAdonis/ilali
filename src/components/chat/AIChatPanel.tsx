@@ -41,7 +41,7 @@ interface AIChatPanelProps {
 
 function LoadingDots() {
   return (
-    <span className="inline-flex items-center gap-0.5 text-slate-400" aria-label="AI is thinking">
+    <span className="inline-flex items-center gap-0.5 text-ink-faint" aria-label="AI is thinking">
       <span className="animate-bounce [animation-delay:0ms]">●</span>
       <span className="animate-bounce [animation-delay:150ms]">●</span>
       <span className="animate-bounce [animation-delay:300ms]">●</span>
@@ -222,15 +222,15 @@ export default function AIChatPanel({
       {/* ── Heading ── */}
       {showHeading && (
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+          <h2 className="text-2xl font-bold text-ink sm:text-3xl">
             {heading}
           </h2>
-          <p className="mt-2 text-base text-slate-500">{subheading}</p>
+          <p className="mt-2 text-base text-ink-faint">{subheading}</p>
         </div>
       )}
 
       {/* ── Chat Card ── */}
-      <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="mt-8 overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-sm">
         {/* ── Chat History ── */}
         {hasMessages && (
           <div className="max-h-96 overflow-y-auto px-4 py-4 sm:px-6">
@@ -273,8 +273,8 @@ export default function AIChatPanel({
                       <>
                         {/* ── Concierge message ── */}
                         {msg.content && (
-                          <div className="rounded-2xl rounded-bl-md bg-slate-50 px-4 py-3">
-                            <p className="whitespace-pre-line text-sm leading-relaxed text-slate-700">
+                          <div className="rounded-2xl rounded-bl-md bg-paper-warm px-4 py-3">
+                            <p className="whitespace-pre-line text-sm leading-relaxed text-ink-soft">
                               {msg.content}
                             </p>
                           </div>
@@ -319,7 +319,7 @@ export default function AIChatPanel({
 
                         {/* ── Follow-up question ── */}
                         {msg.followUp && (
-                          <p className="flex items-start gap-1.5 text-xs text-slate-500">
+                          <p className="flex items-start gap-1.5 text-xs text-ink-faint">
                             <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ilali-500" />
                             {msg.followUp}
                           </p>
@@ -334,9 +334,9 @@ export default function AIChatPanel({
             {/* ── Loading indicator ── */}
             {loading && (
               <div className="mb-4">
-                <div className="inline-flex items-center gap-2 rounded-2xl rounded-bl-md bg-slate-100 px-4 py-2.5">
+                <div className="inline-flex items-center gap-2 rounded-2xl rounded-bl-md bg-paper-warm px-4 py-2.5">
                   <LoadingDots />
-                  <span className="text-sm text-slate-400">Searching...</span>
+                  <span className="text-sm text-ink-faint">Searching...</span>
                 </div>
               </div>
             )}
@@ -346,7 +346,7 @@ export default function AIChatPanel({
         )}
 
         {/* ── Input area ── */}
-        <div className="flex items-end gap-2 border-t border-slate-200 bg-slate-50 p-3 sm:p-4">
+        <div className="flex items-end gap-2 border-t border-ink/10 bg-paper-warm p-3 sm:p-4">
           <div className="flex-1">
             <textarea
               ref={textareaRef}
@@ -357,7 +357,7 @@ export default function AIChatPanel({
               disabled={loading}
               rows={1}
               maxLength={500}
-              className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-all disabled:opacity-60"
+              className="w-full resize-none rounded-xl border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink-soft placeholder:text-ink-faint focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-all disabled:opacity-60"
               style={{ minHeight: "2.75rem" }}
             />
           </div>
@@ -368,7 +368,7 @@ export default function AIChatPanel({
             className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all ${
               canSend
                 ? "bg-ilali-600 text-white shadow-sm hover:bg-ilali-700 active:scale-95"
-                : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                : "bg-paper-warm text-ink-faint cursor-not-allowed"
             }`}
             aria-label="Send message"
           >
@@ -381,15 +381,15 @@ export default function AIChatPanel({
         </div>
 
         {/* ── Footer: sparkle icon + clear chat ── */}
-        <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50 px-4 py-2 sm:px-6">
-          <div className="flex items-center gap-1.5 text-xs text-slate-400">
+        <div className="flex items-center justify-between border-t border-ink/10 bg-paper-warm px-4 py-2 sm:px-6">
+          <div className="flex items-center gap-1.5 text-xs text-ink-faint">
             <Sparkles className="h-3.5 w-3.5" />
             AI-powered matching
           </div>
           {hasMessages && (
             <button
               onClick={clearChat}
-              className="text-xs font-medium text-slate-400 transition-colors hover:text-slate-600"
+              className="text-xs font-medium text-ink-faint transition-colors hover:text-ink-soft"
             >
               Clear chat
             </button>

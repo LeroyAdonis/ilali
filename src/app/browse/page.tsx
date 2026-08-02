@@ -132,7 +132,7 @@ function ResultsSection({
       <section className="py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               {activeCategory
                 ? `${
                     providers.find((p) => p.categorySlug === activeCategory)
@@ -142,7 +142,7 @@ function ResultsSection({
                   ? "AI-Powered Matches"
                   : "Find the perfect activity"}
             </h1>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-ink-faint">
               {nl
                 ? `Showing matches for "${nl}"`
                 : hasActiveFilters
@@ -173,7 +173,7 @@ function ResultsSection({
       {isAiMatch ? (
         <section className="py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <p className="mb-6 text-sm text-slate-500">
+            <p className="mb-6 text-sm text-ink-faint">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-ilali-50 px-3 py-1 text-xs font-medium text-ilali-700">
                 🤖 AI-powered results based on your description
               </span>
@@ -213,16 +213,16 @@ function ResultsSection({
                 ))}
               </div>
             ) : (
-              <div className="rounded-xl border border-slate-200 bg-white p-12 text-center shadow-sm">
+              <div className="rounded-xl border border-ink/10 bg-white p-12 text-center shadow-sm">
                 <span className="text-4xl" role="img" aria-hidden="true">
                   🔍
                 </span>
-                <h3 className="mt-4 text-lg font-semibold text-slate-900">
+                <h3 className="mt-4 font-display text-lg font-semibold text-ink">
                   Nothing matched "{q || nl}"
                 </h3>
                 {searchSuggestions ? (
                   <>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-500 max-w-md mx-auto">
+                    <p className="mt-2 text-sm leading-relaxed text-ink-faint max-w-md mx-auto">
                       {searchSuggestions.message}
                     </p>
                     {searchSuggestions.suggestedCategories.length > 0 && (
@@ -240,7 +240,7 @@ function ResultsSection({
                     )}
                   </>
                 ) : (
-                  <p className="mt-2 text-sm text-slate-500">
+                  <p className="mt-2 text-sm text-ink-faint">
                     Try adjusting your search or clearing filters to see more
                     options.
                   </p>
@@ -254,10 +254,10 @@ function ResultsSection({
           {/* Parent accounts signup CTA */}
           <section className="pb-6">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <div className="rounded-xl border border-ilali-200 bg-gradient-to-r from-ilali-50 to-white p-6 sm:flex sm:items-center sm:justify-between">
+              <div className="rounded-xl border border-ilali-200 bg-paper-warm p-6 sm:flex sm:items-center sm:justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">👋 Create your free account</h3>
-                  <p className="mt-1 text-sm text-slate-500">Save your favourite activities and get personalised recommendations.</p>
+                  <h3 className="font-display text-base font-bold text-ink">👋 Create your free account</h3>
+                  <p className="mt-1 text-sm text-ink-faint">Save your favourite activities and get personalised recommendations.</p>
                 </div>
                 <Link
                   href="/auth/signup"
@@ -271,10 +271,10 @@ function ResultsSection({
 
           <section className="py-10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
+              <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">
                 New providers
               </h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-ink-faint">
                 Fresh activities added this week
               </p>
               <div className="mt-6 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
@@ -310,12 +310,12 @@ function ResultsSection({
             </div>
           </section>
 
-          <section className="py-10 bg-slate-50">
+          <section className="py-10 bg-paper-warm">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
+              <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">
                 Local favourites
               </h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-ink-faint">
                 Most popular activities in your area
               </p>
               <div className="mt-6 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">

@@ -16,21 +16,21 @@ export function AdminStatCard({
   change,
   description,
   icon: Icon,
-  iconColor = "bg-slate-100 text-slate-600",
+  iconColor = "bg-paper-warm text-ink-soft",
 }: AdminStatCardProps) {
   const [bgColor, textColor] = iconColor.split(" ");
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-ink/10 bg-white p-5 shadow-sm">
       <div
         className={`flex h-10 w-10 items-center justify-center rounded-lg ${
-          bgColor || "bg-slate-100"
-        } ${textColor || "text-slate-600"}`}
+          bgColor || "bg-paper-warm"
+        } ${textColor || "text-ink-soft"}`}
       >
         <Icon className="h-5 w-5" />
       </div>
-      <p className="mt-3 text-sm text-slate-500">{title}</p>
-      <p className="mt-1 text-2xl font-bold tabular-nums text-slate-900">
+      <p className="mt-3 text-sm text-ink-faint">{title}</p>
+      <p className="mt-1 text-2xl font-bold tabular-nums text-ink">
         {typeof value === "number" ? value.toLocaleString() : value}
       </p>
       {change && (
@@ -52,7 +52,7 @@ export function AdminStatCard({
         </div>
       )}
       {description && (
-        <p className="mt-1 text-xs text-slate-500">{description}</p>
+        <p className="mt-1 text-xs text-ink-faint">{description}</p>
       )}
     </div>
   );

@@ -15,12 +15,12 @@ export default function SignUpPage() {
       <main className="flex-1">
         <div className="flex min-h-[calc(100vh-10rem)] items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
           <div className="w-full max-w-md">
-            <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="rounded-2xl border border-ink/10 bg-white p-8 shadow-sm">
               <div className="mb-8 text-center">
-                <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+                <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">
                   Create your account
                 </h1>
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-ink-faint">
                   Join the ILALI community today
                 </p>
               </div>
@@ -29,7 +29,7 @@ export default function SignUpPage() {
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium text-slate-700"
+                    className="block text-sm font-medium text-ink-soft"
                   >
                     Full name
                   </label>
@@ -40,14 +40,14 @@ export default function SignUpPage() {
                     autoComplete="name"
                     required
                     placeholder="Your full name"
-                    className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                    className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-slate-700"
+                    className="block text-sm font-medium text-ink-soft"
                   >
                     Email address
                   </label>
@@ -58,14 +58,14 @@ export default function SignUpPage() {
                     autoComplete="email"
                     required
                     placeholder="you@example.com"
-                    className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                    className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="password"
-                    className="block text-sm font-medium text-slate-700"
+                    className="block text-sm font-medium text-ink-soft"
                   >
                     Password
                   </label>
@@ -76,16 +76,16 @@ export default function SignUpPage() {
                     autoComplete="new-password"
                     required
                     placeholder="Create a strong password"
-                    className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                    className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">
+                  <label className="block text-sm font-medium text-ink-soft">
                     Account type
                   </label>
                   <div className="mt-2 grid grid-cols-2 gap-3">
-                    <label className="flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white p-3 text-sm font-medium text-slate-700 hover:bg-slate-50 has-[:checked]:border-ilali-500 has-[:checked]:bg-ilali-50 has-[:checked]:text-ilali-700">
+                    <label className="flex cursor-pointer items-center justify-center rounded-lg border border-ink/10 bg-white p-3 text-sm font-medium text-ink-soft hover:bg-paper-warm has-[:checked]:border-ilali-500 has-[:checked]:bg-ilali-50 has-[:checked]:text-ilali-700">
                       <input
                         type="radio"
                         name="accountType"
@@ -95,7 +95,7 @@ export default function SignUpPage() {
                       />
                       <span>Parent</span>
                     </label>
-                    <label className="flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white p-3 text-sm font-medium text-slate-700 hover:bg-slate-50 has-[:checked]:border-ilali-500 has-[:checked]:bg-ilali-50 has-[:checked]:text-ilali-700">
+                    <label className="flex cursor-pointer items-center justify-center rounded-lg border border-ink/10 bg-white p-3 text-sm font-medium text-ink-soft hover:bg-paper-warm has-[:checked]:border-ilali-500 has-[:checked]:bg-ilali-50 has-[:checked]:text-ilali-700">
                       <input
                         type="radio"
                         name="accountType"
@@ -111,9 +111,9 @@ export default function SignUpPage() {
                   <input
                     type="checkbox"
                     id="terms"
-                    className="mt-1 h-4 w-4 rounded border-slate-300 text-ilali-600 focus:ring-ilali-500"
+                    className="mt-1 h-4 w-4 rounded border-ink/10 text-ilali-600 focus:ring-ilali-500"
                   />
-                  <label htmlFor="terms" className="text-xs text-slate-500">
+                  <label htmlFor="terms" className="text-xs text-ink-faint">
                     I agree to the{" "}
                     <a
                       href="/terms"
@@ -141,7 +141,7 @@ export default function SignUpPage() {
               </form>
 
               <div className="mt-6 text-center">
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-ink-faint">
                   Already have an account?{" "}
                   <a
                     href="/auth/signin"

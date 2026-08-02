@@ -52,12 +52,12 @@ export default function CodeOfConductPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-ilali-600 to-ilali-800 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
               Provider Code of Conduct
             </h1>
-            <p className="mt-3 max-w-2xl text-base leading-relaxed text-ilali-100 sm:text-lg">
+            <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink-soft sm:text-lg">
               Our standards for professional, ethical, and safe practice on the
               ILALI platform.
             </p>
@@ -69,10 +69,10 @@ export default function CodeOfConductPage() {
           <div className="mx-auto max-w-3xl space-y-12">
             {sections.map((section, index) => (
               <div key={index}>
-                <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+                <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
                   {section.title}
                 </h2>
-                <p className="mt-4 text-base leading-relaxed text-slate-600">
+                <p className="mt-4 text-base leading-relaxed text-ink-soft">
                   {section.content}
                 </p>
               </div>
@@ -82,18 +82,18 @@ export default function CodeOfConductPage() {
 
         {/* Divider */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <hr className="border-slate-200" />
+          <hr className="border-ink/10" />
         </div>
 
         {/* Footer note */}
         <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl">
-            <p className="text-sm leading-relaxed text-slate-500">
+            <p className="text-sm leading-relaxed text-ink-faint">
               This Code of Conduct is reviewed regularly and may be updated
               from time to time. Providers will be notified of any material
               changes. The latest version is always available on this page.
             </p>
-            <p className="mt-2 text-sm leading-relaxed text-slate-500">
+            <p className="mt-2 text-sm leading-relaxed text-ink-faint">
               Last updated: June 2026. If you have questions about the Code of
               Conduct, please contact us at{" "}
               <a

@@ -43,12 +43,12 @@ export default function ForProvidersPage() {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-ilali-600 to-ilali-800 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
               List Your Activities
             </h1>
-            <p className="mt-3 text-base leading-relaxed text-ilali-100 sm:text-lg">
+            <p className="mt-3 text-base leading-relaxed text-ink-soft sm:text-lg">
               Join the platform that connects you with families looking for
               quality children&apos;s activities in your area.
             </p>
@@ -64,10 +64,10 @@ export default function ForProvidersPage() {
         {/* Benefits */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               Everything You Need to Succeed
             </h2>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-ink-faint">
               Powerful tools to help you manage and grow your activity business
             </p>
           </div>
@@ -75,15 +75,15 @@ export default function ForProvidersPage() {
             {benefits.map((benefit) => (
               <div
                 key={benefit.title}
-                className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md"
+                className="rounded-xl border border-ink/10 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md"
               >
                 <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ilali-100 text-2xl">
                   {benefit.icon}
                 </span>
-                <h3 className="mt-4 text-lg font-semibold text-slate-900">
+                <h3 className="mt-4 font-display text-lg font-semibold text-ink">
                   {benefit.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
                   {benefit.description}
                 </p>
               </div>
@@ -93,29 +93,29 @@ export default function ForProvidersPage() {
 
         {/* Divider */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <hr className="border-slate-200" />
+          <hr className="border-ink/10" />
         </div>
 
         {/* Pricing */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-lg">
             <div className="rounded-2xl border-2 border-ilali-200 bg-white p-8 text-center shadow-lg">
-              <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+              <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
                 Simple Pricing
               </h2>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-ink-faint">
                 No hidden fees. No surprises.
               </p>
               <div className="mt-6">
                 <span className="text-5xl font-extrabold text-ilali-600">
                   R99
                 </span>
-                <span className="text-lg text-slate-500">/month</span>
+                <span className="text-lg text-ink-faint">/month</span>
               </div>
-              <p className="mt-2 text-sm text-slate-600">
+              <p className="mt-2 text-sm text-ink-soft">
                 Plus a small 10% commission on bookings
               </p>
-              <ul className="mx-auto mt-6 space-y-3 text-left text-sm text-slate-600">
+              <ul className="mx-auto mt-6 space-y-3 text-left text-sm text-ink-soft">
                 <li className="flex items-center gap-2">
                   <span className="text-ilali-500">✓</span>
                   Full provider profile and listing
@@ -147,7 +147,7 @@ export default function ForProvidersPage() {
 
         {/* Divider */}
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <hr className="border-slate-200" />
+          <hr className="border-ink/10" />
         </div>
 
         {/* AI-Powered Onboarding */}
@@ -163,10 +163,10 @@ export default function ForProvidersPage() {
           className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8"
         >
           <div className="mx-auto max-w-lg">
-            <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">
+            <h2 className="text-center font-display text-2xl font-bold text-ink sm:text-3xl">
               Start Listing Today
             </h2>
-            <p className="mt-2 text-center text-sm text-slate-500">
+            <p className="mt-2 text-center text-sm text-ink-faint">
               Fill in the form below and we&apos;ll be in touch.
             </p>
             <ProviderInquiryForm />

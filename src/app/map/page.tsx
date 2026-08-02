@@ -18,10 +18,10 @@ export default async function MapPage() {
       <Header />
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+          <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">
             Find clubs near you
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-ink-faint">
             Green pins are verified providers, grey pins are listed, and blue
             circles show how many ILALI parents are nearby — by suburb, never
             individuals.

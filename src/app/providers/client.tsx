@@ -42,9 +42,9 @@ export default function ProvidersPageClient({ providers, categories }: Providers
   return (
     <main className="flex-1">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-ilali-600 to-ilali-800 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+      <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
             Find Activity Providers
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-ilali-100 sm:text-lg">
@@ -58,13 +58,13 @@ export default function ProvidersPageClient({ providers, categories }: Providers
       <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         {/* Search bar */}
         <div className="relative mb-6">
-          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-faint" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search providers by name, category, or location..."
-            className="block w-full rounded-xl border border-slate-200 bg-white py-3.5 pl-12 pr-4 text-sm text-slate-900 placeholder-slate-400 shadow-sm focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+            className="block w-full rounded-xl border border-ink/10 bg-white py-3.5 pl-12 pr-4 text-sm text-ink placeholder-ink-faint shadow-sm focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
           />
         </div>
 
@@ -76,7 +76,7 @@ export default function ProvidersPageClient({ providers, categories }: Providers
             className={`rounded-full px-4 py-2 text-xs font-medium shadow-sm transition-colors ${
               !activeCategory
                 ? "bg-ilali-600 text-white"
-                : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300"
+                : "border border-ink/10 bg-white text-ink-soft hover:bg-paper-warm hover:border-ink/10"
             }`}
           >
             All
@@ -91,7 +91,7 @@ export default function ProvidersPageClient({ providers, categories }: Providers
               className={`rounded-full px-4 py-2 text-xs font-medium shadow-sm transition-colors ${
                 activeCategory === cat.slug
                   ? "bg-ilali-600 text-white"
-                  : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300"
+                  : "border border-ink/10 bg-white text-ink-soft hover:bg-paper-warm hover:border-ink/10"
               }`}
             >
               {cat.icon} {cat.name}
@@ -102,7 +102,7 @@ export default function ProvidersPageClient({ providers, categories }: Providers
 
       {/* Provider grid */}
       <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
-        <div className="mb-4 text-sm text-slate-500">
+        <div className="mb-4 text-sm text-ink-faint">
           Showing {filtered.length} of {providers.length} providers
           {searchQuery && ` for "${searchQuery}"`}
           {activeCategory &&
@@ -116,12 +116,12 @@ export default function ProvidersPageClient({ providers, categories }: Providers
               <ProviderCard key={provider.id} provider={provider} />
             ))
           ) : (
-            <div className="col-span-full rounded-xl border border-slate-200 bg-white p-12 text-center shadow-sm">
+            <div className="col-span-full rounded-xl border border-ink/10 bg-white p-12 text-center shadow-sm">
               <span className="text-4xl">🔍</span>
-              <h3 className="mt-4 text-lg font-semibold text-slate-900">
+              <h3 className="mt-4 font-display text-lg font-semibold text-ink">
                 No providers found
               </h3>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-ink-faint">
                 Try adjusting your search or clearing filters.
               </p>
             </div>
@@ -135,7 +135,7 @@ export default function ProvidersPageClient({ providers, categories }: Providers
           <div className="flex items-center justify-center gap-2">
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50 transition-colors"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-ink/10 bg-white text-sm font-medium text-ink-faint hover:bg-paper-warm transition-colors"
               disabled
             >
               ‹
@@ -148,26 +148,26 @@ export default function ProvidersPageClient({ providers, categories }: Providers
             </button>
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-ink/10 bg-white text-sm font-medium text-ink-soft hover:bg-paper-warm transition-colors"
             >
               2
             </button>
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-ink/10 bg-white text-sm font-medium text-ink-soft hover:bg-paper-warm transition-colors"
             >
               3
             </button>
-            <span className="px-1 text-sm text-slate-400">...</span>
+            <span className="px-1 text-sm text-ink-faint">...</span>
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-ink/10 bg-white text-sm font-medium text-ink-soft hover:bg-paper-warm transition-colors"
             >
               8
             </button>
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-ink/10 bg-white text-sm font-medium text-ink-soft hover:bg-paper-warm transition-colors"
             >
               ›
             </button>

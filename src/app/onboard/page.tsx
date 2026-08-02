@@ -69,7 +69,7 @@ export default function OnboardPage() {
             </Link>
             <Link
               href="/"
-              className="text-sm font-medium text-slate-600 hover:text-ilali-600 transition-colors"
+              className="text-sm font-medium text-ink-soft hover:text-ilali-600 transition-colors"
             >
               ← Back to ILALI
             </Link>
@@ -83,13 +83,13 @@ export default function OnboardPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
               </svg>
             </div>
-            <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            <h1 className="mt-6 font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
               Thanks, {name || "provider"}!
             </h1>
-            <p className="mt-4 text-lg leading-relaxed text-slate-600">
+            <p className="mt-4 text-lg leading-relaxed text-ink-soft">
               We'll review your activity and add you to ILALI within 48 hours.
               Keep an eye on your inbox — we'll send a confirmation to{" "}
-              <span className="font-semibold text-slate-900">{email}</span>.
+              <span className="font-semibold text-ink">{email}</span>.
             </p>
             <div className="mt-10">
               <Link
@@ -106,7 +106,7 @@ export default function OnboardPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-br from-ilali-50 via-white to-sunset-50">
+    <div className="flex min-h-screen flex-col bg-paper-warm">
       {/* ── Header ── */}
       <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-white/80 backdrop-blur-lg">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
@@ -121,7 +121,7 @@ export default function OnboardPage() {
           </Link>
           <Link
             href="/"
-            className="text-sm font-medium text-slate-600 hover:text-ilali-600 transition-colors"
+            className="text-sm font-medium text-ink-soft hover:text-ilali-600 transition-colors"
           >
             ← Back to ILALI
           </Link>
@@ -136,10 +136,10 @@ export default function OnboardPage() {
               <span className="h-1.5 w-1.5 rounded-full bg-ilali-500" />
               For Providers
             </span>
-            <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+            <h1 className="mt-6 font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
               Are you a children&apos;s activity provider?
             </h1>
-            <p className="mt-4 text-lg leading-relaxed text-slate-600">
+            <p className="mt-4 text-lg leading-relaxed text-ink-soft">
               Send us your poster and we&apos;ll add you to ILALI — free.
             </p>
           </div>
@@ -149,7 +149,7 @@ export default function OnboardPage() {
             {/* Quick email link */}
             <a
               href="mailto:providers@ilali.co?subject=Add%20my%20activity%20to%20ILALI"
-              className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 px-6 py-5 text-base font-semibold text-slate-700 transition-all hover:border-ilali-400 hover:bg-ilali-50 hover:text-ilali-600"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-ink/10 bg-paper-warm px-6 py-5 text-base font-semibold text-ink-soft transition-all hover:border-ilali-400 hover:bg-ilali-50 hover:text-ilali-600"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
@@ -160,10 +160,10 @@ export default function OnboardPage() {
             {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200" />
+                <div className="w-full border-t border-ink/10" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-gradient-to-br from-ilali-50 via-white to-sunset-50 px-4 text-slate-400">
+                <span className="bg-paper-warm px-4 text-ink-faint">
                   or fill in the form
                 </span>
               </div>
@@ -172,7 +172,7 @@ export default function OnboardPage() {
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label htmlFor="name" className="block text-sm font-semibold text-slate-700">
+                <label htmlFor="name" className="block text-sm font-semibold text-ink-soft">
                   Provider name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -181,12 +181,12 @@ export default function OnboardPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your activity or business name"
-                  className="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100"
+                  className="mt-1.5 block w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-slate-700">
+                <label htmlFor="email" className="block text-sm font-semibold text-ink-soft">
                   Email <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -195,15 +195,15 @@ export default function OnboardPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100"
+                  className="mt-1.5 block w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100"
                 />
               </div>
 
               <div>
-                <label htmlFor="description" className="block text-sm font-semibold text-slate-700">
+                <label htmlFor="description" className="block text-sm font-semibold text-ink-soft">
                   Tell us about your activity <span className="text-red-500">*</span>
                 </label>
-                <p className="mt-1 text-xs text-slate-400">
+                <p className="mt-1 text-xs text-ink-faint">
                   What, where, ages, prices, schedule — anything that helps us build your listing.
                 </p>
                 <textarea
@@ -212,7 +212,7 @@ export default function OnboardPage() {
                   onChange={(e) => setDescription(e.target.value)}
                   rows={5}
                   placeholder="e.g. We run fun soccer classes for 5–10 year olds in Rondebosch on Saturdays. R80 per session."
-                  className="mt-1.5 block w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 resize-y"
+                  className="mt-1.5 block w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 resize-y"
                 />
               </div>
 
@@ -246,7 +246,7 @@ export default function OnboardPage() {
           </div>
 
           {/* ── Trust note ── */}
-          <p className="mt-8 text-center text-xs text-slate-400">
+          <p className="mt-8 text-center text-xs text-ink-faint">
             No spam — we&apos;ll only use your email to confirm your listing.
           </p>
         </div>

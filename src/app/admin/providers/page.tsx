@@ -28,8 +28,8 @@ export default async function ProvidersPage({
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Providers</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="font-display text-2xl font-bold text-ink">Providers</h1>
+        <p className="mt-1 text-sm text-ink-faint">
           Manage activity providers on the platform.
         </p>
       </div>
@@ -37,13 +37,13 @@ export default async function ProvidersPage({
       {/* Search bar + Add Provider */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <form className="relative w-full max-w-sm">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
           <input
             type="text"
             name="search"
             defaultValue={searchQuery || ""}
             placeholder="Filter by name..."
-            className="w-full rounded-lg border border-slate-200 bg-white pl-9 pr-4 py-2 text-sm placeholder:text-slate-400 focus:border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-300"
+            className="w-full rounded-lg border border-ink/10 bg-white pl-9 pr-4 py-2 text-sm placeholder:text-ink-faint focus:border-ink/10 focus:outline-none focus:ring-1 focus:ring-ink/10"
           />
         </form>
         <Link
@@ -56,8 +56,8 @@ export default async function ProvidersPage({
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-slate-200 bg-white px-6 py-12 text-center">
-          <p className="text-sm text-slate-500">
+        <div className="rounded-xl border border-ink/10 bg-white px-6 py-12 text-center">
+          <p className="text-sm text-ink-faint">
             {searchQuery
               ? "No providers match your search."
               : "No providers yet."}
@@ -72,47 +72,47 @@ export default async function ProvidersPage({
           )}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <div className="overflow-hidden rounded-xl border border-ink/10 bg-white">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-200">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                <tr className="bg-paper-warm/80 border-b border-ink/10">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-ink-faint">
                     Name
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-ink-faint">
                     Category
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-ink-faint">
                     Location
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-ink-faint">
                     Price
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-ink-faint">
                     Flags
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-slate-500">
+                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-ink-faint">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-ink/10">
                 {filtered.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50/50">
+                  <tr key={p.id} className="hover:bg-paper-warm/50">
                     <td className="px-6 py-4">
-                      <p className="text-sm font-medium text-slate-900">
+                      <p className="text-sm font-medium text-ink">
                         {p.name}
                       </p>
-                      <p className="text-xs text-slate-500">{p.providerName}</p>
+                      <p className="text-xs text-ink-faint">{p.providerName}</p>
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
+                    <td className="px-6 py-4 text-sm text-ink-soft">
                       {p.category}
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
+                    <td className="px-6 py-4 text-sm text-ink-soft">
                       {p.location}
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
+                    <td className="px-6 py-4 text-sm text-ink-soft">
                       R{(p.priceValue / 100).toFixed(2)}
                     </td>
                     <td className="px-6 py-4">

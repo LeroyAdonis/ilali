@@ -60,8 +60,8 @@ export default async function AdminDashboardPage({
   const headers = ["Name", "Activity", "Location", "Status", "Date"];
   const rows = paged.map((app) => [
     <div key="name">
-      <p className="text-sm font-medium text-slate-900">{app.name}</p>
-      <p className="text-xs text-slate-500">{app.email}</p>
+      <p className="text-sm font-medium text-ink">{app.name}</p>
+      <p className="text-xs text-ink-faint">{app.email}</p>
     </div>,
     <span key="activity" className="whitespace-nowrap">
       {app.activityType}
@@ -99,7 +99,7 @@ export default async function AdminDashboardPage({
           title="Total Applications"
           value={applications.length}
           icon={ClipboardList}
-          iconColor="bg-slate-100 text-slate-600"
+          iconColor="bg-paper-warm text-ink-soft"
         />
         <AdminStatCard
           title="Pending"
@@ -124,27 +124,27 @@ export default async function AdminDashboardPage({
       </div>
 
       {/* Recent applications */}
-      <div className="rounded-xl border border-slate-200 overflow-hidden bg-white">
-        <div className="flex flex-col gap-3 border-b border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">
+      <div className="rounded-xl border border-ink/10 overflow-hidden bg-white">
+        <div className="flex flex-col gap-3 border-b border-ink/10 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="font-display text-lg font-semibold text-ink">
             Recent Applications
           </h2>
           <div className="flex items-center gap-3">
             {/* Search bar */}
             <form className="relative w-full max-w-sm">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint" />
               <input
                 type="text"
                 name="search"
                 defaultValue={searchQuery || ""}
                 placeholder="Search applications..."
-                className="w-full rounded-lg border border-slate-200 bg-white pl-9 pr-4 py-2 text-sm placeholder:text-slate-400 focus:border-slate-300 focus:outline-none focus:ring-1 focus:ring-slate-300"
+                className="w-full rounded-lg border border-ink/10 bg-white pl-9 pr-4 py-2 text-sm placeholder:text-ink-faint focus:border-ink/10 focus:outline-none focus:ring-1 focus:ring-ink/10"
               />
             </form>
             {/* Export button */}
             <Link
               href="/admin/applications"
-              className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+              className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-ink/10 px-3 py-2 text-sm font-medium text-ink-soft hover:bg-paper-warm transition-colors"
             >
               <Download className="h-4 w-4" />
               Export
@@ -160,8 +160,8 @@ export default async function AdminDashboardPage({
 
         {paged.length === 0 ? (
           <div className="px-6 py-12 text-center">
-            <ClipboardList className="mx-auto h-12 w-12 text-slate-300" />
-            <p className="mt-3 text-sm text-slate-500">
+            <ClipboardList className="mx-auto h-12 w-12 text-ink-faint" />
+            <p className="mt-3 text-sm text-ink-faint">
               {searchQuery
                 ? "No applications match your search."
                 : "No applications yet."}
@@ -185,8 +185,8 @@ export default async function AdminDashboardPage({
             />
 
             {/* Pagination */}
-            <div className="flex items-center justify-between border-t border-slate-200 px-6 py-3">
-              <p className="text-sm text-slate-500">
+            <div className="flex items-center justify-between border-t border-ink/10 px-6 py-3">
+              <p className="text-sm text-ink-faint">
                 Showing {start + 1}–{Math.min(start + PER_PAGE, filtered.length)}{" "}
                 of {filtered.length} applications
               </p>
@@ -194,13 +194,13 @@ export default async function AdminDashboardPage({
                 {safePage > 1 ? (
                   <Link
                     href={`/admin?page=${safePage - 1}${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ""}`}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-ink/10 text-ink-soft hover:bg-paper-warm transition-colors"
                     aria-label="Previous page"
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Link>
                 ) : (
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-100 text-slate-300 cursor-not-allowed">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-ink/10 text-ink-faint cursor-not-allowed">
                     <ChevronLeft className="h-4 w-4" />
                   </span>
                 )}
@@ -213,7 +213,7 @@ export default async function AdminDashboardPage({
                       className={`inline-flex h-8 w-8 items-center justify-center rounded-lg text-sm font-medium transition-colors ${
                         page === safePage
                           ? "bg-ilali-600 text-white"
-                          : "border border-slate-200 text-slate-600 hover:bg-slate-50"
+                          : "border border-ink/10 text-ink-soft hover:bg-paper-warm"
                       }`}
                     >
                       {page}
@@ -224,13 +224,13 @@ export default async function AdminDashboardPage({
                 {safePage < totalPages ? (
                   <Link
                     href={`/admin?page=${safePage + 1}${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ""}`}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-ink/10 text-ink-soft hover:bg-paper-warm transition-colors"
                     aria-label="Next page"
                   >
                     <ChevronRight className="h-4 w-4" />
                   </Link>
                 ) : (
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-100 text-slate-300 cursor-not-allowed">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-ink/10 text-ink-faint cursor-not-allowed">
                     <ChevronRight className="h-4 w-4" />
                   </span>
                 )}

@@ -69,11 +69,11 @@ export default function ReviewForm({ providerId, venueId, onSubmitted }: ReviewF
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-      <h3 className="text-base font-semibold text-slate-900">Leave a review</h3>
+      <h3 className="text-base font-semibold text-ink">Leave a review</h3>
 
       {/* Star rating */}
       <div>
-        <label className="block text-xs font-medium text-slate-600 mb-1.5">Rating</label>
+        <label className="block text-xs font-medium text-ink-soft mb-1.5">Rating</label>
         <div className="flex gap-0.5">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
@@ -89,13 +89,13 @@ export default function ReviewForm({ providerId, venueId, onSubmitted }: ReviewF
                 className={`h-6 w-6 ${
                   star <= (hoverRating || rating)
                     ? "fill-amber-400 text-amber-400"
-                    : "text-slate-300"
+                    : "text-ink-faint"
                 }`}
               />
             </button>
           ))}
           {rating > 0 && (
-            <span className="ml-2 text-xs text-slate-400 self-center">
+            <span className="ml-2 text-xs text-ink-faint self-center">
               {rating}/5
             </span>
           )}
@@ -104,7 +104,7 @@ export default function ReviewForm({ providerId, venueId, onSubmitted }: ReviewF
 
       {/* Name */}
       <div>
-        <label htmlFor="reviewerName" className="block text-xs font-medium text-slate-600 mb-1">
+        <label htmlFor="reviewerName" className="block text-xs font-medium text-ink-soft mb-1">
           Your name
         </label>
         <input
@@ -114,14 +114,14 @@ export default function ReviewForm({ providerId, venueId, onSubmitted }: ReviewF
           value={reviewerName}
           onChange={(e) => setReviewerName(e.target.value)}
           placeholder="e.g. Thandi"
-          className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-colors min-h-[44px]"
+          className="w-full rounded-lg border border-ink/10 px-4 py-2.5 text-sm text-ink-soft placeholder:text-ink-faint focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-colors min-h-[44px]"
         />
       </div>
 
       {/* Content */}
       <div>
-        <label htmlFor="reviewContent" className="block text-xs font-medium text-slate-600 mb-1">
-          Your review <span className="text-slate-400 font-normal">(min 10 characters)</span>
+        <label htmlFor="reviewContent" className="block text-xs font-medium text-ink-soft mb-1">
+          Your review <span className="text-ink-faint font-normal">(min 10 characters)</span>
         </label>
         <textarea
           id="reviewContent"
@@ -130,7 +130,7 @@ export default function ReviewForm({ providerId, venueId, onSubmitted }: ReviewF
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Share your experience with this activity..."
-          className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-colors min-h-[44px] resize-y"
+          className="w-full rounded-lg border border-ink/10 px-4 py-2.5 text-sm text-ink-soft placeholder:text-ink-faint focus:border-ilali-400 focus:outline-none focus:ring-2 focus:ring-ilali-100 transition-colors min-h-[44px] resize-y"
         />
       </div>
 

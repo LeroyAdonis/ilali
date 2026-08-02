@@ -15,12 +15,12 @@ export default function ForgotPasswordPage() {
       <main className="flex-1">
         <div className="flex min-h-[calc(100vh-10rem)] items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
           <div className="w-full max-w-md">
-            <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="rounded-2xl border border-ink/10 bg-white p-8 shadow-sm">
               <div className="mb-8 text-center">
-                <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+                <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">
                   Reset your password
                 </h1>
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-ink-faint">
                   Enter your email and we&apos;ll send you a reset link.
                 </p>
               </div>
@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-slate-700"
+                    className="block text-sm font-medium text-ink-soft"
                   >
                     Email address
                   </label>
@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
                     autoComplete="email"
                     required
                     placeholder="you@example.com"
-                    className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+                    className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
                   />
                 </div>
 
@@ -53,7 +53,7 @@ export default function ForgotPasswordPage() {
               </form>
 
               <div className="mt-6 text-center">
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-ink-faint">
                   Remember your password?{" "}
                   <Link
                     href="/auth/signin"

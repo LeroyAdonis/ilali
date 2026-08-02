@@ -42,8 +42,8 @@ export default async function ApplicationsPage({
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">Applications</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="font-display text-2xl font-bold text-ink">Applications</h1>
+        <p className="mt-1 text-sm text-ink-faint">
           Review and manage provider applications.
         </p>
       </div>
@@ -63,7 +63,7 @@ export default async function ApplicationsPage({
                 className={`inline-flex shrink-0 items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors min-h-[44px] ${
                   isActive
                     ? "bg-ilali-600 text-white border-ilali-600"
-                    : "border-slate-300 text-slate-600 hover:border-slate-400 hover:text-slate-900"
+                    : "border-ink/10 text-ink-soft hover:border-ink/10 hover:text-ink"
                 }`}
               >
                 {tab.label}
@@ -71,7 +71,7 @@ export default async function ApplicationsPage({
                   className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs tabular-nums ${
                     isActive
                       ? "bg-white/20 text-white"
-                      : "bg-slate-100 text-slate-600"
+                      : "bg-paper-warm text-ink-soft"
                   }`}
                 >
                   {counts[tab.value]}
@@ -82,7 +82,7 @@ export default async function ApplicationsPage({
         </div>
         <button
           type="button"
-          className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+          className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-ink/10 px-3 py-2 text-sm font-medium text-ink-soft hover:bg-paper-warm transition-colors"
         >
           <Download className="h-4 w-4" />
           Export
@@ -91,35 +91,35 @@ export default async function ApplicationsPage({
 
       {/* Applications list */}
       {applications.length === 0 ? (
-        <div className="rounded-xl border border-slate-200 bg-white px-6 py-12 text-center">
-          <Building2 className="mx-auto h-12 w-12 text-slate-300" />
-          <p className="mt-3 text-sm text-slate-500">No applications yet.</p>
+        <div className="rounded-xl border border-ink/10 bg-white px-6 py-12 text-center">
+          <Building2 className="mx-auto h-12 w-12 text-ink-faint" />
+          <p className="mt-3 text-sm text-ink-faint">No applications yet.</p>
         </div>
       ) : (
         <div className="space-y-4">
           {applications.map((app) => (
             <div
               key={app.id}
-              className="rounded-xl border border-slate-200 bg-white p-6"
+              className="rounded-xl border border-ink/10 bg-white p-6"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
-                    <h3 className="text-lg font-semibold text-slate-900">
+                    <h3 className="font-display text-lg font-semibold text-ink">
                       {app.name}
                     </h3>
                     <AdminStatusBadge status={app.status as "pending" | "contacted" | "approved" | "rejected" | null} />
                   </div>
-                  <p className="mt-1 text-sm text-slate-500">
+                  <p className="mt-1 text-sm text-ink-faint">
                     {app.activityType}
                     {app.location && ` · ${app.location}`}
                   </p>
                   {app.description && (
-                    <p className="mt-2 text-sm text-slate-600 line-clamp-2">
+                    <p className="mt-2 text-sm text-ink-soft line-clamp-2">
                       {app.description}
                     </p>
                   )}
-                  <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-500">
+                  <div className="mt-3 flex flex-wrap gap-4 text-sm text-ink-faint">
                     {app.email && (
                       <span className="flex items-center gap-1">
                         <Mail className="h-3.5 w-3.5" />
@@ -143,7 +143,7 @@ export default async function ApplicationsPage({
                     )}
                   </div>
                   {app.ageMin != null && app.ageMax != null && (
-                    <p className="mt-2 text-xs text-slate-400">
+                    <p className="mt-2 text-xs text-ink-faint">
                       Ages {app.ageMin}–{app.ageMax}
                       {app.priceValue != null &&
                         ` · R${(app.priceValue / 100).toFixed(2)}`}

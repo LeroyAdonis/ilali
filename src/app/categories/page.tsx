@@ -16,9 +16,9 @@ export default function CategoriesPage() {
       <Header />
       <main className="flex-1">
         {/* Hero header */}
-        <section className="bg-gradient-to-br from-ilali-600 to-ilali-800 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
               Browse by Category
             </h1>
             <p className="mt-3 max-w-2xl text-base leading-relaxed text-ilali-100 sm:text-lg">

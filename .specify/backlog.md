@@ -4,20 +4,24 @@ Backlog of out-of-scope / proposed items. Each item has a status: `proposed` (va
 
 ---
 
-## Item: Investigate "ILALI still looks the same" (Leroy's feedback 2026-08-02)
+## Item: Interior pages read as "the same" — need DRAMATIC redesign, not token swap (Leroy's feedback 2026-08-02)
 
-**Status:** proposed
+**Status:** proposed — HIGH PRIORITY next session
 
-After the full logo-true restyle shipped (landing + interior, tags
-`v20260802-design-restyle` through `-interior-restyle`), Leroy said
-"KitFix was drastically improved and ILALI still looks the same." Prod
-HTML confirms the new design IS live (hero-kids image, Enter ILALI CTA,
-font-display on /browse). So this is likely one of:
-1. **Browser cache** — hard-refresh / incognito check first
-2. **Preview URL confusion** — user may be on preview.ilali.co (older build) not ilali.vercel.app
-3. **Interior pages too subtle** — token swap (slate→ink, Inter→Bricolage) reads less dramatic than KitFix's full-bleed photo hero; may need bolder interior treatment (photo headers, color accents) to feel "drastically improved"
+**Leroy's words:** "I see the hero and other changes to the landing page. The inner pages still look the same. With KitFix the change was chalk and cheese."
 
-**Trigger to revisit:** Next session after this handoff; verify which of the three it is and act accordingly. Check this session for full context.
+**Root cause (confirmed):** The interior restyle (commit `1f94539`) was a **class swap** — slate-* → ink/paper, Inter → Bricolage, gradients → solid. But the PAGE STRUCTURE stayed identical, so it reads as the same page with slightly warmer colors. KitFix's win was **structural**: full-bleed photo hero replacing line-art (brighten + object-position + 60vh). Recapping ≠ redesign.
+
+**What dramatic interior redesign means (mirror the landing's signatures):**
+1. **Photo-backed page headers** — every top-level section header (/browse, /categories, /home, /clubs, /venues, /map, auth pages) gets a full-bleed FLUX-generated photo banner like the landing hero (kids activities: football, art, swimming, music — golden hour, Cape Town). Currently they're plain `bg-teal-deep` bands.
+2. **Signature elements carried into interior** — VETTED stamp motif, color-wheel accents (teal/gold/purple/orange woven through cards), mono eyebrows, term-planner visual on relevant pages.
+3. **Card redesign** — ProviderCard/CategoryCard/VenueCard get accent bars, larger imagery, bolder type (not just token colors).
+4. **Bigger Bricolage presence** — display sizes scaled up; landing-headline treatment repeated on interior h1s.
+5. **Consistent section rhythm** — alternating paper/paper-warm like the landing.
+
+**Approach:** mockup-first (like the landing): build 1-2 interior page mockups in `/tmp/ilali-mockup/`, vision-QA (NVIDIA 90b), get approval, then implement. Consider delegating page batches to subagents again but with STRUCTURAL instructions (add photo headers, redesign cards) not just class swaps.
+
+**Trigger to revisit:** next session — this is the main pending work. KitFix is a proven reference (its hero work is in kitfix-design-system skill).
 
 ---
 

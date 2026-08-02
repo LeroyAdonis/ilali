@@ -132,8 +132,8 @@ export const navLinks = [
 ];
 
 export const stats = [
-  { value: "500+", label: "Providers" },
-  { value: "4.8", label: "Avg Rating" },
+  { value: "19", label: "Vetted Providers" },
+  { value: "6", label: "Categories" },
   { value: "100%", label: "Background Checked" },
-  { value: "50+", label: "Activities" },
+  { value: "0", label: "Booking Fees" },
 ];

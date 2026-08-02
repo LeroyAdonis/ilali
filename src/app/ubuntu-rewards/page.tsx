@@ -65,29 +65,6 @@ const waysToEarn = [
     desc: "Help other parents by sharing your experience. Every honest review earns you points.",
     rate: "10 pts per review",
   },
-  {
-    icon: "📱",
-    title: "Daily Check-in",
-    desc: "Open the app daily and check in to earn streak bonuses. Consistency pays off.",
-    rate: "2 pts per day + streak bonus",
-  },
-];
-
-const testimonials = [
-  {
-    quote:
-      "I've earned over 800 points just from booking my daughter's weekly art classes and referring two friends. That's R200 off our next holiday camp!",
-    name: "Thandi M.",
-    role: "Parent, Claremont",
-    points: "832 pts earned",
-  },
-  {
-    quote:
-      "As a provider, I love that ILALI rewards families for engaging consistently. It means more committed students and a real community feel.",
-    name: "Marcus O.",
-    role: "Provider, Woodstock",
-    points: "Gold Tier Member",
-  },
 ];
 
 export default function UbuntuRewardsPage() {
@@ -135,28 +112,6 @@ export default function UbuntuRewardsPage() {
           </div>
         </section>
 
-        {/* ───── SOCIAL PROOF BAR ───── */}
-        <section className="border-b border-ink/10 bg-white">
-          <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-ink/10 px-4 py-8 sm:grid-cols-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <p className="text-2xl font-extrabold text-ilali-700">2,400+</p>
-              <p className="text-sm text-ink-faint">Active Members</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-extrabold text-ilali-700">12,500</p>
-              <p className="text-sm text-ink-faint">Points Earned</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-extrabold text-ilali-700">R8,200</p>
-              <p className="text-sm text-ink-faint">Saved by Families</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-extrabold text-ilali-700">4.9★</p>
-              <p className="text-sm text-ink-faint">Member Rating</p>
-            </div>
-          </div>
-        </section>
-
         {/* ───── THE UBUNTU PHILOSOPHY ───── */}
         <section className="bg-ilali-50 px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
           <div className="mx-auto max-w-7xl">
@@ -197,10 +152,10 @@ export default function UbuntuRewardsPage() {
                 Ways to Earn
               </h2>
               <p className="mt-3 text-lg text-ink-soft">
-                There are dozens of ways to earn points. Here are the most popular:
+                Here are the ways to earn:
               </p>
             </div>
-            <div className="mx-auto mt-12 grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-3">
               {waysToEarn.map((way) => (
                 <div
                   key={way.title}
@@ -259,44 +214,6 @@ export default function UbuntuRewardsPage() {
                       </li>
                     ))}
                   </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ───── TESTIMONIALS ───── */}
-        <section className="px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="font-display text-3xl font-extrabold text-ink sm:text-4xl">
-                What Members Say
-              </h2>
-              <p className="mt-3 text-lg text-ink-soft">
-                Join hundreds of families already earning rewards.
-              </p>
-            </div>
-            <div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
-              {testimonials.map((t) => (
-                <div
-                  key={t.name}
-                  className="rounded-xl border border-ink/10 bg-white p-6 shadow-sm"
-                >
-                  <div className="flex items-center gap-1 text-sm text-yellow-400">
-                    {"★".repeat(5)}
-                  </div>
-                  <p className="mt-4 text-sm leading-relaxed text-ink-soft italic">
-                    &ldquo;{t.quote}&rdquo;
-                  </p>
-                  <div className="mt-4 flex items-center justify-between border-t border-ink/10 pt-4">
-                    <div>
-                      <p className="text-sm font-semibold text-ink">{t.name}</p>
-                      <p className="text-xs text-ink-faint">{t.role}</p>
-                    </div>
-                    <span className="rounded-full bg-ilali-50 px-3 py-1 text-xs font-semibold text-ilali-700">
-                      {t.points}
-                    </span>
-                  </div>
                 </div>
               ))}
             </div>
@@ -364,7 +281,7 @@ export default function UbuntuRewardsPage() {
                   Ready to Start Earning?
                 </h2>
                 <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-ilali-100">
-                  Join thousands of Cape Town families earning rewards for doing
+                  Join Cape Town families earning rewards for doing
                   what they already love — booking amazing activities for their
                   kids.
                 </p>

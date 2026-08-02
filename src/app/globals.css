@@ -26,6 +26,10 @@
   --color-gold-deep: #e08f10;
   --color-purple: #81548d;
   --color-orange: #ed682f;
+  /* Deep shades for small text — AA contrast on paper */
+  --color-teal-deep-2: #0b6e66;
+  --color-purple-deep: #5c3a66;
+  --color-gold-deep-2: #a86a05;
 
   /* Legacy ilali teal ramp (kept for existing pages/components) */
   --color-ilali-50: #f0fdfa;

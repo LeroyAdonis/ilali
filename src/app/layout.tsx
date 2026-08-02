@@ -16,10 +16,10 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://preview.ilali.co"),
   icons: {
     icon: [
-      { url: "/images/brand/ilali-logo-38.png", sizes: "38x38", type: "image/png" },
-      { url: "/images/brand/ilali-logo-cropped.png", sizes: "778x790", type: "image/png" },
+      { url: "/images/brand/ilali-logo-38-t.png", sizes: "38x38", type: "image/png" },
+      { url: "/images/brand/ilali-logo-cropped-t.png", sizes: "778x790", type: "image/png" },
     ],
-    apple: "/images/brand/ilali-logo-cropped.png",
+    apple: "/images/brand/ilali-logo-cropped-t.png",
   },
   openGraph: {
     title: "ILALI",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/brand/ilali-logo-cropped.png",
+        url: "/images/brand/ilali-logo-cropped-t.png",
         width: 778,
         height: 790,
         alt: "ILALI",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     title: "ILALI",
     description:
       "Discover and book trusted children's arts and cultural activities in Cape Town. Find ballet, drama, art classes, coding workshops and more for kids aged 3-18.",
-    images: ["/images/brand/ilali-logo-cropped.png"],
+    images: ["/images/brand/ilali-logo-cropped-t.png"],
   },
   robots: { index: true, follow: true },
 };

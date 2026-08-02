@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ShieldCheck, Search, Users, ArrowRight } from "lucide-react";
 
@@ -18,26 +19,29 @@ const features = [
   {
     icon: <ShieldCheck className="h-6 w-6" />,
     iconClass: "bg-teal/10 text-teal-deep",
+    accentBar: "bg-teal",
     title: "100% Vetted",
     desc: "Every provider is background-checked. We do the safety work so you don't have to.",
     tag: "SHIELD-CHECKED",
-    tagClass: "text-teal-deep",
+    tagClass: "text-teal-deep-2",
   },
   {
     icon: <Search className="h-6 w-6" />,
     iconClass: "bg-purple/10 text-purple",
+    accentBar: "bg-purple",
     title: "Search & Discover",
     desc: "Browse by category, location, age, or price. Find the perfect activity for your child in minutes.",
     tag: "AI-MATCHED",
-    tagClass: "text-purple",
+    tagClass: "text-purple-deep",
   },
   {
     icon: <Users className="h-6 w-6" />,
     iconClass: "bg-gold/15 text-gold-deep",
+    accentBar: "bg-gold",
     title: "Trusted Community",
     desc: "Built with ASSITEJ SA & BASA. Read real reviews from Cape Town families and leave your own.",
     tag: "REAL REVIEWS",
-    tagClass: "text-gold-deep",
+    tagClass: "text-gold-deep-2",
   },
 ];
 
@@ -75,17 +79,14 @@ export default function LandingPage() {
       {/* ───── NAV (minimal — logo + sign in) ───── */}
       <header className="sticky top-0 z-50 w-full border-b border-ink/10 bg-paper/92 backdrop-blur-lg">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
+          <Link href="/" className="flex items-center hover:opacity-90 transition-opacity shrink-0">
             <img
-              src="/images/brand/ilali-mark.svg"
-              alt="ILALI mark"
-              width={38}
-              height={38}
-              className="rounded-[10px]"
+              src="/images/brand/ilali-logo-76-t.png"
+              alt="ILALI"
+              width={40}
+              height={40}
+              className="h-10 w-10"
             />
-            <span className="font-display text-[22px] font-extrabold tracking-tight text-ink">
-              ILA<span className="text-teal">LI</span>
-            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -121,10 +122,13 @@ export default function LandingPage() {
         {/* ───── HERO ───── */}
         <section className="relative flex min-h-[92vh] items-center overflow-hidden border-b border-ink/10 bg-paper-warm">
           <div className="absolute inset-0">
-            <img
+            <Image
               src="/images/hero/hero-kids.jpg"
               alt="Children playing football at golden hour in Cape Town"
-              className="h-full w-full object-cover object-[62%_40%]"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-[62%_40%]"
             />
           </div>
           <div
@@ -234,8 +238,9 @@ export default function LandingPage() {
               {features.map((f) => (
                 <div
                   key={f.title}
-                  className="rounded-2xl border border-ink/10 bg-white p-8 transition-transform hover:-translate-y-0.5 hover:border-teal/40 hover:shadow-[0_16px_40px_rgba(16,49,46,0.08)]"
+                  className="relative overflow-hidden rounded-2xl border border-ink/10 bg-white p-8 transition-transform hover:-translate-y-0.5 hover:border-teal/40 hover:shadow-[0_16px_40px_rgba(16,49,46,0.08)]"
                 >
+                  <span className={`absolute left-0 top-0 h-full w-1 ${f.accentBar}`} aria-hidden="true" />
                   <span className={`mb-6 inline-flex h-[52px] w-[52px] items-center justify-center rounded-xl ${f.iconClass}`}>
                     {f.icon}
                   </span>
@@ -347,9 +352,11 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="flex items-center justify-center">
-                <img
+                <Image
                   src="/images/hero/art-studio.jpg"
                   alt="Children painting at an art studio"
+                  width={400}
+                  height={300}
                   className="aspect-[4/3] w-full max-w-[400px] rounded-2xl border border-ink/10 object-cover saturate-[1.05]"
                 />
               </div>
@@ -394,11 +401,11 @@ export default function LandingPage() {
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
             <div className="flex items-center gap-2.5">
               <img
-                src="/images/brand/ilali-mark.svg"
-                alt="ILALI mark"
-                width={30}
-                height={30}
-                className="rounded-lg"
+                src="/images/brand/ilali-logo-76-t.png"
+                alt="ILALI"
+                width={40}
+                height={40}
+                className="h-10 w-10"
               />
               <span className="font-display text-[17px] font-extrabold text-ink">ILALI</span>
             </div>

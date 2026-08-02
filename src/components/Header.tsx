@@ -31,17 +31,14 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-ink/10 bg-paper/92 backdrop-blur-lg">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity shrink-0">
+        <Link href="/" className="flex items-center hover:opacity-90 transition-opacity shrink-0">
           <img
-            src="/images/brand/ilali-mark.svg"
+            src="/images/brand/ilali-logo-76-t.png"
             alt="ILALI"
-            width={38}
-            height={38}
-            className="rounded-[10px]"
+            width={40}
+            height={40}
+            className="h-10 w-10"
           />
-          <span className="font-display text-[22px] font-extrabold tracking-tight text-ink">
-            ILA<span className="text-teal">LI</span>
-          </span>
         </Link>
 
         {/* Desktop Nav */}

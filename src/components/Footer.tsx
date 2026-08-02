@@ -73,11 +73,11 @@ export default function Footer() {
           <div className="col-span-2 sm:col-span-3 lg:col-span-2">
             <Link href="/" className="inline-block hover:opacity-90 transition-opacity">
               <img
-                src="/images/brand/ilali-mark.svg"
+                src="/images/brand/ilali-logo-76-t.png"
                 alt="ILALI"
-                width={36}
-                height={36}
-                className="rounded-[10px]"
+                width={48}
+                height={48}
+                className="h-12 w-12"
               />
             </Link>
             <p className="mt-3 text-sm leading-relaxed text-ink-soft max-w-xs">

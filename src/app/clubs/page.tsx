@@ -8,6 +8,7 @@ import {
   getClubStats,
   getClubEvents,
   getRideRequests,
+  getCommunityContributions,
   type ClubEvent,
   type RideRequestWithNames,
 } from "@/lib/data-source";
@@ -51,6 +52,39 @@ const ACCENT_LINK: Record<Accent, string> = {
   gold: "text-gold-deep-2 hover:text-gold",
   purple: "text-purple-deep hover:text-purple",
   orange: "text-orange hover:text-orange/80",
+};
+
+const CONTRIBUTION_VERBS: Record<string, string> = {
+  "venue-help": "helped set up at",
+  "event-support": "supported an event at",
+  "community-building": "welcomed new members at",
+  "knowledge-sharing": "shared knowledge at",
+  outreach: "did outreach for",
+};
+
+function relativeTime(date: Date, now: number): string {
+  const seconds = Math.floor((now - date.getTime()) / 1000);
+  if (seconds < 60) return "just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+  const days = Math.floor(hours / 24);
+  if (days === 1) return "yesterday";
+  if (days < 7) return `${days} days ago`;
+  return date.toLocaleDateString("en-ZA", { day: "numeric", month: "short" });
+}
+
+type ContributionRow = {
+  id: string;
+  userName: string;
+  clubName: string;
+  type: string;
+  description: string | null;
+  points: number;
+  status: string;
+  confirmedByName: string | null;
+  createdAt: Date;
 };
 
 type ClubCard = {
@@ -103,6 +137,11 @@ export default async function ClubsPage() {
 
   const hasClubs = clubs.length > 0;
   const hasRides = openRides.length > 0;
+
+  // ── 7. Global Ubuntu Feed ──
+  const contributions = await getCommunityContributions({ limit: 10 });
+  const contributionNow = Date.now();
+  const hasContributions = contributions.length > 0;
 
   // ── Activity feed data ──
   const nowMs = Date.now();
@@ -337,6 +376,102 @@ export default async function ClubsPage() {
             </div>
           </section>
         )}
+
+        {/* ── Ubuntu Feed ── */}
+        <section
+          aria-labelledby="ubuntu-heading"
+          className="bg-white border-t border-ink/5"
+        >
+          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <div className="mb-6">
+              <h2
+                id="ubuntu-heading"
+                className="font-display text-[clamp(1.3rem,2vw,1.6rem)] font-bold text-ink flex items-center gap-2"
+              >
+                <span aria-hidden="true">🤝</span>
+                Ubuntu Feed
+              </h2>
+              <p className="mt-1 text-sm text-ink-faint">
+                See how the community is helping each other
+              </p>
+            </div>
+
+            {hasContributions ? (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1 max-w-2xl">
+                {contributions.map((c) => {
+                  const verb = CONTRIBUTION_VERBS[c.type] ?? "contributed at";
+                  const isConfirmed = c.status === "confirmed";
+
+                  return (
+                    <div
+                      key={c.id}
+                      className="flex items-start gap-3 rounded-xl border border-ink/10 bg-paper-warm p-4 shadow-sm"
+                    >
+                      {/* Avatar placeholder */}
+                      <span
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal/10 text-sm font-bold text-teal-deep"
+                        aria-hidden="true"
+                      >
+                        {c.userName?.charAt(0).toUpperCase() ?? "?"}
+                      </span>
+
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm text-ink">
+                          <span className="font-semibold">{c.userName}</span>{" "}
+                          <span className="text-ink-soft">{verb}</span>{" "}
+                          <span className="font-medium">{c.clubName}</span>
+                        </p>
+                        {c.description && (
+                          <p className="mt-0.5 text-xs text-ink-faint line-clamp-2">
+                            {c.description}
+                          </p>
+                        )}
+                        <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                          <span className="text-[11px] text-ink-faint/70">
+                            {c.createdAt
+                              ? relativeTime(c.createdAt, contributionNow)
+                              : ""}
+                          </span>
+                          <span className="inline-flex items-center gap-1 rounded-full bg-teal/10 px-2 py-0.5 text-[11px] font-semibold text-teal-deep">
+                            +{c.points} pts
+                          </span>
+                          {isConfirmed ? (
+                            <span className="text-[11px] text-ilali-600 font-medium">
+                              confirmed ✓
+                              {c.confirmedByName && (
+                                <> by {c.confirmedByName}</>
+                              )}
+                            </span>
+                          ) : (
+                            <span className="text-[11px] text-ink-faint italic">
+                              pending…
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="rounded-xl border border-dashed border-ink/10 bg-paper-warm p-10 text-center">
+                <span
+                  className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-teal/10 text-2xl"
+                  aria-hidden="true"
+                >
+                  🤝
+                </span>
+                <p className="mt-3 text-sm font-medium text-ink-soft">
+                  The Ubuntu Feed will light up as soon as community members
+                  start contributing.
+                </p>
+                <p className="mt-1 text-xs text-ink-faint">
+                  Be the first!
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
 
         {/* ── Ride-sharing board ── */}
         {hasRides ? (

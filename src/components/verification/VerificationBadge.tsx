@@ -83,11 +83,11 @@ const tierConfig: Record<
   },
   verified: {
     icon: <ShieldCheck className="h-3 w-3" aria-hidden="true" />,
-    className: "bg-ilali-50 text-ilali-600",
+    className: "bg-ilali-50 text-ilali-600 ring-1 ring-teal/20",
   },
   trusted: {
     icon: <Star className="h-3 w-3" aria-hidden="true" />,
-    className: "bg-amber-50 text-amber-600",
+    className: "bg-amber-50 text-amber-600 ring-1 ring-gold/30",
   },
 };
 
@@ -109,6 +109,11 @@ export default async function VerificationBadge({
     <span
       className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${config.className} ${className}`}
     >
+      {tier !== "listed" && (
+        <span className="text-[11px]" role="img" aria-hidden="true">
+          🛡️
+        </span>
+      )}
       {config.icon}
       {label}
     </span>

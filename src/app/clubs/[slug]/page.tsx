@@ -16,6 +16,9 @@ import RideRequest from "@/components/community/RideRequest";
 import JoinClubButton from "@/components/community/JoinClubButton";
 import WelcomeCard from "@/components/community/WelcomeCard";
 import InviteBanner from "@/components/community/InviteBanner";
+import VerificationBadge, {
+  getVerificationTier,
+} from "@/components/verification/VerificationBadge";
 import {
   getProviderBySlug,
   getCategories,
@@ -42,6 +45,15 @@ export default async function ClubHomePage({
     getClubStats(dbProvider.id),
   ]);
   const provider = mapProvider(dbProvider, categories);
+
+  // Verification tier for trust card
+  const { tier } = await getVerificationTier(provider.id);
+
+  const tierExplanation: Record<string, string> = {
+    trusted: "Verified by ILALI + vouched for by 3+ parents",
+    verified: "Background-checked and documents verified",
+    listed: "Self-registered — verification in progress",
+  };
 
   // Upcoming events only (data-source returns upcoming-first, already sorted)
   const now = Date.now();
@@ -182,6 +194,34 @@ export default async function ClubHomePage({
             className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-ilali-600 hover:text-ilali-700 transition-colors"
           >
             Meet the members
+            <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </Link>
+        </section>
+
+        {/* Trust & Safety */}
+        <section
+          aria-labelledby="club-trust"
+          className="rounded-xl border border-ink/10 bg-white p-5 shadow-sm"
+        >
+          <h2
+            id="club-trust"
+            className="font-display flex items-center gap-2 text-sm font-bold text-ink"
+          >
+            🛡️ Trust & Safety
+          </h2>
+          <div className="mt-3">
+            <Suspense fallback={null}>
+              <VerificationBadge providerId={provider.id} />
+            </Suspense>
+          </div>
+          <p className="mt-2 text-xs leading-relaxed text-ink-soft">
+            {tierExplanation[tier] ?? tierExplanation.listed}
+          </p>
+          <Link
+            href="/safeguarding"
+            className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-ilali-600 hover:text-ilali-700 transition-colors"
+          >
+            Our safeguarding promise
             <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
         </section>

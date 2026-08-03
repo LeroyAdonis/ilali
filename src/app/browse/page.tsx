@@ -193,7 +193,13 @@ function ResultsSection({
         <section className="py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {filtered.length > 0 ? (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <>
+                <p className="mb-6 text-xs text-ink-faint">
+                  Showing {filtered.length}{" "}
+                  {filtered.length === 1 ? "activity" : "activities"} · ⚡ All
+                  providers are background-checked
+                </p>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {filtered.map((provider) => (
                   <ProviderCard
                     key={provider.id}
@@ -206,6 +212,7 @@ function ResultsSection({
                   />
                 ))}
               </div>
+              </>
             ) : (
               <div className="rounded-xl border border-ink/10 bg-white p-12 text-center shadow-sm">
                 <span className="text-4xl" role="img" aria-hidden="true">

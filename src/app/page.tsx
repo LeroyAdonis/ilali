@@ -201,6 +201,24 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ───── SAFEGUARDING TRUST BAR ───── */}
+        <section className="border-b border-ink/10 bg-paper-warm py-6">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
+              <div className="flex items-start sm:items-center gap-3 flex-1">
+                <span className="text-xl" role="img" aria-hidden="true">🛡️</span>
+                <div>
+                  <p className="text-sm font-bold text-ink">Every provider is background-checked</p>
+                  <p className="text-xs text-ink-faint mt-0.5">Police clearance verified · ID confirmed · Ongoing review</p>
+                </div>
+              </div>
+              <Link href="/safeguarding" className="text-xs font-semibold text-teal-deep hover:text-teal transition-colors shrink-0">
+                Learn more →
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* ───── TRUST BAR ───── */}
         <section className="border-b border-ink/10 bg-white py-8">
           <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-10 px-4 sm:px-6 lg:px-8">

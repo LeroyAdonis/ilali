@@ -67,12 +67,12 @@ export default async function CategoryPage({ params }: Props) {
 
         {/* Results */}
         <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <div className="mb-6 text-sm text-ink-faint">
+          <div className="mb-6 text-xs text-ink-faint">
             {filtered.length === 0
               ? "No activities found in this category yet."
               : `Showing ${filtered.length} ${
                   filtered.length === 1 ? "activity" : "activities"
-                }`}
+                } · ⚡ All providers are background-checked`}
           </div>
 
           {filtered.length > 0 ? (

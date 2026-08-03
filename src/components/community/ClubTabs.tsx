@@ -8,6 +8,7 @@ const TABS = [
   { href: "/events", label: "Schedule", match: "prefix" },
   { href: "/members", label: "Members", match: "prefix" },
   { href: "/chat", label: "Chat", match: "prefix" },
+  { href: "/contribute", label: "Contribute", match: "prefix" },
 ] as const;
 
 interface ClubTabsProps {
@@ -15,7 +16,7 @@ interface ClubTabsProps {
 }
 
 /**
- * Club section tab nav — About | Schedule | Members | Chat.
+ * Club section tab nav — About | Schedule | Members | Chat | Contribute.
  * Active state is derived from the current pathname (client-side).
  */
 export default function ClubTabs({ slug }: ClubTabsProps) {

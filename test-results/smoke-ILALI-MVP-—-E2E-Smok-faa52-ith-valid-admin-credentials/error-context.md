@@ -20,17 +20,27 @@ Timeout: 10000ms
 
 Call log:
   - Expect "toHaveURL" with timeout 10000ms
-    23 × locator resolved to <html id="__next_error__">…</html>
+    24 × locator resolved to <html lang="en" class="h-full scroll-smooth">…</html>
        - unexpected value "http://localhost:3001/auth/signin?email=leroy%40ilali.co&password=ilali-admin-2026"
 
 ```
 
 ```yaml
-- img
-- heading "This page couldn’t load" [level=1]
-- paragraph: Reload to try again, or go back.
-- button "Reload"
-- button "Back"
+- link "ILALI":
+  - /url: /
+- heading "Welcome back" [level=1]
+- paragraph: Sign in to your ILALI account
+- text: Email address
+- textbox "Email address":
+  - /placeholder: you@example.com
+- text: Password
+- textbox "Password":
+  - /placeholder: Enter your password
+- button "Sign In"
+- paragraph:
+  - text: Don't have an account?
+  - link "Create one":
+    - /url: /auth/signup
 ```
 
 # Test source

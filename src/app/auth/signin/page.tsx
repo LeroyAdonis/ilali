@@ -29,7 +29,10 @@ export default function SignInPage() {
       if (result.error) {
         setError("Invalid email or password");
       } else {
-        router.push("/admin");
+        // Redirect based on role: admins → /admin, parents → /home
+        const session = await authClient.getSession();
+        const role = (session?.data?.user as { role?: string })?.role;
+        router.push(role === "admin" ? "/admin" : "/home");
         router.refresh();
       }
     } catch {

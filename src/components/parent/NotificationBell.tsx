@@ -169,9 +169,9 @@ export default function NotificationBell({
       {open && (
         <div
           ref={dropdownRef}
-          className={`absolute z-50 mt-2 max-h-96 w-screen max-w-sm overflow-y-auto rounded-xl border border-ink/10 bg-white shadow-lg ${
-            // Mobile: full-width, Desktop: right-aligned, constrained
-            "right-0 left-0 mx-auto sm:left-auto sm:right-0 sm:mx-0"
+          className={`absolute z-50 mt-2 max-h-96 w-72 overflow-y-auto rounded-xl border border-ink/10 bg-white shadow-lg sm:w-80 ${
+            // Mobile: anchored right, within viewport. Desktop: right-aligned, constrained
+            "right-0 max-w-[calc(100vw-2rem)]"
           }`}
           role="menu"
           aria-label="Notifications"

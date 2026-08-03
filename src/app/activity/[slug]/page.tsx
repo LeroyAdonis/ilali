@@ -17,6 +17,7 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import ComingSoon from "@/components/ComingSoon";
 import ReviewSection from "@/components/ReviewSection";
 import VerificationBadge from "@/components/verification/VerificationBadge";
+import JoinClubButton from "@/components/community/JoinClubButton";
 import {
   getProviders,
   getProviderBySlug,
@@ -267,6 +268,13 @@ export default async function ActivityPage({
                     </p>
                   </div>
                 )}
+
+                {/* Join club */}
+                <div className="pt-2 border-t border-ink/10">
+                  <Suspense fallback={null}>
+                    <JoinClubButton clubSlug={slug} />
+                  </Suspense>
+                </div>
 
                 <p className="mt-2 text-xs text-center text-ink-faint">
                   Sign in to save, book, or message the provider

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import {
   CalendarDays,
   ChevronRight,
@@ -12,6 +13,9 @@ import {
 import ClubEventCard from "@/components/community/ClubEventCard";
 import RoleBadge from "@/components/community/RoleBadge";
 import RideRequest from "@/components/community/RideRequest";
+import JoinClubButton from "@/components/community/JoinClubButton";
+import WelcomeCard from "@/components/community/WelcomeCard";
+import InviteBanner from "@/components/community/InviteBanner";
 import {
   getProviderBySlug,
   getCategories,
@@ -22,10 +26,13 @@ import { mapProvider } from "@/lib/db/mappers";
 
 export default async function ClubHomePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ invitedBy?: string }>;
 }) {
   const { slug } = await params;
+  const { invitedBy } = await searchParams;
   const dbProvider = await getProviderBySlug(slug);
   if (!dbProvider) notFound();
 
@@ -46,6 +53,15 @@ export default async function ClubHomePage({
     <div className="grid gap-10 lg:grid-cols-3">
       {/* ── Main column ── */}
       <div className="lg:col-span-2 space-y-10">
+        {/* Invite banner */}
+        {invitedBy && (
+          <InviteBanner
+            clubSlug={slug}
+            clubName={provider.name}
+            inviterId={invitedBy}
+          />
+        )}
+
         {/* About */}
         <section aria-labelledby="club-about">
           <h2
@@ -169,6 +185,24 @@ export default async function ClubHomePage({
             <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
         </section>
+
+        {/* Join club */}
+        <section className="rounded-xl border border-ink/10 bg-white p-5 shadow-sm">
+          <JoinClubButton
+            clubSlug={slug}
+            invitedBy={invitedBy}
+          />
+        </section>
+
+        {/* Welcome card */}
+        <Suspense fallback={null}>
+          <WelcomeCard
+            clubName={provider.name}
+            memberNumber={null}
+            memberCount={stats.memberFamilies}
+            clubSlug={slug}
+          />
+        </Suspense>
 
         {/* Rewards teaser — top volunteers */}
         <section

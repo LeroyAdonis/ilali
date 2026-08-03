@@ -39,6 +39,7 @@ export type ClubEvent = {
 };
 
 export type ClubMembershipRole = "parent" | "volunteer" | "organizer";
+export type ClubMembershipStatus = "active" | "inactive";
 
 export type ClubMembership = {
   id: string;
@@ -46,6 +47,8 @@ export type ClubMembership = {
   parentId: string;
   childIds: string[];
   role: ClubMembershipRole;
+  status: ClubMembershipStatus;
+  invitedBy: string | null;
   joinedAt: Date;
 };
 

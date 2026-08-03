@@ -31,6 +31,7 @@ const ACTION_META: Record<
   referral: { label: "Refer a Friend", description: "A friend joins ILALI", icon: "👥" },
   review: { label: "Leave a Review", description: "Review an activity or venue", icon: "⭐" },
   welcome: { label: "Welcome Bonus", description: "Join Ubuntu Rewards", icon: "🎉" },
+  "club-invite": { label: "Club Invite", description: "Invite someone to a club", icon: "📨" },
   attendance: { label: "Event Attendance", description: "Attend a club event", icon: "📅" },
 };
 

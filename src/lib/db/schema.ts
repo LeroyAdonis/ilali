@@ -255,6 +255,8 @@ export const clubMemberships = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
     childIds: uuid("child_ids").array().notNull(),
     role: text("role").default("parent"), // 'parent' | 'volunteer' | 'organizer'
+    status: text("status").notNull().default("active"), // "active" | "inactive"
+    invitedBy: text("invited_by"), // nullable, references users.id
     joinedAt: timestamp("joined_at").defaultNow(),
   },
   (t) => [unique().on(t.providerId, t.parentId)],

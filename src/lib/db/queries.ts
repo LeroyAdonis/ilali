@@ -221,6 +221,8 @@ export async function getClubMemberships(providerId: string) {
         parentName: users.name,
         childIds: clubMemberships.childIds,
         role: clubMemberships.role,
+        status: clubMemberships.status,
+        invitedBy: clubMemberships.invitedBy,
         joinedAt: clubMemberships.joinedAt,
       })
       .from(clubMemberships)
@@ -452,7 +454,12 @@ export async function getClubStats(providerId: string): Promise<ClubStats> {
     const [memberCount] = await db
       .select({ count: sql<number>`count(*)` })
       .from(clubMemberships)
-      .where(eq(clubMemberships.providerId, providerId));
+      .where(
+        and(
+          eq(clubMemberships.providerId, providerId),
+          eq(clubMemberships.status, "active")
+        )
+      );
 
     const familiesBySuburbRows = await db
       .select({
@@ -467,6 +474,7 @@ export async function getClubStats(providerId: string): Promise<ClubStats> {
       .where(
         and(
           eq(clubMemberships.providerId, providerId),
+          eq(clubMemberships.status, "active"),
           isNotNull(childProfiles.suburb)
         )
       )
@@ -492,6 +500,7 @@ export async function getClubStats(providerId: string): Promise<ClubStats> {
       .where(
         and(
           eq(clubMemberships.providerId, providerId),
+          eq(clubMemberships.status, "active"),
           ne(clubMemberships.role, "parent")
         )
       )

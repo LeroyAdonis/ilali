@@ -240,6 +240,8 @@ export const mockClubMemberships: MockClubMembership[] = membershipSpec.map(
     parentId,
     childIds: childIdsByParentId[parentId] ?? [],
     role,
+    status: "active" as const,
+    invitedBy: null,
     joinedAt: daysAgo(joinedDaysAgo),
   })
 );

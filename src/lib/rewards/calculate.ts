@@ -14,6 +14,7 @@ export const REWARD_ACTIONS = {
   referral: 200, // Refer a friend who joins
   review: 25, // Leave a review of an activity / venue
   welcome: 10, // Welcome bonus for joining Ubuntu Rewards
+  "club-invite": 50, // Bonus for inviting someone to a club
   attendance: 30, // Attend a club event
 } as const;
 

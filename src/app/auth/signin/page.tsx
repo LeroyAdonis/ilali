@@ -45,7 +45,11 @@ export default function SignInPage() {
         {/* Logo */}
         <div className="mb-8 text-center">
           <Link href="/" className="inline-block">
-            <span className="text-3xl font-bold text-ilali-600">ILALI</span>
+            <img
+              src="/images/brand/ilali-logo-76-t.png"
+              alt="ILALI"
+              className="mx-auto h-16 w-auto"
+            />
           </Link>
         </div>
 

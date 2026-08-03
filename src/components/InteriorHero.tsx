@@ -17,14 +17,14 @@ export default function InteriorHero({
   imageAlt,
 }: InteriorHeroProps) {
   return (
-    <header className="relative overflow-hidden min-h-[32vh] sm:min-h-[42vh] flex items-center border-b border-ink/10">
+    <header className="relative overflow-hidden min-h-[32vh] sm:min-h-[42vh] max-h-[50vh] flex items-center border-b border-ink/10">
       {/* Background image */}
       <Image
         src={imageSrc}
         alt={imageAlt}
         fill
         priority
-        className="object-cover object-[50%_55%] z-0"
+        className="object-cover object-center z-0"
       />
 
       {/* Warm gradient overlay */}
@@ -61,7 +61,7 @@ export default function InteriorHero({
       </div>
 
       {/* Text content */}
-      <div className="relative z-[2] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 sm:py-16">
+      <div className="relative z-[2] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 sm:py-16 text-left">
         {/* Eyebrow */}
         <span className="inline-flex items-center gap-[10px] pb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-teal-deep">
           <span className="text-gold text-[14px]">★</span> {eyebrow} · Cape Town

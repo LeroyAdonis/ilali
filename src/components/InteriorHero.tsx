@@ -17,14 +17,14 @@ export default function InteriorHero({
   imageAlt,
 }: InteriorHeroProps) {
   return (
-    <header className="relative overflow-hidden w-full flex items-center border-b border-ink/10" style={{ aspectRatio: "1344 / 768", maxHeight: "50vh" }}>
+    <header className="relative overflow-hidden w-full flex items-center border-b border-ink/10" style={{ maxHeight: "clamp(280px, 42vh, 520px)" }}>
       {/* Background image */}
       <Image
         src={imageSrc}
         alt={imageAlt}
         fill
         priority
-        className="object-cover object-center z-0"
+        className="object-contain object-left z-0"
         sizes="100vw"
       />
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Check, TrendingUp, Shield, Star, BarChart3, ArrowRight, HelpCircle } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import InteriorHero from "@/components/InteriorHero";
 
 export const metadata = {
   title: "Why List With Us — ILALI",
@@ -45,36 +46,32 @@ export default function WhyListPage() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="text-xs uppercase tracking-widest text-ink-faint font-semibold">
-              For providers
-            </span>
-            <h1 className="mt-3 font-display text-3xl font-extrabold text-ink sm:text-4xl lg:text-5xl">
-              Why list your activity with <span className="text-warm-300">ILALI</span>?
-            </h1>
-            <p className="mt-4 text-base leading-relaxed text-ink-soft sm:text-lg">
-              Stop juggling social media, spreadsheets, and WhatsApp messages. One platform to manage
-              it all — and reach families who are ready to book.
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-              <Link
-                href="/providers/signup"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-ilali-700 hover:bg-ilali-50 transition-colors"
-              >
-                Get started free
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/browse"
-                className="inline-flex items-center gap-2 rounded-full border border-ink/10 px-6 py-3 text-sm font-semibold text-ink hover:bg-teal/5 transition-colors"
-              >
-                See what's listed
-              </Link>
-            </div>
+        <InteriorHero
+          eyebrow="For Providers"
+          title={<>Why list your activity with <span className="text-warm-300">ILALI</span>?</>}
+          subtitle="Stop juggling social media, spreadsheets, and WhatsApp messages. One platform to manage it all — and reach families who are ready to book."
+          imageSrc="/images/hero/hero-providers.jpg"
+          imageAlt="Coach with kids"
+        />
+
+        {/* CTA Buttons */}
+        <div className="mx-auto max-w-3xl px-4 pb-8 text-center sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/providers/signup"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-ilali-700 hover:bg-ilali-50 transition-colors"
+            >
+              Get started free
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/browse"
+              className="inline-flex items-center gap-2 rounded-full border border-ink/10 px-6 py-3 text-sm font-semibold text-ink hover:bg-teal/5 transition-colors"
+            >
+              See what's listed
+            </Link>
           </div>
-        </section>
+        </div>
 
         {/* Benefits */}
         <section className="py-16 sm:py-20">

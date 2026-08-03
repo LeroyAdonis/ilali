@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import InteriorHero from "@/components/InteriorHero";
 import AIOnboardingForm from "@/components/AIOnboardingForm";
 
 export const metadata: Metadata = {
@@ -53,18 +54,13 @@ export default function ProviderResourcesPage() {
     <>
       <Header />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-              Provider Resources
-            </h1>
-            <p className="mt-3 text-base leading-relaxed text-ink-soft sm:text-lg">
-              Everything you need to succeed on ILALI — from getting started to
-              growing your activity business.
-            </p>
-          </div>
-        </section>
+        <InteriorHero
+          eyebrow="Resources"
+          title="Provider Resources"
+          subtitle="Everything you need to succeed on ILALI — from getting started to growing your activity business."
+          imageSrc="/images/hero/hero-providers.jpg"
+          imageAlt="Coach with kids"
+        />
 
         {/* Resources Grid */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">

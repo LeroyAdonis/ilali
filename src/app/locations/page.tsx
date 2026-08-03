@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import InteriorHero from "@/components/InteriorHero";
 
 export const metadata: Metadata = {
   title: "Locations | ILALI",
@@ -28,18 +29,13 @@ export default function LocationsPage() {
     <>
       <Header />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-              Find activities near you
-            </h1>
-            <p className="mt-3 text-base leading-relaxed text-ilali-100 sm:text-lg">
-              Select a location to discover trusted children's activities in
-              your area.
-            </p>
-          </div>
-        </section>
+        <InteriorHero
+          eyebrow="Discover"
+          title="Find activities near you"
+          subtitle="Select a location to discover trusted children's activities in your area."
+          imageSrc="/images/hero/hero-browse.jpg"
+          imageAlt="Kids at activity wall"
+        />
 
         {/* Location Grid */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">

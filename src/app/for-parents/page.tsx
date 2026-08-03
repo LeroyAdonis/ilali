@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import InteriorHero from "@/components/InteriorHero";
 
 export const metadata: Metadata = {
   title: "For Parents | ILALI",
@@ -14,19 +15,13 @@ export default function ForParentsPage() {
     <>
       <Header />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-              A parent&apos;s guide to ILALI
-            </h1>
-            <p className="mt-3 text-base leading-relaxed text-ilali-100 sm:text-lg">
-              Everything you need to know about finding safe, fun activities
-              for your children — from how vetting works to what happens after
-              you book.
-            </p>
-          </div>
-        </section>
+        <InteriorHero
+          eyebrow="For Parents"
+          title="A parent's guide to ILALI"
+          subtitle="Everything you need to know about finding safe, fun activities for your children — from how vetting works to what happens after you book."
+          imageSrc="/images/hero/hero-home.jpg"
+          imageAlt="Family scene"
+        />
 
         {/* How vetting works */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">

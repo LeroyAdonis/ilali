@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import InteriorHero from "@/components/InteriorHero";
 
 export const metadata: Metadata = {
   title: "Safety Guidelines | ILALI",
@@ -13,18 +14,13 @@ export default function SafetyGuidelinesPage() {
     <>
       <Header />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-              Safety Guidelines
-            </h1>
-            <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink-soft sm:text-lg">
-              Keeping children safe is our shared responsibility. Here is how
-              we maintain a secure environment for every activity.
-            </p>
-          </div>
-        </section>
+        <InteriorHero
+          eyebrow="Safety"
+          title="Safety Guidelines"
+          subtitle="Keeping children safe is our shared responsibility. Here is how we maintain a secure environment for every activity."
+          imageSrc="/images/hero/hero-safety.jpg"
+          imageAlt="Caring teacher with children"
+        />
 
         {/* Child Safety */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">

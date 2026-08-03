@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import InteriorHero from "@/components/InteriorHero";
 
 export const metadata: Metadata = {
   title: "About | ILALI",
@@ -55,18 +56,13 @@ export default function AboutPage() {
     <>
       <Header />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="bg-paper-warm px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-              About ILALI
-            </h1>
-            <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink-soft sm:text-lg">
-              Connecting families with trusted children's activities — because
-              it takes a village.
-            </p>
-          </div>
-        </section>
+        <InteriorHero
+          eyebrow="About"
+          title="About ILALI"
+          subtitle="Connecting families with trusted children's activities — because it takes a village."
+          imageSrc="/images/hero/hero-about.jpg"
+          imageAlt="ILALI community"
+        />
 
         {/* Mission */}
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">

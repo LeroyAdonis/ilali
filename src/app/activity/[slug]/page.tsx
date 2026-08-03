@@ -1,4 +1,5 @@
 import Link from "next/link";
+import InteriorHero from "@/components/InteriorHero";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import {
@@ -95,40 +96,23 @@ export default async function ActivityPage({
           </nav>
         </div>
 
-        {/* Hero Image */}
-        <div className="relative mt-4 h-56 sm:h-72 lg:h-96 w-full overflow-hidden bg-paper-warm">
-          {provider.image ? (
-            <img
-              src={provider.image}
-              alt={provider.name}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <div
-                className="h-24 w-24 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center text-4xl"
-                aria-hidden="true"
-              >
-                {provider.name.charAt(0)}
-              </div>
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-          <div className="absolute bottom-6 left-6 sm:left-10">
-            {/* Verification tier badge */}
-            <div className="mb-2">
-              <VerificationBadge
-                providerId={dbProvider.id}
-                className="shadow-sm backdrop-blur-sm text-xs"
-              />
-            </div>
-            <span className="inline-block rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink-soft backdrop-blur-sm mb-2 ml-0">
-              {provider.category}
-            </span>
-            <h1 className="font-display text-2xl sm:text-4xl font-extrabold text-white drop-shadow-lg">
-              {provider.name}
-            </h1>
-          </div>
+        <InteriorHero
+          eyebrow={provider.category}
+          title={provider.name}
+          subtitle={provider.description}
+          imageSrc={`/images/providers/${provider.categorySlug}.jpg`}
+          imageAlt={provider.name}
+        />
+
+        {/* Back to category */}
+        <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
+          <Link
+            href={`/category/${provider.categorySlug}`}
+            className="inline-flex items-center gap-1 text-xs text-ink-faint hover:text-ilali-600 transition-colors"
+          >
+            <ArrowLeft className="h-3 w-3" aria-hidden="true" />
+            Back to {provider.category}
+          </Link>
         </div>
 
         {/* Content */}
@@ -137,12 +121,18 @@ export default async function ActivityPage({
             {/* Main info */}
             <div className="lg:col-span-2 space-y-6">
               <div>
-                <p className="text-sm text-ink-faint mb-1">
-                  by{" "}
-                  <span className="font-semibold text-ink-soft">
-                    {provider.providerName}
-                  </span>
-                </p>
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-sm text-ink-faint">
+                    by{" "}
+                    <span className="font-semibold text-ink-soft">
+                      {provider.providerName}
+                    </span>
+                  </p>
+                  <VerificationBadge
+                    providerId={dbProvider.id}
+                    className="text-xs"
+                  />
+                </div>
                 <div className="flex flex-wrap items-center gap-4 text-sm text-ink-faint mt-2">
                   <span className="flex items-center gap-1">
                     <MapPin className="h-4 w-4 text-ilali-500" aria-hidden="true" />

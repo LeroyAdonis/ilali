@@ -4,66 +4,17 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2, Plus, Trash2, ArrowLeft, ArrowRight, Check } from "lucide-react";
+import ChildForm, {
+  type ChildInput,
+  emptyChild,
+} from "@/components/parent/ChildForm";
 
 // ── Types ──
-
-interface ChildInput {
-  name: string;
-  age: string; // string for form input, validated as 1-18
-  interests: string[];
-  suburb: string;
-  availability: {
-    days: string[];
-    timeSlots: string[];
-  };
-}
 
 interface NotificationPrefs {
   notifyNewProviders: boolean;
   notifyCommunity: boolean;
   notifyRewards: boolean;
-}
-
-// ── Constants ──
-
-const INTEREST_OPTIONS = [
-  "Soccer",
-  "Swimming",
-  "Art",
-  "Music",
-  "Coding",
-  "Dance",
-  "Drama",
-  "Science",
-  "Horse Riding",
-  "Gymnastics",
-  "Cricket",
-  "Piano",
-  "Guitar",
-  "Nature/Outdoors",
-  "Maths",
-] as const;
-
-const DAYS = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-] as const;
-
-const TIME_SLOTS = ["Morning", "Afternoon", "Evening"] as const;
-
-function emptyChild(): ChildInput {
-  return {
-    name: "",
-    age: "",
-    interests: [],
-    suburb: "",
-    availability: { days: [], timeSlots: [] },
-  };
 }
 
 // ── Page ──
@@ -82,41 +33,9 @@ export default function OnboardingPage() {
 
   // ── Child helpers ──
 
-  function updateChild(index: number, field: keyof ChildInput, value: unknown) {
+  function updateChild(index: number, data: ChildInput) {
     setChildren((prev) =>
-      prev.map((c, i) => (i === index ? { ...c, [field]: value } : c))
-    );
-  }
-
-  function updateChildAvailability(
-    index: number,
-    field: "days" | "timeSlots",
-    value: string
-  ) {
-    setChildren((prev) =>
-      prev.map((c, i) => {
-        if (i !== index) return c;
-        const current = c.availability[field];
-        const updated = current.includes(value)
-          ? current.filter((v) => v !== value)
-          : [...current, value];
-        return {
-          ...c,
-          availability: { ...c.availability, [field]: updated },
-        };
-      })
-    );
-  }
-
-  function toggleInterest(index: number, interest: string) {
-    setChildren((prev) =>
-      prev.map((c, i) => {
-        if (i !== index) return c;
-        const updated = c.interests.includes(interest)
-          ? c.interests.filter((v) => v !== interest)
-          : [...c.interests, interest];
-        return { ...c, interests: updated };
-      })
+      prev.map((c, i) => (i === index ? data : c))
     );
   }
 
@@ -335,129 +254,12 @@ export default function OnboardingPage() {
                       )}
                     </div>
 
-                    <div className="space-y-4">
-                      {/* Name */}
-                      <div>
-                        <label className="block text-xs font-medium text-ink-soft">
-                          Name
-                        </label>
-                        <input
-                          type="text"
-                          value={child.name}
-                          onChange={(e) => updateChild(index, "name", e.target.value)}
-                          placeholder="Child's name"
-                          className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
-                        />
-                      </div>
-
-                      {/* Age */}
-                      <div>
-                        <label className="block text-xs font-medium text-ink-soft">
-                          Age
-                        </label>
-                        <input
-                          type="number"
-                          min={1}
-                          max={18}
-                          value={child.age}
-                          onChange={(e) => updateChild(index, "age", e.target.value)}
-                          placeholder="1–18"
-                          className="mt-1 block w-24 rounded-lg border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
-                        />
-                      </div>
-
-                      {/* Interests */}
-                      <div>
-                        <label className="block text-xs font-medium text-ink-soft mb-2">
-                          Interests
-                        </label>
-                        <div className="flex flex-wrap gap-2">
-                          {INTEREST_OPTIONS.map((interest) => {
-                            const selected = child.interests.includes(interest);
-                            return (
-                              <button
-                                key={interest}
-                                type="button"
-                                onClick={() => toggleInterest(index, interest)}
-                                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                                  selected
-                                    ? "bg-ilali-100 text-ilali-700 border border-ilali-300"
-                                    : "border border-ink/10 bg-white text-ink-faint hover:border-ink/10 hover:bg-paper-warm"
-                                }`}
-                              >
-                                {interest}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* Suburb */}
-                      <div>
-                        <label className="block text-xs font-medium text-ink-soft">
-                          Suburb (optional)
-                        </label>
-                        <input
-                          type="text"
-                          value={child.suburb}
-                          onChange={(e) => updateChild(index, "suburb", e.target.value)}
-                          placeholder="e.g. Rondebosch"
-                          className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
-                        />
-                      </div>
-
-                      {/* Availability — Days */}
-                      <div>
-                        <label className="block text-xs font-medium text-ink-soft mb-1.5">
-                          Available days
-                        </label>
-                        <div className="flex flex-wrap gap-1.5">
-                          {DAYS.map((day) => {
-                            const selected = child.availability.days.includes(day);
-                            return (
-                              <button
-                                key={day}
-                                type="button"
-                                onClick={() => updateChildAvailability(index, "days", day)}
-                                className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
-                                  selected
-                                    ? "bg-ilali-600 text-white"
-                                    : "border border-ink/10 bg-white text-ink-faint hover:border-ink/10"
-                                }`}
-                              >
-                                {day.slice(0, 3)}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* Availability — Time preference */}
-                      <div>
-                        <label className="block text-xs font-medium text-ink-soft mb-1.5">
-                          Preferred time
-                        </label>
-                        <div className="flex gap-2">
-                          {TIME_SLOTS.map((slot) => {
-                            const selected = child.availability.timeSlots.includes(slot);
-                            return (
-                              <button
-                                key={slot}
-                                type="button"
-                                onClick={() => updateChildAvailability(index, "timeSlots", slot)}
-                                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                                  selected
-                                    ? "bg-sunset-100 text-sunset-700 border border-sunset-300"
-                                    : "border border-ink/10 bg-white text-ink-faint hover:border-ink/10"
-                                }`}
-                              >
-                                {slot}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
+                    <ChildForm
+                      initialData={child}
+                      onChange={(data) => updateChild(index, data)}
+                      onSave={async () => {}}
+                      hideActions
+                    />
                   </div>
                 ))}
               </div>

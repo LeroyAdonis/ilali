@@ -15,3 +15,4 @@ Items explicitly excluded from shipped specs. Revisit when the trigger condition
 | 9 | Bulk club invite (multiple people at once) | When clubs have 30+ members | Small | proposed |
 | 10 | Invite tracking dashboard (top inviters) | When club invitations > 50/month | Small | proposed |
 | 11 | Parent public profiles beyond club members list | When community has 100+ active members | Medium | proposed |
+| 12 | Full notification system (read/unread state, polling, push, new notifications table) | When daily active parents > 50 | Medium | proposed |

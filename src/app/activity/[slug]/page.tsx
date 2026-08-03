@@ -101,11 +101,7 @@ export default async function ActivityPage({
           eyebrow={provider.category}
           title={provider.name}
           subtitle={provider.description}
-          imageSrc={
-            provider.image?.startsWith("/images/")
-              ? provider.image
-              : `/images/providers/${provider.categorySlug}.jpg`
-          }
+          imageSrc={provider.image || `/images/providers/${provider.categorySlug}.jpg`}
           imageAlt={provider.name}
         />
 

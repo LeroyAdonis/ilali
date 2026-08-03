@@ -8,6 +8,7 @@ import {
   uuid,
   jsonb,
   unique,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 // ── Categories (managed, not user-creatable) ──
@@ -317,3 +318,40 @@ export const rewardRedemptions = pgTable("reward_redemptions", {
   providerId: uuid("provider_id").references(() => providers.id),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+// ── Community Contributions ──
+export const communityContributions = pgTable("community_contributions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  clubId: uuid("club_id")
+    .notNull()
+    .references(() => providers.id, { onDelete: "cascade" }),
+  type: text("type").notNull(), // "venue-help"|"event-support"|"community-building"|"knowledge-sharing"|"outreach"
+  description: text("description"),
+  points: integer("points").notNull(),
+  validationPath: text("validation_path").notNull(), // "leader"|"peer"
+  status: text("status").notNull().default("pending"), // "pending"|"confirmed"|"rejected"|"flagged"
+  confirmedBy: text("confirmed_by").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  confirmedAt: timestamp("confirmed_at"),
+});
+
+// ── Contribution Vouches ──
+export const contributionVouches = pgTable(
+  "contribution_vouches",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    contributionId: uuid("contribution_id")
+      .notNull()
+      .references(() => communityContributions.id, { onDelete: "cascade" }),
+    voucherId: text("voucher_id")
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (t) => ({
+    uniqueVouch: uniqueIndex("unique_vouch").on(t.contributionId, t.voucherId),
+  }),
+);

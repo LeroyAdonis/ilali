@@ -19,6 +19,13 @@ import {
   rewardRedemptionsByUserId,
 } from "./mock/rewards";
 
+import {
+  mockGetCommunityContributions,
+  mockGetContributionById,
+  mockGetContributionVouches,
+  mockGetClubHealth,
+} from "./mock/community-contributions";
+
 // ── Real DB query imports ──
 import {
   getProviders as dbGetProviders,
@@ -39,6 +46,10 @@ import {
   getProviderVerificationStatuses as dbGetProviderVerificationStatuses,
   getProviderVouchCounts as dbGetProviderVouchCounts,
   getSuburbDensity as dbGetSuburbDensity,
+  getCommunityContributions as dbGetCommunityContributions,
+  getContributionById as dbGetContributionById,
+  getContributionVouches as dbGetContributionVouches,
+  getClubHealth as dbGetClubHealth,
 } from "./db/queries";
 
 // Re-export filter types so consumers don't need dual imports
@@ -47,6 +58,8 @@ export type {
   SearchFilters,
   RideRequestFilters,
   ClubStats,
+  CommunityContributionFilters,
+  ClubHealthResult,
 } from "./db/queries";
 
 // ── Types ──
@@ -472,4 +485,28 @@ export async function getSuburbDensity(): Promise<
 > {
   if (USE_MOCK) return mockGetSuburbDensity();
   return dbGetSuburbDensity();
+}
+
+// ── Community Contributions ──
+
+export async function getCommunityContributions(
+  filters?: import("./db/queries").CommunityContributionFilters
+) {
+  if (USE_MOCK) return mockGetCommunityContributions();
+  return dbGetCommunityContributions(filters);
+}
+
+export async function getContributionById(id: string) {
+  if (USE_MOCK) return mockGetContributionById();
+  return dbGetContributionById(id);
+}
+
+export async function getContributionVouches(contributionId: string) {
+  if (USE_MOCK) return mockGetContributionVouches();
+  return dbGetContributionVouches(contributionId);
+}
+
+export async function getClubHealth(providerId: string) {
+  if (USE_MOCK) return mockGetClubHealth();
+  return dbGetClubHealth(providerId);
 }

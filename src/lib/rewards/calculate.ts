@@ -49,6 +49,29 @@ export function isRedemptionType(type: string): type is RedemptionType {
   return type in REDEMPTION_COSTS;
 }
 
+// ── Community Contribution Types ──
+
+export const CONTRIBUTION_TYPES: Record<string, number> = {
+  "venue-help": 25,
+  "event-support": 30,
+  "community-building": 20,
+  "knowledge-sharing": 50,
+  "outreach": 50,
+};
+
+export type ContributionType = keyof typeof CONTRIBUTION_TYPES;
+export const CONTRIBUTION_CATEGORIES = Object.keys(CONTRIBUTION_TYPES) as ContributionType[];
+
+/** Points awarded for a contribution type, or null if the type is unknown. */
+export function getPointsForContributionType(type: string): number | null {
+  return (CONTRIBUTION_TYPES as Record<string, number>)[type] ?? null;
+}
+
+/** Type guard: is this a known contribution type? */
+export function isContributionType(type: string): type is ContributionType {
+  return type in CONTRIBUTION_TYPES;
+}
+
 // ── Balance ──
 
 export interface RewardLedgerEntry {

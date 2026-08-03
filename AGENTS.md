@@ -11,7 +11,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ILALI is a children's extramural activities marketplace for Cape Town, SA.
 - URL: https://ilali.vercel.app (prod), https://preview.ilali.co (preview)
 - Stack: Next.js 16.2.7 App Router, React 19.2.4, TypeScript 5, Tailwind CSS v4, lucide-react, @fontsource/inter
-- Backend: Neon PostgreSQL + Drizzle ORM (15 tables), Better Auth
+- Backend: Neon PostgreSQL + Drizzle ORM (21 tables), Better Auth
 - AI: NVIDIA NIM `nvidia/nemotron-3-super-120b-a12b` (free, 40 RPM), fallback: DeepSeek
 - E2E: Playwright (10 smoke tests), Unit: Vitest (48 tests)
 
@@ -46,7 +46,7 @@ src/lib/data-source.ts → USE_MOCK toggle → mock or DB
 
 Set `NEXT_PUBLIC_USE_MOCK=true` in `.env` to run without a DB connection.
 
-## Database (15 tables)
+## Database (21 tables)
 
 | Table | Purpose |
 |-------|---------|
@@ -65,6 +65,12 @@ Set `NEXT_PUBLIC_USE_MOCK=true` in `.env` to run without a DB connection.
 | notificationPreferences | Opt-in notification toggles per user |
 | providerVerifications | Document uploads + AI review for provider verification tiers |
 | providerVouches | Community vouching from parents (3 needed for Trusted tier) |
+| clubEvents | Club schedule — practices/games/events per provider |
+| clubMemberships | Parents + children joined to a provider club (unique per provider+parent) |
+| rideRequests | Carpool ride requests with two-sided parent confirmation |
+| clubMessages | Club chat messages |
+| rewardPoints | Rewards points ledger (action-based) |
+| rewardRedemptions | Points redemption log |
 
 ## Key API Routes
 

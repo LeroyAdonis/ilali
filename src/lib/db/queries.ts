@@ -14,6 +14,8 @@ import {
   childProfiles,
   providerVerifications,
   providerVouches,
+  communityContributions,
+  contributionVouches,
 } from "./schema";
 import {
   eq,
@@ -510,5 +512,162 @@ export async function getClubStats(providerId: string): Promise<ClubStats> {
     };
   } catch {
     return { memberFamilies: 0, familiesBySuburb: [], topVolunteers: [] };
+  }
+}
+
+// ── Community Contributions Queries ──
+
+export interface CommunityContributionFilters {
+  clubId?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export async function getCommunityContributions(
+  filters?: CommunityContributionFilters
+) {
+  try {
+    const { clubId, limit = 20, offset = 0 } = filters ?? {};
+
+    const conditions = [];
+    if (clubId) {
+      conditions.push(eq(communityContributions.clubId, clubId));
+    }
+
+    const baseQuery = db
+      .select({
+        id: communityContributions.id,
+        userId: communityContributions.userId,
+        userName: users.name,
+        clubId: communityContributions.clubId,
+        clubName: providers.name,
+        type: communityContributions.type,
+        description: communityContributions.description,
+        points: communityContributions.points,
+        validationPath: communityContributions.validationPath,
+        status: communityContributions.status,
+        confirmedBy: communityContributions.confirmedBy,
+        confirmedByName: sql<string>`null`,
+        createdAt: communityContributions.createdAt,
+        confirmedAt: communityContributions.confirmedAt,
+      })
+      .from(communityContributions)
+      .innerJoin(users, eq(communityContributions.userId, users.id))
+      .innerJoin(providers, eq(communityContributions.clubId, providers.id))
+      .orderBy(desc(communityContributions.createdAt))
+      .limit(limit)
+      .offset(offset);
+
+    const query = conditions.length > 0
+      ? baseQuery.where(and(...conditions))
+      : baseQuery;
+
+    const rows = await query;
+
+    // Enrich confirmedByName for rows that have a confirmedBy
+    const confirmedByIds = [
+      ...new Set(rows.map((r) => r.confirmedBy).filter(Boolean)),
+    ] as string[];
+    const nameMap = new Map<string, string>();
+    if (confirmedByIds.length > 0) {
+      const confirmers = await db
+        .select({ id: users.id, name: users.name })
+        .from(users)
+        .where(inArray(users.id, confirmedByIds));
+      for (const c of confirmers) {
+        nameMap.set(c.id, c.name);
+      }
+    }
+
+    return rows.map((r) => ({
+      ...r,
+      confirmedByName: r.confirmedBy ? (nameMap.get(r.confirmedBy) ?? null) : null,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export async function getContributionById(id: string) {
+  try {
+    const [row] = await db
+      .select()
+      .from(communityContributions)
+      .where(eq(communityContributions.id, id))
+      .limit(1);
+    return row ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function getContributionVouches(contributionId: string) {
+  try {
+    return await db
+      .select()
+      .from(contributionVouches)
+      .where(eq(contributionVouches.contributionId, contributionId));
+  } catch {
+    return [];
+  }
+}
+
+export interface ClubHealthResult {
+  health: "green" | "yellow" | "red";
+  totalContributors: number;
+  uniqueContributors: number;
+  concentrationRatio: number;
+}
+
+export async function getClubHealth(
+  providerId: string
+): Promise<ClubHealthResult> {
+  try {
+    const now = new Date();
+    const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
+    const rows = await db
+      .select({
+        userId: communityContributions.userId,
+        count: sql<number>`count(*)`,
+      })
+      .from(communityContributions)
+      .where(
+        and(
+          eq(communityContributions.clubId, providerId),
+          sql`${communityContributions.createdAt} >= ${monthAgo.toISOString()}`
+        )
+      )
+      .groupBy(communityContributions.userId);
+
+    const totalContributors = rows.reduce((sum, r) => sum + r.count, 0);
+    const uniqueContributors = rows.length;
+
+    // Concentration ratio: share of contributions from the top contributor
+    const maxCount = rows.length > 0 ? Math.max(...rows.map((r) => r.count)) : 0;
+    const concentrationRatio =
+      totalContributors > 0
+        ? Math.round((maxCount / totalContributors) * 100)
+        : 0;
+
+    // Health heuristic:
+    //   green:  3+ unique contributors + concentration ≤ 50%
+    //   yellow: 2 unique contributors OR concentration ≤ 80%
+    //   red:    1 unique contributor OR concentration > 80%
+    let health: "green" | "yellow" | "red" = "red";
+    if (uniqueContributors >= 3 && concentrationRatio <= 50) {
+      health = "green";
+    } else if (uniqueContributors >= 2 || concentrationRatio <= 80) {
+      health = "yellow";
+    }
+
+    return {
+      health,
+      totalContributors,
+      uniqueContributors,
+      concentrationRatio,
+    };
+  } catch {
+    return { health: "red", totalContributors: 0, uniqueContributors: 0, concentrationRatio: 0 };
   }
 }

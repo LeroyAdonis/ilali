@@ -92,3 +92,45 @@ export type RewardRedemption = {
   providerId: string | null;
   createdAt: Date;
 };
+
+// ── Community Contributions ──
+
+export type ContributionType =
+  | "venue-help"
+  | "event-support"
+  | "community-building"
+  | "knowledge-sharing"
+  | "outreach";
+
+export type ContributionStatus =
+  | "pending"
+  | "confirmed"
+  | "rejected"
+  | "flagged";
+
+export type ContributionValidationPath = "leader" | "peer";
+
+export type CommunityContribution = {
+  id: string;
+  userId: string;
+  clubId: string;
+  type: ContributionType;
+  description: string | null;
+  points: number;
+  validationPath: ContributionValidationPath;
+  status: ContributionStatus;
+  confirmedBy: string | null;
+  createdAt: Date;
+  confirmedAt: Date | null;
+};
+
+export type ContributionVouch = {
+  id: string;
+  contributionId: string;
+  voucherId: string;
+  createdAt: Date;
+};
+
+export type ReputationTier = "newcomer" | "trusted" | "elder";
+
+export type ClubHealth = "green" | "yellow" | "red";

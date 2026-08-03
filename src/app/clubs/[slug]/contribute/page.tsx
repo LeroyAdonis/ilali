@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getProviderBySlug, getCategories } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
+import PendingConfirmations from "@/components/community/PendingConfirmations";
 import ContributionPicker from "@/components/community/ContributionPicker";
 import ContributionFeed from "@/components/community/ContributionFeed";
 import ClubHealthCard from "@/components/community/ClubHealthCard";
@@ -19,8 +20,12 @@ export default async function ClubContributePage({
 
   return (
     <div className="grid gap-8 lg:grid-cols-3">
-      {/* ── Main column: picker + feed ── */}
+      {/* ── Main column: pending confirmations + picker + feed ── */}
       <div className="space-y-8 lg:col-span-2">
+        <PendingConfirmations
+          clubId={dbProvider.id}
+          providerName={dbProvider.providerName}
+        />
         <ContributionPicker clubId={dbProvider.id} clubName={provider.name} />
         <ContributionFeed clubId={dbProvider.id} />
       </div>

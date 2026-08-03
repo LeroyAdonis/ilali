@@ -89,7 +89,30 @@ export async function POST(
       );
     }
 
+    // Parse request body for action
+    let actionBody: { action?: string } = {};
+    try {
+      actionBody = await request.json();
+    } catch {
+      // No body — default to confirm
+    }
+
+    const isDeny = actionBody.action === "deny";
     const leaderId = session.user.id;
+
+    // ── Deny — reject the contribution (no points, no collusion check) ──
+    if (isDeny) {
+      await db
+        .update(communityContributions)
+        .set({
+          status: "rejected",
+          confirmedBy: leaderId,
+          confirmedAt: new Date(),
+        })
+        .where(eq(communityContributions.id, id));
+
+      return NextResponse.json({ denied: true });
+    }
 
     // Anti-collusion: if leader has confirmed this user >3 times in 7 days
     const sevenDaysAgo = new Date();

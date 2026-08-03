@@ -22,11 +22,13 @@ export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
     const clubId = url.searchParams.get("clubId") || undefined;
+    const status = url.searchParams.get("status") || undefined;
     const limit = parseInt(url.searchParams.get("limit") ?? "20", 10);
     const offset = parseInt(url.searchParams.get("offset") ?? "0", 10);
 
     const contributions = await getCommunityContributions({
       clubId,
+      status,
       limit: Math.min(limit, 100),
       offset,
     });

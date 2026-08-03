@@ -519,6 +519,7 @@ export async function getClubStats(providerId: string): Promise<ClubStats> {
 
 export interface CommunityContributionFilters {
   clubId?: string;
+  status?: string;
   limit?: number;
   offset?: number;
 }
@@ -527,11 +528,14 @@ export async function getCommunityContributions(
   filters?: CommunityContributionFilters
 ) {
   try {
-    const { clubId, limit = 20, offset = 0 } = filters ?? {};
+    const { clubId, status, limit = 20, offset = 0 } = filters ?? {};
 
     const conditions = [];
     if (clubId) {
       conditions.push(eq(communityContributions.clubId, clubId));
+    }
+    if (status) {
+      conditions.push(eq(communityContributions.status, status));
     }
 
     const baseQuery = db

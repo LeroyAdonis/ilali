@@ -17,7 +17,7 @@ export default function InteriorHero({
   imageAlt,
 }: InteriorHeroProps) {
   return (
-    <header className="relative overflow-hidden min-h-[32vh] sm:min-h-[42vh] max-h-[50vh] flex items-center border-b border-ink/10">
+    <header className="relative overflow-hidden w-full flex items-center border-b border-ink/10" style={{ aspectRatio: "1344 / 768", maxHeight: "50vh" }}>
       {/* Background image */}
       <Image
         src={imageSrc}
@@ -25,6 +25,7 @@ export default function InteriorHero({
         fill
         priority
         className="object-cover object-center z-0"
+        sizes="100vw"
       />
 
       {/* Warm gradient overlay */}

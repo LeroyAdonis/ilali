@@ -62,7 +62,7 @@ export default function InteriorHero({
       </div>
 
       {/* Text content */}
-      <div className="relative z-[2] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 sm:py-16 text-left">
+      <div className="relative z-[2] max-w-7xl px-4 sm:px-6 lg:px-8 py-20 sm:py-16 text-left">
         {/* Eyebrow */}
         <span className="inline-flex items-center gap-[10px] pb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-teal-deep">
           <span className="text-gold text-[14px]">★</span> {eyebrow} · Cape Town

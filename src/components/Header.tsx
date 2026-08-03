@@ -78,7 +78,7 @@ export default function Header() {
         {/* Mobile hamburger */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="flex md:hidden items-center justify-center rounded-lg p-2 text-ink-soft hover:bg-ink/5 transition-colors"
+          className="inline-flex items-center justify-center rounded-lg p-2 text-ink-soft hover:bg-ink/5 transition-colors md:hidden"
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
         >
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}

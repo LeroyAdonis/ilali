@@ -30,7 +30,8 @@ export async function GET(
     });
     if (!session) {
       return NextResponse.json(
-        { isMember: false, status: null, memberNumber: null, joinedAt: null }
+        { error: "You must be signed in" },
+        { status: 401 }
       );
     }
 

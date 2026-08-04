@@ -1,3 +1,7 @@
+/* Hallmark · macrostructure: Catalogue · genre: playful · theme: ilali-native
+ * Designed-as-app · design-system: ilali-tokens
+ */
+
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -19,7 +23,7 @@ export default function CategoriesPage() {
     <>
       <Header />
       <main className="flex-1">
-        {/* Interior Hero */}
+        {/* Interior Hero — positioning statement */}
         <InteriorHero
           eyebrow="Browse"
           title={
@@ -33,9 +37,23 @@ export default function CategoriesPage() {
           imageAlt="Children's activities in Cape Town"
         />
 
-        {/* Category grid */}
-        <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        {/* ── Catalogue grid — uniform gallery of category cards ── */}
+        <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+          {/* Visual count — hallmark of a catalogue */}
+          <div className="mb-8 flex items-center justify-between">
+            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-faint">
+              {categories.length} categories
+            </span>
+            <Link
+              href="/browse"
+              className="text-xs font-semibold text-teal-deep hover:text-teal transition-colors"
+            >
+              View all activities →
+            </Link>
+          </div>
+
+          {/* Grid — clean, spacious gallery */}
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-5 lg:gap-5">
             {categories.map((cat, idx) => (
               <CategoryCard
                 key={cat.id}
@@ -50,8 +68,8 @@ export default function CategoriesPage() {
           </div>
         </section>
 
-        {/* CTA Band */}
-        <section className="border-t border-ink/5 bg-paper-warm px-4 py-12 sm:px-6">
+        {/* ── CTA Band — anchored at the bottom of the catalogue ── */}
+        <section className="border-t border-ink/5 bg-paper-warm px-4 py-14 sm:px-6 sm:py-16">
           <div className="mx-auto max-w-7xl text-center">
             <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-gold-deep-2">
               ★ CAN&apos;T DECIDE?

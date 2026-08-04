@@ -1,3 +1,7 @@
+/* Hallmark · macrostructure: Feature Stack · genre: playful · theme: ilali-native
+ * Designed-as-app · design-system: ilali-tokens
+ */
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -55,30 +59,31 @@ export default async function CategoryPage({ params }: Props) {
           imageAlt={`${cat.name} activities in Cape Town`}
         />
 
-        {/* Back link */}
-        <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
-          <Link
-            href="/categories"
-            className="inline-flex items-center gap-1 text-sm font-medium text-ink-faint hover:text-teal-deep transition-colors"
-          >
-            ← All Categories
-          </Link>
+        {/* Breadcrumb + metadata bar */}
+        <div className="mx-auto max-w-7xl px-4 pt-5 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <Link
+              href="/categories"
+              className="inline-flex items-center gap-1 text-sm font-medium text-ink-faint hover:text-teal-deep transition-colors"
+            >
+              ← All Categories
+            </Link>
+            <span className="text-xs font-semibold text-ink-faint">
+              {filtered.length} {filtered.length === 1 ? "activity" : "activities"} · ⚡ All vetted
+            </span>
+          </div>
         </div>
 
-        {/* Results */}
+        {/* Results — Feature Stack approach: each provider as a distinct feature block */}
         <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <div className="mb-6 text-xs text-ink-faint">
-            {filtered.length === 0
-              ? "No activities found in this category yet."
-              : `Showing ${filtered.length} ${
-                  filtered.length === 1 ? "activity" : "activities"
-                } · ⚡ All providers are background-checked`}
-          </div>
-
           {filtered.length > 0 ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {filtered.map((provider, idx) => (
-                <ProviderCard key={provider.id} provider={provider} accentColor={ACCENT_ROTATION[idx % ACCENT_ROTATION.length]} />
+                <ProviderCard
+                  key={provider.id}
+                  provider={provider}
+                  accentColor={ACCENT_ROTATION[idx % ACCENT_ROTATION.length]}
+                />
               ))}
             </div>
           ) : (

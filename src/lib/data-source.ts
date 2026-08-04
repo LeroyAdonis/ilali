@@ -50,6 +50,12 @@ import {
   getContributionById as dbGetContributionById,
   getContributionVouches as dbGetContributionVouches,
   getClubHealth as dbGetClubHealth,
+  getProviderByUserId as dbGetProviderByUserId,
+  getProviderInquiries as dbGetProviderInquiries,
+  getProviderReviewCount as dbGetProviderReviewCount,
+  createProviderUser as dbCreateProviderUser,
+  updateUserPassword as dbUpdateUserPassword,
+  getUserByEmail as dbGetUserByEmail,
 } from "./db/queries";
 
 // Re-export filter types so consumers don't need dual imports
@@ -509,4 +515,68 @@ export async function getContributionVouches(contributionId: string) {
 export async function getClubHealth(providerId: string) {
   if (USE_MOCK) return mockGetClubHealth();
   return dbGetClubHealth(providerId);
+}
+
+// ── Provider Portal ──
+
+/** Get mock provider by userId (for USE_MOCK mode) */
+function mockGetProviderByUserId(_userId: string) {
+  // Return the first mock provider for testing
+  return mockProviders[0] ?? null;
+}
+
+/** Get mock provider inquiries */
+function mockGetProviderInquiries(_providerId: string, limit = 10) {
+  // Return some sample inquiries for mock mode
+  return [
+    {
+      id: "inq-mock-1",
+      providerId: mockProviders[0]?.id ?? "mock-1",
+      query: "soccer for 6 year old near Rondebosch",
+      parentId: null,
+      matchedAt: new Date(),
+    },
+    {
+      id: "inq-mock-2",
+      providerId: mockProviders[0]?.id ?? "mock-1",
+      query: "after school art classes",
+      parentId: null,
+      matchedAt: new Date(Date.now() - 3600000),
+    },
+  ].slice(0, limit);
+}
+
+/** Get mock review count */
+function mockGetProviderReviewCount(_providerId: string): number {
+  return 3;
+}
+
+export async function getProviderByUserId(userId: string) {
+  if (USE_MOCK) return mockGetProviderByUserId(userId);
+  return dbGetProviderByUserId(userId);
+}
+
+export async function getProviderInquiries(providerId: string, limit?: number) {
+  if (USE_MOCK) return mockGetProviderInquiries(providerId, limit);
+  return dbGetProviderInquiries(providerId, limit);
+}
+
+export async function getProviderReviewCount(providerId: string): Promise<number> {
+  if (USE_MOCK) return mockGetProviderReviewCount(providerId);
+  return dbGetProviderReviewCount(providerId);
+}
+
+export async function createProviderUser(params: Parameters<typeof dbCreateProviderUser>[0]) {
+  if (USE_MOCK) return { success: true, userId: params.userId };
+  return dbCreateProviderUser(params);
+}
+
+export async function updateUserPassword(userId: string, passwordHash: string) {
+  if (USE_MOCK) return true;
+  return dbUpdateUserPassword(userId, passwordHash);
+}
+
+export async function getUserByEmail(email: string) {
+  if (USE_MOCK) return null;
+  return dbGetUserByEmail(email);
 }

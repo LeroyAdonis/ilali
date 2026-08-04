@@ -137,3 +137,22 @@ export type ContributionVouch = {
 export type ReputationTier = "newcomer" | "trusted" | "elder";
 
 export type ClubHealth = "green" | "yellow" | "red";
+
+// ── Provider Portal ──
+
+export type ProviderInquiry = {
+  id: string;
+  providerId: string;
+  query: string;
+  parentId: string | null;
+  matchedAt: Date;
+};
+
+export type ReviewReply = {
+  id: string;
+  reviewId: string;
+  providerId: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+};

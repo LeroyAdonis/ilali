@@ -1,19 +1,28 @@
 "use client";
 
 import { createAuthClient } from "better-auth/client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { Loader2, CheckCircle2 } from "lucide-react";
 
 const authClient = createAuthClient();
 
-export default function SignInPage() {
+function SignInForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Check for success message from password reset
+  useEffect(() => {
+    if (searchParams.get("reset") === "success") {
+      setSuccess("Password reset successfully. Please sign in with your new password.");
+    }
+  }, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,10 +38,23 @@ export default function SignInPage() {
       if (result.error) {
         setError("Invalid email or password");
       } else {
-        // Redirect based on role: admins → /admin, parents → /home
+        // Redirect based on role: providers → /provider, admins → /admin, parents → /home
         const session = await authClient.getSession();
-        const role = (session?.data?.user as { role?: string })?.role;
-        router.push(role === "admin" ? "/admin" : "/home");
+        const user = session?.data?.user as { role?: string; passwordResetRequired?: boolean };
+        const role = user?.role;
+
+        if (role === "provider") {
+          // Check if password reset is required
+          if (user?.passwordResetRequired) {
+            router.push("/auth/create-password");
+          } else {
+            router.push("/provider");
+          }
+        } else if (role === "admin") {
+          router.push("/admin");
+        } else {
+          router.push("/home");
+        }
         router.refresh();
       }
     } catch {
@@ -67,6 +89,12 @@ export default function SignInPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {success && (
+              <div className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700 border border-green-200 flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 shrink-0" />
+                {success}
+              </div>
+            )}
             {error && (
               <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 border border-red-200">
                 {error}
@@ -124,9 +152,18 @@ export default function SignInPage() {
                 "Sign In"
               )}
             </button>
+
+            <div className="text-center">
+              <Link
+                href="/auth/forgot-password"
+                className="text-sm text-ink-faint hover:text-ilali-600 transition-colors"
+              >
+                Forgot password?
+              </Link>
+            </div>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6 text-center space-y-3">
             <p className="text-sm text-ink-faint">
               Don&apos;t have an account?{" "}
               <Link
@@ -136,9 +173,32 @@ export default function SignInPage() {
                 Create one
               </Link>
             </p>
+            <p className="text-sm text-ink-faint">
+              Already have a listing?{" "}
+              <Link
+                href="/providers/claim"
+                className="font-medium text-ilali-600 hover:text-ilali-700"
+              >
+                Claim your account →
+              </Link>
+            </p>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-paper-warm">
+          <Loader2 className="h-8 w-8 animate-spin text-ilali-600" />
+        </div>
+      }
+    >
+      <SignInForm />
+    </Suspense>
   );
 }

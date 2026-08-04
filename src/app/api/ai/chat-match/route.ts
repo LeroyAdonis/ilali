@@ -719,6 +719,30 @@ export async function POST(request: Request) {
     ? { message: concierge.message, followUp: concierge.followUp }
     : null;
 
+  // Step 8: Fire-and-forget logging to providerInquiries
+  // Non-blocking — if logging fails, the chat still works.
+  const matchedProviderIds = matches.map((m) => m.provider.id);
+  if (matchedProviderIds.length > 0) {
+    const logQuery = message;
+    const logParentId = body.parentId ?? null;
+    void (async () => {
+      try {
+        const { db } = await import("@/lib/db/index");
+        const { providerInquiries: inquiriesTable } = await import(
+          "@/lib/db/schema"
+        );
+        const rows = matchedProviderIds.map((providerId) => ({
+          providerId,
+          query: logQuery,
+          parentId: logParentId,
+        }));
+        await db.insert(inquiriesTable).values(rows);
+      } catch {
+        // Non-blocking — silently ignore logging failures
+      }
+    })();
+  }
+
   return NextResponse.json({
     matches: matches.map((s) => ({
       provider: s.provider,

@@ -16,6 +16,10 @@ import {
   providerVouches,
   communityContributions,
   contributionVouches,
+  providerInquiries,
+  reviewReplies,
+  authAccounts,
+  reviews,
 } from "./schema";
 import {
   eq,
@@ -28,6 +32,7 @@ import {
   desc,
   ne,
   isNotNull,
+  isNull,
 } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 
@@ -682,5 +687,131 @@ export async function getClubHealth(
     };
   } catch {
     return { health: "red", totalContributors: 0, uniqueContributors: 0, concentrationRatio: 0 };
+  }
+}
+
+// ── Provider Portal Queries ──
+
+/** Get a provider by their linked userId */
+export async function getProviderByUserId(userId: string) {
+  try {
+    const [row] = await db
+      .select()
+      .from(providers)
+      .where(eq(providers.userId, userId))
+      .limit(1);
+    return row ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Get the most recent inquiries for a provider */
+export async function getProviderInquiries(providerId: string, limit = 10) {
+  try {
+    return await db
+      .select()
+      .from(providerInquiries)
+      .where(eq(providerInquiries.providerId, providerId))
+      .orderBy(desc(providerInquiries.matchedAt))
+      .limit(limit);
+  } catch {
+    return [];
+  }
+}
+
+/** Get review count for a provider */
+export async function getProviderReviewCount(providerId: string): Promise<number> {
+  try {
+    const [row] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(reviews)
+      .where(eq(reviews.providerId, providerId));
+    return row?.count ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
+/** Create a user for a provider (used by admin approval and migration) */
+export async function createProviderUser(params: {
+  userId: string;
+  email: string;
+  name: string;
+  passwordHash?: string;
+  passwordResetRequired?: boolean;
+  needsClaim?: boolean;
+  passphraseHash?: string;
+}) {
+  try {
+    await db.insert(users).values({
+      id: params.userId,
+      name: params.name,
+      email: params.email,
+      role: "provider",
+      passwordResetRequired: params.passwordResetRequired ?? false,
+      needsClaim: params.needsClaim ?? false,
+      passphraseHash: params.passphraseHash ?? null,
+    });
+
+    if (params.passwordHash) {
+      await db.insert(authAccounts).values({
+        id: crypto.randomUUID(),
+        userId: params.userId,
+        providerId: "credential",
+        accountId: params.userId,
+        password: params.passwordHash,
+      });
+    }
+
+    return { success: true, userId: params.userId };
+  } catch (e) {
+    console.error("createProviderUser failed:", e);
+    return null;
+  }
+}
+
+/** Update a user's password (better-auth account password) */
+export async function updateUserPassword(userId: string, passwordHash: string) {
+  try {
+    await db
+      .update(authAccounts)
+      .set({ password: passwordHash })
+      .where(
+        and(
+          eq(authAccounts.userId, userId),
+          eq(authAccounts.providerId, "credential")
+        )
+      );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Get user by email with full provider-relevant fields */
+export async function getUserByEmail(email: string) {
+  try {
+    const [row] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+    return row ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Link a provider to a user */
+export async function linkProviderToUser(providerId: string, userId: string) {
+  try {
+    await db
+      .update(providers)
+      .set({ userId })
+      .where(eq(providers.id, providerId));
+    return true;
+  } catch {
+    return false;
   }
 }

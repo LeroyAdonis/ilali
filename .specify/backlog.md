@@ -16,3 +16,10 @@ Items explicitly excluded from shipped specs. Revisit when the trigger condition
 | 10 | Invite tracking dashboard (top inviters) | When club invitations > 50/month | Small | proposed |
 | 11 | Parent public profiles beyond club members list | When community has 100+ active members | Medium | proposed |
 | 12 | Full notification system (read/unread state, polling, push, new notifications table) | When daily active parents > 50 | Medium | proposed |
+| 13 | Provider analytics dashboard (view tracking, conversion, unique visitors) | When 10+ providers are actively using the portal | Medium | proposed |
+| 14 | Provider staff/team accounts (multi-user per provider) | When a provider requests it | Medium | proposed |
+| 15 | Provider financial reporting (revenue, payouts, invoices) | When ILALI has a payment/monetization model | Large | proposed |
+| 16 | Email notifications for provider account creation, password reset, inquiries | When ilali.co email hosting is confirmed by George | Small | proposed |
+| 17 | Provider-to-parent direct messaging | When inquiry volume > 50/week | Medium | proposed |
+| 18 | Provider onboarding wizard redesign (video, tooltips, examples) | After 5+ providers complete onboarding and give feedback | Small | proposed |
+| 19 | Provider settings page (notification prefs, email change, account deletion) | Post-MVP | Small | proposed |

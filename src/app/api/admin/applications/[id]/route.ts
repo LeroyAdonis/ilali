@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withAdmin } from "@/lib/auth-guard";
 import { db } from "@/lib/db/index";
-import { providerApplications } from "@/lib/db/schema";
+import { providerApplications, providers, users, authAccounts } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 const VALID_STATUSES = ["pending", "contacted", "approved", "rejected"];
 const VALID_TRANSITIONS: Record<string, string[]> = {
@@ -96,11 +97,136 @@ export const PATCH = withAdmin(async (request: NextRequest, { params }: { params
     );
   }
 
+  // Update application status
   const [updated] = await db
     .update(providerApplications)
     .set({ status: newStatus })
     .where(eq(providerApplications.id, id))
     .returning();
 
-  return NextResponse.json(updated);
+  // Auto-create provider user account when transitioning to "approved"
+  let tempPassword: string | undefined;
+  if (newStatus === "approved") {
+    try {
+      // 1. Check if user with this email already exists
+      const [existingUser] = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, application.email.toLowerCase().trim()))
+        .limit(1);
+
+      if (existingUser) {
+        // Link existing user to provider if not already linked
+        const [existingProvider] = await db
+          .select()
+          .from(providers)
+          .where(eq(providers.userId, existingUser.id))
+          .limit(1);
+
+        if (!existingProvider) {
+          // Find provider by email match or name
+          await db
+            .update(providers)
+            .set({ userId: existingUser.id })
+            .where(eq(providers.id, id)); // attempt to link; the provider might be separate
+        }
+
+        return NextResponse.json({
+          ...updated,
+          warning: "A user with this email already exists — account not re-created",
+        });
+      }
+
+      // 2. Generate temp password (12 chars, alphanumeric)
+      const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let pass = "";
+      const randomBytes = crypto.getRandomValues(new Uint8Array(12));
+      for (let i = 0; i < 12; i++) {
+        pass += charset[randomBytes[i] % charset.length];
+      }
+      tempPassword = pass;
+
+      // 3. Hash the temp password
+      const passwordHash = await bcrypt.hash(tempPassword, 10);
+
+      // 4. Create user
+      const userId = crypto.randomUUID();
+      await db.insert(users).values({
+        id: userId,
+        name: application.name || application.email,
+        email: application.email.toLowerCase().trim(),
+        role: "provider",
+        passwordResetRequired: true,
+        needsClaim: false,
+      });
+
+      // 5. Create auth account
+      await db.insert(authAccounts).values({
+        id: crypto.randomUUID(),
+        userId,
+        providerId: "credential",
+        accountId: userId,
+        password: passwordHash,
+      });
+
+      // 6. Link provider to user
+      // The provider might already exist (created when application was "contacted")
+      // Try to find the provider by application data or create one
+      const providerId = crypto.randomUUID();
+      const slug = application.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
+      const [existingProviderByEmail] = await db
+        .select()
+        .from(providers)
+        .where(eq(providers.userId, userId))
+        .limit(1);
+
+      if (!existingProviderByEmail) {
+        // Try to upsert: find a provider that matches the application
+        const [matchingProvider] = await db
+          .select()
+          .from(providers)
+          .where(eq(providers.id, id))
+          .limit(1);
+
+        if (matchingProvider) {
+          await db
+            .update(providers)
+            .set({ userId })
+            .where(eq(providers.id, matchingProvider.id));
+        } else {
+          // Create a new provider from application data
+          await db.insert(providers).values({
+            id: providerId,
+            name: application.name,
+            slug,
+            category: application.activityType || "arts-culture",
+            description: application.description || "",
+            providerName: application.name,
+            location: application.location || "",
+            ageMin: application.ageMin ?? 0,
+            ageMax: application.ageMax ?? 18,
+            priceValue: application.priceValue ?? 0,
+            imageUrl: application.imageUrl || null,
+            phone: application.phone || null,
+            userId,
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Auto-create provider user failed:", e);
+      return NextResponse.json({
+        ...updated,
+        error: "Application approved but account creation failed. Please create manually.",
+      });
+    }
+  }
+
+  return NextResponse.json({
+    ...updated,
+    ...(tempPassword ? { tempPassword } : {}),
+  });
 });

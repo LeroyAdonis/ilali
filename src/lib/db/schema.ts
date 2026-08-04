@@ -46,6 +46,7 @@ export const providers = pgTable("providers", {
   featured: boolean("featured").default(false),
   isFree: boolean("is_free").default(false),
   verified: boolean("verified").default(false),
+  userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -82,6 +83,9 @@ export const users = pgTable("users", {
   phone: text("phone"),
   suburb: text("suburb"),
   role: text("role").default("parent"), // 'parent', 'provider', 'admin'
+  passwordResetRequired: boolean("password_reset_required").default(false),
+  needsClaim: boolean("needs_claim").default(false),
+  passphraseHash: text("passphrase_hash"),
   emailVerified: boolean("email_verified").default(false),
   image: text("image"),
   avatarUrl: text("avatar_url"),
@@ -356,5 +360,36 @@ export const contributionVouches = pgTable(
   },
   (t) => ({
     uniqueVouch: uniqueIndex("unique_vouch").on(t.contributionId, t.voucherId),
+  }),
+);
+
+// ── Provider Inquiries (AI concierge match log) ──
+export const providerInquiries = pgTable("provider_inquiries", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  providerId: uuid("provider_id")
+    .notNull()
+    .references(() => providers.id, { onDelete: "cascade" }),
+  query: text("query").notNull(),
+  parentId: text("parent_id"),
+  matchedAt: timestamp("matched_at").defaultNow().notNull(),
+});
+
+// ── Review Replies (provider responses to reviews) ──
+export const reviewReplies = pgTable(
+  "review_replies",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    reviewId: uuid("review_id")
+      .notNull()
+      .references(() => reviews.id, { onDelete: "cascade" }),
+    providerId: uuid("provider_id")
+      .notNull()
+      .references(() => providers.id, { onDelete: "cascade" }),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => ({
+    uniqueReviewReply: uniqueIndex("unique_review_reply").on(t.reviewId),
   }),
 );

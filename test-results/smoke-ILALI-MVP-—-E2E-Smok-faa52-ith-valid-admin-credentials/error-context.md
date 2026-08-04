@@ -20,7 +20,7 @@ Timeout: 10000ms
 
 Call log:
   - Expect "toHaveURL" with timeout 10000ms
-    24 × locator resolved to <html lang="en" class="h-full scroll-smooth">…</html>
+    23 × locator resolved to <html lang="en" class="h-full scroll-smooth">…</html>
        - unexpected value "http://localhost:3001/auth/signin?email=leroy%40ilali.co&password=ilali-admin-2026"
 
 ```

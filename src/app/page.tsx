@@ -9,13 +9,13 @@ import Link from "next/link";
 import { ShieldCheck, Search, Users, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "ILALI — Cape Town's Marketplace for Kids' Activities",
+  title: "ILALI — Find Kids' Activities in Cape Town",
   description:
-    "Discover trusted, background-checked extramural activities for your children in Cape Town. Search by category, age, location, and price. Book with confidence.",
+    "Find background-checked activities your kids will love in Cape Town. Search by category, age, location, and price.",
   openGraph: {
-    title: "ILALI — Cape Town's Marketplace for Kids' Activities",
+    title: "ILALI — Find Kids' Activities in Cape Town",
     description:
-      "Find vetted extramural activities your kids will love. Every provider is background-checked.",
+      "Find vetted activities your kids will love. Every provider is background-checked.",
     type: "website",
   },
 };
@@ -36,7 +36,7 @@ const features = [
     iconClass: "bg-purple/10 text-purple",
     accentBar: "bg-purple",
     title: "Search & Discover",
-    desc: "Browse by category, location, age, or price. Find the perfect activity for your child in minutes.",
+    desc: "Browse by category, location, age, or price. Find something your kid will love in minutes.",
     tag: "AI-MATCHED",
     tagClass: "text-purple-deep",
     side: "right" as const,
@@ -57,21 +57,21 @@ const steps = [
   {
     num: "01",
     title: "Search",
-    desc: "Browse activities by category, age group, location, or price range.",
+    desc: "Browse activities by category, age group, location, or what you want to spend.",
     numClass: "text-teal-deep border-teal/50 bg-teal/10",
     accent: "teal" as const,
   },
   {
     num: "02",
     title: "Compare",
-    desc: "Read reviews, check ratings, and find the perfect fit for your child.",
+    desc: "Read reviews, check ratings, and find the right fit for your kid.",
     numClass: "text-purple border-purple/50 bg-purple/10",
     accent: "purple" as const,
   },
   {
     num: "03",
     title: "Book",
-    desc: "Reserve your spot directly through the platform. Simple and secure.",
+    desc: "Reserve your spot through the platform — quick, straightforward, and secure.",
     numClass: "text-gold-deep border-gold/50 bg-gold/10",
     accent: "gold" as const,
   },
@@ -144,9 +144,9 @@ export default function LandingPage() {
               <span className="text-teal">love</span>
             </h1>
             <p className="mt-6 max-w-[48ch] text-[16px] leading-relaxed text-ink-soft">
-              ILALI is Cape Town&apos;s trusted marketplace for children&apos;s extramural activities.
+              ILALI helps Cape Town parents find activities their kids will love.
               Every provider is <strong className="text-ink font-semibold">background-checked</strong>, every review is from a{" "}
-              <strong className="text-ink font-semibold">real family</strong>, and our AI helps you find the perfect match.
+              <strong className="text-ink font-semibold">real family</strong>, and we help you find the right fit.
             </p>
             <div className="mt-9 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3.5">
               <Link
@@ -246,7 +246,7 @@ export default function LandingPage() {
                 Everything you need to find the right activity
               </h2>
               <p className="mt-4 max-w-[56ch] text-[16px] leading-relaxed text-ink-soft">
-                No more scrolling through Facebook groups or asking around. Everything&apos;s in one place, vetted and verified.
+                No more scrolling through Facebook groups or asking around. Everything&apos;s in one place, vetted and ready to go.
               </p>
             </div>
 
@@ -304,7 +304,7 @@ export default function LandingPage() {
                 How ILALI works
               </h2>
               <p className="mt-4 mb-8 max-w-[720px] text-[16px] leading-relaxed text-ink-soft">
-                From sideline to schedule in three touches — find it, compare it, book it.
+                From sideline to schedule: find it, compare it, book it.
               </p>
               <div className="flex flex-col gap-7">
                 {steps.map((step) => (
@@ -380,9 +380,8 @@ export default function LandingPage() {
                   Are you a <span className="text-gold-deep">provider?</span>
                 </h2>
                 <p className="mt-4 max-w-[52ch] text-[15.5px] leading-relaxed text-ink-soft">
-                  List your activities for free and reach thousands of Cape Town families.
-                  Use our AI-powered setup — just describe your activity and we&apos;ll build
-                  your listing for you.
+                  List your activities for free and reach Cape Town families.
+                  Just describe your activity and we&apos;ll build your listing for you.
                 </p>
                 <div className="mt-7 flex flex-wrap gap-3.5">
                   <Link
@@ -407,10 +406,10 @@ export default function LandingPage() {
         <section className="px-4 py-24 sm:px-6 sm:py-28 lg:px-8">
           <div className="mx-auto max-w-7xl text-center">
             <h2 className="mx-auto max-w-[18ch] font-display text-[clamp(2.6rem,5.5vw,4rem)] font-extrabold leading-[1.04] tracking-[-0.02em] text-ink">
-              Ready to find your child&apos;s next <span className="text-gold-deep">adventure?</span>
+              Ready to find your kid&apos;s next <span className="text-gold-deep">adventure?</span>
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-[16px] text-ink-soft">
-              Browse vetted activities, read real reviews, and discover the perfect match with our AI-powered search.
+              Browse vetted activities, read real reviews, and find the right fit for your family.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3.5 sm:flex-row">
               <Link

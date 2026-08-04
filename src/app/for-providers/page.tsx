@@ -7,7 +7,7 @@ import ProviderInquiryForm from "./form";
 export const metadata: Metadata = {
   title: "For Providers | ILALI",
   description:
-    "List your children's activities on ILALI. Reach more families, manage bookings, and grow your business. R99/month + 10% commission.",
+    "List your kids' activities on ILALI. Reach more families, manage bookings, and grow your business. R99/month + 10% commission.",
 };
 
 import InteriorHero from "@/components/InteriorHero";
@@ -23,7 +23,7 @@ const benefits = [
   {
     title: "Dashboard",
     description:
-      "Manage everything from one place — bookings, messages, payments, and analytics. See your performance at a glance.",
+      "Manage everything from one place: bookings, messages, payments, and analytics. See how you're doing at a glance.",
     icon: "📊",
   },
   {
@@ -41,7 +41,7 @@ const benefits = [
   {
     title: "Messaging",
     description:
-      "Built-in messaging so you can communicate with parents directly about schedules, updates, and special requirements.",
+      "Built-in messaging so you can chat directly with parents about schedules, updates, and anything specific your activity needs.",
     icon: "💬",
   },
 ];
@@ -55,7 +55,7 @@ export default function ForProvidersPage() {
         <InteriorHero
           eyebrow="For Providers"
           title={<>List your <span className="text-teal">activities</span>, grow your <span className="text-gold-deep">reach</span></>}
-          subtitle="Join the platform that connects you with families looking for quality children's activities in your area."
+          subtitle="Join the platform that connects you with families looking for quality kids' activities in your area."
           imageSrc="/images/hero/hero-for-providers.jpg"
           imageAlt="Activity providers in Cape Town"
         />
@@ -64,10 +64,10 @@ export default function ForProvidersPage() {
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
             <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
-              Everything You Need to Succeed
+              Everything you need to succeed
             </h2>
             <p className="mt-2 text-sm text-ink-faint">
-              Powerful tools to help you manage and grow your activity business
+              Tools to help you manage and grow your activity business
             </p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -108,7 +108,7 @@ export default function ForProvidersPage() {
           <div className="mx-auto max-w-lg">
             <div className="rounded-2xl border-2 border-ilali-200 bg-white p-8 text-center shadow-lg">
               <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
-                Simple Pricing
+                Simple pricing
               </h2>
               <p className="mt-2 text-sm text-ink-faint">
                 No hidden fees. No surprises.
@@ -171,7 +171,7 @@ export default function ForProvidersPage() {
         >
           <div className="mx-auto max-w-lg">
             <h2 className="text-center font-display text-2xl font-bold text-ink sm:text-3xl">
-              Start Listing Today
+              Start listing today
             </h2>
             <p className="mt-2 text-center text-sm text-ink-faint">
               Fill in the form below and we&apos;ll be in touch.

@@ -6,14 +6,14 @@ import InteriorHero from "@/components/InteriorHero";
 export const metadata: Metadata = {
   title: "About | ILALI",
   description:
-    "Learn about ILALI's mission, story, and values. We connect families with trusted children's activities in Cape Town and beyond.",
+    "ILALI connects families with trusted kids' activities in Cape Town. Learn about our mission, story, and values.",
 };
 
 const values = [
   {
     title: "Safety",
     description:
-      "Every provider on our platform is background-checked. Child safety is our non-negotiable foundation.",
+      "Every provider on our platform is background-checked. Child safety is our foundation — we won't compromise on it.",
     icon: "🛡️",
   },
   {
@@ -25,13 +25,13 @@ const values = [
   {
     title: "Accessibility",
     description:
-      "Activities should be available to every child. We keep our platform simple and our pricing transparent.",
+      "Activities should be available to every kid. We keep our platform simple and our pricing transparent.",
     icon: "🌍",
   },
   {
     title: "Trust",
     description:
-      "Verified reviews, secure payments, and clear communication build trust between parents and providers.",
+      "Real reviews, secure payments, and clear communication build trust between parents and providers.",
     icon: "⭐",
   },
 ];
@@ -40,13 +40,13 @@ const partners = [
   {
     name: "ASSITEJ SA",
     description:
-      "International Association of Theatre for Children and Young People — South Africa chapter. Partnering to bring performing arts to more children.",
+      "International Association of Theatre for Children and Young People — South Africa chapter. Partnering to bring performing arts to more kids.",
     icon: "🎭",
   },
   {
     name: "BASA",
     description:
-      "Business and Arts South Africa. Working together to foster creative and cultural activities for young people.",
+      "Business and Arts South Africa. Working together to bring creative and cultural activities to more young people.",
     icon: "🎨",
   },
 ];
@@ -59,7 +59,7 @@ export default function AboutPage() {
         <InteriorHero
           eyebrow="About"
           title="About ILALI"
-          subtitle="Connecting families with trusted children's activities — because it takes a village."
+          subtitle="Connecting families with trusted kids' activities — because it takes a village."
           imageSrc="/images/hero/hero-about.jpg"
           imageAlt="ILALI community"
         />
@@ -71,14 +71,14 @@ export default function AboutPage() {
               Our Mission
             </h2>
             <p className="mt-4 text-base leading-relaxed text-ink-soft">
-              ILALI exists to help every child discover their passion in a safe,
-              nurturing environment. We connect parents with trusted,
+              ILALI exists to help every kid discover their passion in a safe,
+              supportive space. We connect parents with trusted,
               background-checked activity providers so families can explore,
               learn, and grow together.
             </p>
             <p className="mt-4 text-base leading-relaxed text-ink-soft">
-              We believe that when children have access to quality extramural
-              activities — from sports and arts to music and coding — they build
+              We believe that when kids have access to quality activities —
+              from sports and arts to music and coding — they build
               confidence, make friends, and develop skills that last a lifetime.
             </p>
           </div>
@@ -97,7 +97,7 @@ export default function AboutPage() {
             </h2>
             <p className="mt-4 text-base leading-relaxed text-ink-soft">
               Founded in Cape Town, ILALI was born from a simple observation:
-              parents across South Africa struggled to find and trust children's
+              parents across South Africa struggled to find and trust kids'
               activity providers. Reviews were scattered, backgrounds were
               unchecked, and booking was a manual mess.
             </p>
@@ -108,7 +108,7 @@ export default function AboutPage() {
               activities with confidence.
             </p>
             <p className="mt-4 text-base leading-relaxed text-ink-soft">
-              Today, ILALI is growing into a trusted community hub — connecting
+              Today, ILALI is growing into a trusted community: connecting
               hundreds of families with the best activities their neighbourhoods
               have to offer.
             </p>
@@ -162,7 +162,7 @@ export default function AboutPage() {
               Our Partners
             </h2>
             <p className="mt-2 text-sm text-ink-faint">
-              Working together to enrich children's lives
+              Working together to enrich kids' lives
             </p>
           </div>
           <div className="grid gap-8 md:grid-cols-2">

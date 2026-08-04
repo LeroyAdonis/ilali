@@ -7,7 +7,7 @@ import InteriorHero from "@/components/InteriorHero";
 export const metadata: Metadata = {
   title: "For Parents | ILALI",
   description:
-    "A parent's guide to finding safe, vetted extramural activities in Cape Town. Learn how vetting works, what to expect, and how to get started.",
+    "A parent's guide to finding safe, vetted activities for your kids in Cape Town. How vetting works, what to expect, and how to get started.",
 };
 
 export default function ForParentsPage() {
@@ -18,7 +18,7 @@ export default function ForParentsPage() {
         <InteriorHero
           eyebrow="For Parents"
           title="A parent's guide to ILALI"
-          subtitle="Everything you need to know about finding safe, fun activities for your children — from how vetting works to what happens after you book."
+          subtitle="Everything you need to know about finding safe, fun activities for your kids — how vetting works, what to expect, and what happens after you book."
           imageSrc="/images/hero/hero-home.jpg"
           imageAlt="Family scene"
         />
@@ -37,7 +37,7 @@ export default function ForParentsPage() {
               {[
                 {
                   q: "Background checks",
-                  a: "Every provider submits a police clearance or equivalent background check. We verify the document, not just collect it. This applies to all staff who work with children.",
+                  a: "Every provider submits a police clearance or equivalent background check. We verify the document, not just collect it. This applies to all staff who work with kids.",
                 },
                 {
                   q: "Identity verification",
@@ -49,7 +49,7 @@ export default function ForParentsPage() {
                 },
                 {
                   q: "What you see on a profile",
-                  a: "Each provider profile shows their vetting badge, how long they've been on ILALI, ratings from other parents, and a detailed description of their offering and credentials.",
+                  a: "Each provider profile shows their vetting badge, how long they've been on ILALI, ratings from other parents, and a clear description of what they offer.",
                 },
               ].map((item) => (
                 <div key={item.q} className="rounded-xl border border-ink/10 bg-white p-6 shadow-sm">
@@ -81,12 +81,12 @@ export default function ForParentsPage() {
                 {
                   icon: "🎯",
                   title: "Follow their interests",
-                  desc: "Start with what your child already loves — art, sport, music, or something new. The best activities are the ones they're excited about.",
+                  desc: "Start with what your kid already loves — art, sport, music, or something new. The best activities are the ones they're excited about.",
                 },
                 {
                   icon: "📍",
                   title: "Consider location",
-                  desc: "Filter by neighbourhood to find activities close to home, school, or along your regular route. Less travel means more consistency.",
+                  desc: "Filter by neighbourhood to find activities close to home, school, or along your regular route. Less travel means you'll actually get there each week.",
                 },
                 {
                   icon: "📅",
@@ -96,7 +96,7 @@ export default function ForParentsPage() {
                 {
                   icon: "⭐",
                   title: "Read reviews",
-                  desc: "Real feedback from other parents tells you more than any description. Look for consistent positive patterns, not just star ratings.",
+                  desc: "Real feedback from other parents tells you more than any description. Look for patterns in what they say, not just the star rating.",
                 },
               ].map((tip) => (
                 <div
@@ -126,8 +126,7 @@ export default function ForParentsPage() {
               Earn while your kids grow
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-              ILALI&apos;s Ubuntu Rewards programme means every booking does more
-              than just keep your child busy — it earns points, unlocks
+              ILALI&apos;s Ubuntu Rewards programme means every booking does more than just keep your kid busy — it earns points, unlocks
               discounts, and supports kids who wouldn&apos;t otherwise have access.
             </p>
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -169,9 +168,9 @@ export default function ForParentsPage() {
                 { step: "1", text: "Create your free ILALI account — no credit card needed" },
                 { step: "2", text: "Set your location to see activities near you" },
                 { step: "3", text: "Browse by category, age, or use the search bar" },
-                { step: "4", text: "Read provider profiles, reviews, and check their vetting status" },
+                { step: "4", text: "Read provider profiles, reviews, and check their vetting badge" },
                 { step: "5", text: "Book a session or trial — pay securely through the platform" },
-                { step: "6", text: "Leave a review afterwards to help other parents" },
+                { step: "6", text: "Leave a review afterwards to help other moms and dads" },
               ].map((item) => (
                 <li key={item.step} className="flex items-start gap-3">
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ilali-100 text-xs font-bold text-ilali-700">
@@ -188,10 +187,10 @@ export default function ForParentsPage() {
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="rounded-2xl bg-paper-warm px-6 py-12 text-center shadow-lg sm:px-12">
             <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
-              Ready to find the perfect activity?
+              Ready to find the right activity for your kid?
             </h2>
             <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-ilali-100">
-              Browse hundreds of trusted activities near you and book with confidence.
+              Browse activities near you and book with confidence.
             </p>
             <Link
               href="/home"

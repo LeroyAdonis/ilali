@@ -81,7 +81,7 @@ export default function Footer() {
               />
             </Link>
             <p className="mt-3 text-sm leading-relaxed text-ink-soft max-w-xs">
-              A child-safety-first marketplace connecting families with vetted providers and activities. Building communities, enriching childhoods.
+              A child-safety-first marketplace connecting Cape Town families with vetted activities for kids.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               <Link

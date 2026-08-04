@@ -141,10 +141,10 @@ function ResultsSection({
           <>
             Find the{" "}
             <span className="text-teal">perfect</span> activity for your{" "}
-            <span className="text-gold-deep">child</span>
+            <span className="text-gold-deep">kid</span>
           </>
         }
-        subtitle="Browse hundreds of vetted children's activities across Cape Town. Every provider background-checked, every review from real families."
+        subtitle="Browse vetted kids' activities across Cape Town. Every provider background-checked, every review from real families."
         imageSrc="/images/hero/hero-browse.jpg"
         imageAlt="Children discovering activities in Cape Town"
       />
@@ -279,7 +279,7 @@ function ResultsSection({
               <div className="rounded-xl border border-ilali-200 bg-paper-warm p-6 sm:flex sm:items-center sm:justify-between">
                 <div>
                   <h3 className="font-display text-base font-bold text-ink">👋 Create your free account</h3>
-                  <p className="mt-1 text-sm text-ink-faint">Save your favourite activities and get personalised recommendations.</p>
+                  <p className="mt-1 text-sm text-ink-faint">Save your favourites and get recommendations for your kids.</p>
                 </div>
                 <Link
                   href="/auth/signup"
@@ -303,7 +303,7 @@ function ResultsSection({
                     New this week
                   </h2>
                   <p className="mt-1 text-sm text-ink-faint">
-                    Fresh activities from newly vetted providers.
+                    New activities from recently vetted providers.
                   </p>
                 </div>
                 <span className="hidden sm:inline text-xs font-semibold text-ink-faint">
@@ -371,7 +371,7 @@ function ResultsSection({
                     Local favourites
                   </h2>
                   <p className="mt-1 text-sm text-ink-faint">
-                    Most popular activities in your area
+                    What parents are booking the most right now
                   </p>
                 </div>
                 <Link

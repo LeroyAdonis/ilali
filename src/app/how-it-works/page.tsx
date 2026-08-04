@@ -6,7 +6,7 @@ import InteriorHero from "@/components/InteriorHero";
 export const metadata: Metadata = {
   title: "How It Works | ILALI",
   description:
-    "Learn how ILALI works for parents and providers. Browse, book, and attend children's activities with confidence.",
+    "Learn how ILALI works for parents and providers. Browse, book, and attend kids' activities with confidence.",
 };
 
 const parentSteps = [
@@ -14,21 +14,21 @@ const parentSteps = [
     number: 1,
     title: "Browse",
     description:
-      "Explore hundreds of vetted activities near you — from art classes to sports. Filter by age, location, category, and price to find the perfect fit.",
+      "Explore vetted activities near you — from art classes to sports. Filter by age, location, category, and price to find the right fit.",
     icon: "🔍",
   },
   {
     number: 2,
     title: "Book & Pay",
     description:
-      "Once you find an activity you love, book directly through the platform. Pay securely online — no cash, no hassle.",
+      "Once you find an activity you love, book directly through the platform. Pay online — no cash, no hassle.",
     icon: "📅",
   },
   {
     number: 3,
     title: "Attend",
     description:
-      "Show up and enjoy! Your child gets to learn, play, and grow in a safe, vetted environment. Leave a review afterwards.",
+      "Show up and enjoy! Your kid gets to learn, play, and grow in a safe, vetted space. Leave a review afterwards to help other families.",
     icon: "🎉",
   },
 ];
@@ -52,7 +52,7 @@ const providerSteps = [
     number: 3,
     title: "Grow",
     description:
-      "Reach more families, get reviews, and grow your business. ILALI handles payments so you can focus on what you do best.",
+      "Reach more families, get reviews, and grow your business. ILALI handles payments so you can focus on teaching.",
     icon: "📈",
   },
 ];
@@ -103,7 +103,7 @@ export default function HowItWorksPage() {
         <InteriorHero
           eyebrow="How it works"
           title={<>Simple for <span className="text-teal">parents</span>, powerful for <span className="text-purple">providers</span></>}
-          subtitle="Whether you're a parent looking for activities or a provider wanting to grow your reach, we make it simple."
+          subtitle="Whether you're a parent looking for activities or a provider wanting to reach more families, here's how it works."
           imageSrc="/images/hero/hero-how-it-works.jpg"
           imageAlt="How ILALI works — connecting parents with providers"
         />
@@ -115,7 +115,7 @@ export default function HowItWorksPage() {
               For Parents
             </h2>
             <p className="mt-2 text-sm text-ink-faint">
-              Three easy steps to get your child started
+              Three easy steps to get your kid started
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">

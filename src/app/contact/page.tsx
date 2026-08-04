@@ -7,7 +7,7 @@ import ContactForm from "./form";
 export const metadata: Metadata = {
   title: "Contact | ILALI",
   description:
-    "Get in touch with the ILALI team. We'd love to hear from you — whether you're a parent or a provider.",
+    "Get in touch with the ILALI team — whether you're a parent or a provider, we want to hear from you.",
 };
 
 export default function ContactPage() {
@@ -17,8 +17,8 @@ export default function ContactPage() {
       <main className="flex-1">
         <InteriorHero
           eyebrow="Contact"
-          title="Get in Touch"
-          subtitle="Have a question, suggestion, or need help? We're here for you."
+          title="Get in touch"
+          subtitle="Got a question, a suggestion, or need help? We're listening."
           imageSrc="/images/hero/hero-contact.jpg"
           imageAlt="Welcoming community center"
         />

@@ -12,7 +12,7 @@ import { Category, Testimonial } from "./types";
 export const SITE_NAME = "ILALI";
 export const SITE_TAGLINE = "It takes a village";
 export const SITE_DESCRIPTION =
-  "Discover and book trusted children's extramural activities in your community. Every provider is background-checked for your peace of mind.";
+  "Find background-checked activities your kids will love. Every provider is vetted — because your child's safety matters.";
 export const SITE_URL = "https://preview.ilali.co";
 
 export const categories: Category[] = [
@@ -91,7 +91,7 @@ export const testimonials: Testimonial[] = [
     role: "parent",
     location: "Rondebosch",
     quote:
-      "As a working mom, having everything in one place with safety checks done for me is a game-changer.",
+      "As a working mom, having everything in one place with safety checks already done makes life so much easier.",
     initial: "S",
   },
   {
@@ -100,7 +100,7 @@ export const testimonials: Testimonial[] = [
     role: "provider",
     location: "Observatory",
     quote:
-      "ILALI has transformed how we connect with families. The vetting process gives parents confidence, and our bookings have grown 40% since joining.",
+      "ILALI has changed how we connect with families. Parents trust the vetting process, and our bookings are up 40% since we joined.",
     initial: "N",
   },
   {
@@ -109,7 +109,7 @@ export const testimonials: Testimonial[] = [
     role: "provider",
     location: "Woodstock",
     quote:
-      "The platform handles all the admin so I can focus on teaching. Parents love the transparency and trust signals.",
+      "The platform handles all the admin so I can focus on teaching. Parents love the transparency and knowing their kids are safe.",
     initial: "M",
   },
   {
@@ -118,7 +118,7 @@ export const testimonials: Testimonial[] = [
     role: "provider",
     location: "Athlone",
     quote:
-      "Being part of a vetted community has elevated our reputation. The referral system brings us quality families who value what we do.",
+      "Being part of a vetted community has been great for our reputation. The referral system brings us families who really value what we do.",
     initial: "M",
   },
 ];
@@ -130,12 +130,11 @@ export const navLinks = [
   { label: "Community", href: "/clubs" },
   { label: "Rewards", href: "/rewards" },
   { label: "How It Works", href: "/how-it-works" },
-  { label: "Ubuntu Rewards", href: "/ubuntu-rewards" },
 ];
 
 export const stats = [
   { value: "19", label: "Vetted Providers" },
   { value: "6", label: "Categories" },
   { value: "100%", label: "Background Checked" },
-  { value: "0", label: "Booking Fees" },
+  { value: "0", label: "No Booking Fees" },
 ];

@@ -28,7 +28,7 @@ export function mapProvider(
     ageMax: dbRow.ageMax,
     rating: Number(dbRow.rating ?? 0),
     reviewCount: dbRow.reviewCount ?? 0,
-    price: dbRow.isFree ? "Free" : `R${dbRow.priceValue.toLocaleString()}`,
+    price: dbRow.isFree ? "Free" : `R${(dbRow.priceValue / 100).toLocaleString()}`,
     priceValue: dbRow.priceValue,
     priceLabel: dbRow.priceLabel ?? "per session",
     image: dbRow.imageUrl ?? `/images/providers/${dbRow.category}.jpg`,

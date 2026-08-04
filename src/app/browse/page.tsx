@@ -1,7 +1,3 @@
-/* Hallmark · macrostructure: Ecosystem Index · genre: playful · theme: ilali-native
- * Designed-as-app · design-system: ilali-tokens · surface-count: 4
- */
-
 import Header from "@/components/Header";
 import AIChatPanel from "@/components/chat/AIChatPanel";
 import FilterBar from "@/components/FilterBar";
@@ -134,22 +130,22 @@ function ResultsSection({
 
   return (
     <>
-      {/* Interior Hero — positioning paragraph, not display headline */}
+      {/* Interior Hero */}
       <InteriorHero
         eyebrow="Discover"
         title={
           <>
             Find the{" "}
             <span className="text-teal">perfect</span> activity for your{" "}
-            <span className="text-gold-deep">kid</span>
+            <span className="text-gold-deep">child</span>
           </>
         }
-        subtitle="Browse vetted kids' activities across Cape Town. Every provider background-checked, every review from real families."
+        subtitle="Browse hundreds of vetted children's activities across Cape Town. Every provider background-checked, every review from real families."
         imageSrc="/images/hero/hero-browse.jpg"
         imageAlt="Children discovering activities in Cape Town"
       />
 
-      {/* AI Chat Panel — first discovery surface */}
+      {/* AI Chat Panel */}
       <section className="py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AIChatPanel
@@ -159,7 +155,6 @@ function ResultsSection({
         </div>
       </section>
 
-      {/* FilterBar — always accessible */}
       <section className="pb-6">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Suspense fallback={<div className="h-24 w-full" />}>
@@ -168,23 +163,15 @@ function ResultsSection({
         </div>
       </section>
 
-      {/* AI Match Results — surfaced as a labeled collection */}
+      {/* AI Match Results */}
       {isAiMatch ? (
         <section className="py-10">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-teal-deep-2">
-                  🤖 AI-MATCHED
-                </span>
-                <h2 className="font-display text-xl font-bold text-ink sm:text-2xl mt-1.5">
-                  Results based on your description
-                </h2>
-              </div>
-              <span className="text-xs font-semibold text-ink-faint">
-                {matchResults!.length} match{matchResults!.length !== 1 ? "es" : ""}
+            <p className="mb-6 text-sm text-ink-faint">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-ilali-50 px-3 py-1 text-xs font-medium text-ilali-700">
+                🤖 AI-powered results based on your description
               </span>
-            </div>
+            </p>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {matchResults!.map(({ provider, score, reasons }) => (
                 <ProviderCard
@@ -207,19 +194,11 @@ function ResultsSection({
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {filtered.length > 0 ? (
               <>
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-teal-deep-2">
-                      FILTERED
-                    </span>
-                    <h2 className="font-display text-xl font-bold text-ink sm:text-2xl mt-1.5">
-                      Search results
-                    </h2>
-                  </div>
-                  <span className="text-xs font-semibold text-ink-faint">
-                    {filtered.length} {filtered.length === 1 ? "activity" : "activities"} · ⚡ All vetted
-                  </span>
-                </div>
+                <p className="mb-6 text-xs text-ink-faint">
+                  Showing {filtered.length}{" "}
+                  {filtered.length === 1 ? "activity" : "activities"} · ⚡ All
+                  providers are background-checked
+                </p>
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {filtered.map((provider) => (
                   <ProviderCard
@@ -240,7 +219,7 @@ function ResultsSection({
                   🔍
                 </span>
                 <h3 className="mt-4 font-display text-lg font-semibold text-ink">
-                  Nothing matched &quot;{q || nl}&quot;
+                  Nothing matched "{q || nl}"
                 </h3>
                 {searchSuggestions ? (
                   <>
@@ -273,13 +252,13 @@ function ResultsSection({
         </section>
       ) : (
         <>
-          {/* Parent accounts signup CTA — contextual banner */}
+          {/* Parent accounts signup CTA */}
           <section className="pb-6">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="rounded-xl border border-ilali-200 bg-paper-warm p-6 sm:flex sm:items-center sm:justify-between">
                 <div>
                   <h3 className="font-display text-base font-bold text-ink">👋 Create your free account</h3>
-                  <p className="mt-1 text-sm text-ink-faint">Save your favourites and get recommendations for your kids.</p>
+                  <p className="mt-1 text-sm text-ink-faint">Save your favourite activities and get personalised recommendations.</p>
                 </div>
                 <Link
                   href="/auth/signup"
@@ -291,27 +270,18 @@ function ResultsSection({
             </div>
           </section>
 
-          {/* ── Surface 1: New this week ── */}
           <section className="py-10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <div className="flex items-end justify-between mb-6">
-                <div>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-teal-deep-2">
-                    ★ JUST ADDED
-                  </span>
-                  <h2 className="font-display text-xl font-bold text-ink sm:text-2xl mt-1.5">
-                    New this week
-                  </h2>
-                  <p className="mt-1 text-sm text-ink-faint">
-                    New activities from recently vetted providers.
-                  </p>
-                </div>
-                <span className="hidden sm:inline text-xs font-semibold text-ink-faint">
-                  {newProviders.length} new
-                </span>
-              </div>
-              {/* Mobile: horizontal scroll rail */}
-              <div className="flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-teal-deep-2">
+                ★ JUST ADDED
+              </span>
+              <h2 className="font-display text-xl font-bold text-ink sm:text-2xl mt-2">
+                New this week
+              </h2>
+              <p className="mt-1 text-sm text-ink-faint">
+                Fresh activities from newly vetted providers.
+              </p>
+              <div className="mt-6 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
                 {newProviders.map((provider, idx) => (
                   <div
                     key={provider.id}
@@ -335,8 +305,7 @@ function ResultsSection({
                   </div>
                 ))}
               </div>
-              {/* Desktop: card grid */}
-              <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
                 {newProviders.map((provider, idx) => (
                   <ProviderCard
                     key={provider.id}
@@ -359,30 +328,18 @@ function ResultsSection({
             </div>
           </section>
 
-          {/* ── Surface 2: Local favourites ── */}
-          <section className="py-10 bg-paper-warm border-y border-ink/5">
+          <section className="py-10 bg-paper-warm">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <div className="flex items-end justify-between mb-6">
-                <div>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-gold-deep-2">
-                    ★ MOST POPULAR
-                  </span>
-                  <h2 className="font-display text-xl font-bold text-ink sm:text-2xl mt-1.5">
-                    Local favourites
-                  </h2>
-                  <p className="mt-1 text-sm text-ink-faint">
-                    What parents are booking the most right now
-                  </p>
-                </div>
-                <Link
-                  href="/categories"
-                  className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-teal-deep hover:text-teal transition-colors"
-                >
-                  Browse all categories →
-                </Link>
-              </div>
-              {/* Mobile: horizontal scroll rail */}
-              <div className="flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-gold-deep-2">
+                ★ MOST POPULAR
+              </span>
+              <h2 className="font-display text-xl font-bold text-ink sm:text-2xl mt-2">
+                Local favourites
+              </h2>
+              <p className="mt-1 text-sm text-ink-faint">
+                Most popular activities in your area
+              </p>
+              <div className="mt-6 flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4 sm:hidden">
                 {localFavourites.map((provider, idx) => (
                   <div
                     key={provider.id}
@@ -406,8 +363,7 @@ function ResultsSection({
                   </div>
                 ))}
               </div>
-              {/* Desktop: card grid */}
-              <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
                 {localFavourites.map((provider, idx) => (
                   <ProviderCard
                     key={provider.id}

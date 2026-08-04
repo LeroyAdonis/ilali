@@ -1,7 +1,3 @@
-/* Hallmark · macrostructure: Workbench · genre: playful · theme: ilali-native
- * Designed-as-app · design-system: ilali-tokens
- */
-
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -59,16 +55,16 @@ export default async function ClubHomePage({
     listed: "Self-registered — verification in progress",
   };
 
-  // Upcoming events only
+  // Upcoming events only (data-source returns upcoming-first, already sorted)
   const now = Date.now();
   const upcomingEvents = events
     .filter((e) => e.startTime.getTime() >= now)
     .slice(0, 3);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-3">
-      {/* ── Main column: guided tour stations ── */}
-      <div className="lg:col-span-2 space-y-8">
+    <div className="grid gap-10 lg:grid-cols-3">
+      {/* ── Main column ── */}
+      <div className="lg:col-span-2 space-y-10">
         {/* Invite banner */}
         {invitedBy && (
           <InviteBanner
@@ -78,48 +74,42 @@ export default async function ClubHomePage({
           />
         )}
 
-        {/* Station 1: About this club */}
-        <section
-          aria-labelledby="club-about"
-          className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm sm:p-7"
-        >
+        {/* About */}
+        <section aria-labelledby="club-about">
           <h2
             id="club-about"
-            className="font-display text-lg font-bold text-ink mb-3"
+            className="font-display text-lg font-bold text-ink mb-2"
           >
             About this club
           </h2>
           <p className="text-sm leading-relaxed text-ink-soft">
             {provider.description}
           </p>
-          <div className="mt-5 flex flex-wrap items-center gap-4 text-sm text-ink-faint border-t border-ink/5 pt-4">
-            <span className="flex items-center gap-1.5">
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-ink-faint">
+            <span className="flex items-center gap-1">
               <MapPin className="h-4 w-4 text-ilali-500" aria-hidden="true" />
               {provider.location}
             </span>
-            <span className="flex items-center gap-1.5">
+            <span className="flex items-center gap-1">
               <Users className="h-4 w-4 text-ilali-500" aria-hidden="true" />
               {stats.memberFamilies} member famil
               {stats.memberFamilies === 1 ? "y" : "ies"}
             </span>
             <Link
               href={`/activity/${slug}`}
-              className="text-xs font-semibold text-ilali-600 hover:text-ilali-700 transition-colors ml-auto"
+              className="text-xs font-semibold text-ilali-600 hover:text-ilali-700 transition-colors"
             >
               View activity listing →
             </Link>
           </div>
         </section>
 
-        {/* Station 2: Upcoming events */}
-        <section
-          aria-labelledby="club-schedule"
-          className="rounded-2xl border border-ink/10 bg-white p-6 shadow-sm sm:p-7"
-        >
-          <div className="flex items-center justify-between mb-4">
+        {/* Schedule (Upcoming) */}
+        <section aria-labelledby="club-schedule">
+          <div className="flex items-center justify-between">
             <h2
               id="club-schedule"
-              className="font-display text-lg font-bold text-ink"
+              className="font-display text-lg font-bold text-ink mb-2"
             >
               Upcoming events
             </h2>
@@ -158,12 +148,12 @@ export default async function ClubHomePage({
         </section>
       </div>
 
-      {/* ── Sidebar: instrumentation panels ── */}
-      <aside className="space-y-5">
-        {/* Panel: Community stats */}
+      {/* ── Community sidebar ── */}
+      <aside className="space-y-6">
+        {/* Community panel */}
         <section
           aria-labelledby="club-community"
-          className="rounded-2xl border border-ink/10 bg-white p-5 shadow-sm"
+          className="rounded-xl border border-ink/10 bg-white p-5 shadow-sm"
         >
           <h2
             id="club-community"
@@ -208,10 +198,10 @@ export default async function ClubHomePage({
           </Link>
         </section>
 
-        {/* Panel: Trust & Safety */}
+        {/* Trust & Safety */}
         <section
           aria-labelledby="club-trust"
-          className="rounded-2xl border border-ink/10 bg-white p-5 shadow-sm"
+          className="rounded-xl border border-ink/10 bg-white p-5 shadow-sm"
         >
           <h2
             id="club-trust"
@@ -236,15 +226,15 @@ export default async function ClubHomePage({
           </Link>
         </section>
 
-        {/* Panel: Join club */}
-        <section className="rounded-2xl border border-ink/10 bg-white p-5 shadow-sm">
+        {/* Join club */}
+        <section className="rounded-xl border border-ink/10 bg-white p-5 shadow-sm">
           <JoinClubButton
             clubSlug={slug}
             invitedBy={invitedBy}
           />
         </section>
 
-        {/* Panel: Welcome card */}
+        {/* Welcome card */}
         <Suspense fallback={null}>
           <WelcomeCard
             clubName={provider.name}
@@ -254,10 +244,10 @@ export default async function ClubHomePage({
           />
         </Suspense>
 
-        {/* Panel: Top volunteers */}
+        {/* Rewards teaser — top volunteers */}
         <section
           aria-labelledby="club-volunteers"
-          className="rounded-2xl border border-ink/10 bg-white p-5 shadow-sm"
+          className="rounded-xl border border-ink/10 bg-white p-5 shadow-sm"
         >
           <h2
             id="club-volunteers"
@@ -293,7 +283,7 @@ export default async function ClubHomePage({
           </p>
         </section>
 
-        {/* Panel: Ride requests */}
+        {/* Ride requests — interactive lift club (Task 5) */}
         <RideRequest
           providerId={provider.id}
           events={events.map((e) => ({

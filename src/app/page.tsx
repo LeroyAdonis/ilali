@@ -1,21 +1,16 @@
-/* Hallmark · macrostructure: Split Studio · genre: playful · theme: ilali-native
- * nav: N1b (canonical SaaS) · footer: Ft5 (Statement)
- * Designed-as-app · design-system: ilali-tokens
- */
-
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ShieldCheck, Search, Users, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "ILALI — Find Kids' Activities in Cape Town",
+  title: "ILALI — Cape Town's Marketplace for Kids' Activities",
   description:
-    "Find background-checked activities your kids will love in Cape Town. Search by category, age, location, and price.",
+    "Discover trusted, background-checked extramural activities for your children in Cape Town. Search by category, age, location, and price. Book with confidence.",
   openGraph: {
-    title: "ILALI — Find Kids' Activities in Cape Town",
+    title: "ILALI — Cape Town's Marketplace for Kids' Activities",
     description:
-      "Find vetted activities your kids will love. Every provider is background-checked.",
+      "Find vetted extramural activities your kids will love. Every provider is background-checked.",
     type: "website",
   },
 };
@@ -29,17 +24,15 @@ const features = [
     desc: "Every provider is background-checked. We do the safety work so you don't have to.",
     tag: "SHIELD-CHECKED",
     tagClass: "text-teal-deep-2",
-    side: "left" as const,
   },
   {
     icon: <Search className="h-6 w-6" />,
     iconClass: "bg-purple/10 text-purple",
     accentBar: "bg-purple",
     title: "Search & Discover",
-    desc: "Browse by category, location, age, or price. Find something your kid will love in minutes.",
+    desc: "Browse by category, location, age, or price. Find the perfect activity for your child in minutes.",
     tag: "AI-MATCHED",
     tagClass: "text-purple-deep",
-    side: "right" as const,
   },
   {
     icon: <Users className="h-6 w-6" />,
@@ -49,7 +42,6 @@ const features = [
     desc: "Built with ASSITEJ SA & BASA. Read real reviews from Cape Town families and leave your own.",
     tag: "REAL REVIEWS",
     tagClass: "text-gold-deep-2",
-    side: "left" as const,
   },
 ];
 
@@ -57,23 +49,20 @@ const steps = [
   {
     num: "01",
     title: "Search",
-    desc: "Browse activities by category, age group, location, or what you want to spend.",
+    desc: "Browse activities by category, age group, location, or price range.",
     numClass: "text-teal-deep border-teal/50 bg-teal/10",
-    accent: "teal" as const,
   },
   {
     num: "02",
     title: "Compare",
-    desc: "Read reviews, check ratings, and find the right fit for your kid.",
+    desc: "Read reviews, check ratings, and find the perfect fit for your child.",
     numClass: "text-purple border-purple/50 bg-purple/10",
-    accent: "purple" as const,
   },
   {
     num: "03",
     title: "Book",
-    desc: "Reserve your spot through the platform — quick, straightforward, and secure.",
+    desc: "Reserve your spot directly through the platform. Simple and secure.",
     numClass: "text-gold-deep border-gold/50 bg-gold/10",
-    accent: "gold" as const,
   },
 ];
 
@@ -87,7 +76,7 @@ const plannerRows = [
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-paper text-ink-soft antialiased">
-      {/* ───── NAV ───── */}
+      {/* ───── NAV (minimal — logo + sign in) ───── */}
       <header className="sticky top-0 z-50 w-full border-b border-ink/10 bg-paper/92 backdrop-blur-lg">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center hover:opacity-90 transition-opacity shrink-0">
@@ -130,102 +119,98 @@ export default function LandingPage() {
       </header>
 
       <main className="flex-1">
-        {/* ═══════ HERO — Split Studio: image right, type left ═══════ */}
-        <section className="relative grid min-h-[88vh] items-center overflow-hidden border-b border-ink/10 lg:grid-cols-[1fr_1.15fr]">
-          {/* Left: type column */}
-          <div className="relative z-[2] order-2 lg:order-1 flex flex-col justify-center px-4 py-16 sm:px-8 lg:px-14 lg:py-0">
-            <span className="inline-flex items-center gap-2.5 pb-5 font-mono text-xs uppercase tracking-[0.18em] text-teal-deep">
-              <span className="text-gold text-sm leading-none">★</span> Cape Town, South Africa · Term 2
-              <span className="block h-px w-10 bg-teal/40" />
-            </span>
-            <h1 className="max-w-[14ch] font-display text-[clamp(2.6rem,6vw,5rem)] font-extrabold leading-[0.96] tracking-[-0.02em] text-ink">
-              Find activities your{" "}
-              <span className="text-gold-deep">kids</span> will{" "}
-              <span className="text-teal">love</span>
-            </h1>
-            <p className="mt-6 max-w-[48ch] text-[16px] leading-relaxed text-ink-soft">
-              ILALI helps Cape Town parents find activities their kids will love.
-              Every provider is <strong className="text-ink font-semibold">background-checked</strong>, every review is from a{" "}
-              <strong className="text-ink font-semibold">real family</strong>, and we help you find the right fit.
-            </p>
-            <div className="mt-9 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3.5">
-              <Link
-                href="/home"
-                className="inline-flex items-center justify-center gap-2 rounded-[10px] bg-gold px-9 py-4 text-[15px] font-semibold text-[#3A2402] shadow-[0_4px_0_rgba(224,143,16,0.28)] transition-transform hover:bg-[#FFB84D] active:translate-y-px"
-              >
-                Enter ILALI
-                <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.5} />
-              </Link>
-              <Link
-                href="/for-providers"
-                className="inline-flex items-center justify-center rounded-[10px] border border-ink/15 px-9 py-4 text-[15px] font-semibold text-ink hover:border-teal hover:text-teal-deep hover:bg-teal/5 transition-colors"
-              >
-                I&apos;m a provider
-              </Link>
-            </div>
-            <p className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-ink-faint">
-              <span className="text-teal-deep text-[13px]">✓</span> No credit card required
-              <span className="text-ink/15">·</span>
-              <span className="text-teal-deep text-[13px]">✓</span> Free to browse
-              <span className="text-ink/15">·</span>
-              <span className="text-teal-deep text-[13px]">✓</span> Vetted providers across Cape Town
-            </p>
-          </div>
-
-          {/* Right: image column — full-bleed into the grid */}
-          <div className="relative order-1 lg:order-2 h-[50vh] lg:h-full min-h-[380px] bg-paper-warm">
+        {/* ───── HERO ───── */}
+        <section className="relative flex min-h-[92vh] items-center overflow-hidden border-b border-ink/10 bg-paper-warm">
+          <div className="absolute inset-0">
             <Image
               src="/images/hero/hero-kids.jpg"
               alt="Children playing football at golden hour in Cape Town"
               fill
               priority
-              sizes="(max-width: 1024px) 100vw, 55vw"
+              sizes="100vw"
               className="object-cover object-[62%_40%]"
             />
-            {/* Subtle gradient — lighter than before, lets photo breathe */}
-            <div
-              className="absolute inset-0 lg:bg-gradient-to-r lg:from-paper lg:to-transparent lg:opacity-30"
-              aria-hidden="true"
-            />
           </div>
-
-          {/* Signature: Vetted stamp — positioned as a photographic annotation */}
           <div
-            className="absolute right-5 bottom-6 lg:right-[52%] lg:bottom-8 z-[3] hidden sm:flex h-[108px] w-[108px] flex-col items-center justify-center rounded-full border-2 border-gold bg-paper/92 shadow-[0_8px_30px_rgba(16,49,46,0.10)] backdrop-blur-sm -rotate-[6deg]"
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(255,253,250,0.97) 0%, rgba(255,253,250,0.88) 30%, rgba(255,253,250,0.30) 58%, rgba(255,253,250,0.04) 100%), linear-gradient(0deg, rgba(255,253,250,0.55) 0%, transparent 40%)",
+            }}
+          />
+
+          {/* Vetted stamp — signature */}
+          <div
+            className="absolute right-[7%] top-auto bottom-[16%] z-[3] hidden sm:flex h-[124px] w-[124px] flex-col items-center justify-center rounded-full border-2 border-gold bg-paper/90 shadow-[0_12px_40px_rgba(16,49,46,0.12)] backdrop-blur-sm -rotate-[8deg]"
             aria-hidden="true"
           >
             <span className="absolute inset-1.5 rounded-full border border-dashed border-teal/55" />
-            <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-teal-deep">Vetted</span>
-            <span className="font-display text-[18px] font-extrabold text-gold-deep">★ ✓</span>
-            <span className="text-[8px] text-purple">every provider</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-teal-deep -rotate-[8deg]">Vetted</span>
+            <span className="font-display text-[22px] font-extrabold text-gold-deep -rotate-[8deg]">★ ✓</span>
+            <span className="text-[9px] text-purple -rotate-[8deg]">every provider</span>
+          </div>
+
+          {/* Stamp — mobile: tucked top-right, smaller */}
+          <div
+            className="absolute right-[14px] top-[84px] z-[3] flex sm:hidden h-[84px] w-[84px] flex-col items-center justify-center rounded-full border-2 border-gold bg-paper/90 shadow-[0_12px_40px_rgba(16,49,46,0.12)] backdrop-blur-sm -rotate-[8deg]"
+            aria-hidden="true"
+          >
+            <span className="absolute inset-1 rounded-full border border-dashed border-teal/55" />
+            <span className="font-mono text-[7.5px] uppercase tracking-[0.18em] text-teal-deep -rotate-[8deg]">Vetted</span>
+            <span className="font-display text-[15px] font-extrabold text-gold-deep -rotate-[8deg]">★ ✓</span>
+            <span className="text-[7.5px] text-purple -rotate-[8deg]">every provider</span>
+          </div>
+
+          <div className="relative z-[2] w-full px-4 sm:px-6 lg:px-8 py-[140px] sm:py-[120px] lg:py-[140px] lg:pb-[120px]">
+            <div className="mx-auto max-w-7xl">
+              <span className="inline-flex items-center gap-2.5 pb-6 font-mono text-xs uppercase tracking-[0.18em] text-teal-deep">
+                <span className="text-gold text-sm leading-none">★</span> Cape Town, South Africa · Term 2
+                <span className="block h-px w-12 bg-teal/40" />
+              </span>
+              <h1 className="max-w-[12ch] font-display text-[clamp(3rem,7vw,5.5rem)] font-extrabold leading-[0.98] tracking-[-0.02em] text-ink sm:max-w-[12ch] sm:text-[clamp(3rem,7vw,5.5rem)]">
+                Find activities your <span className="text-gold-deep">kids</span> will <span className="text-teal">love</span>
+              </h1>
+              <p className="mt-6 max-w-[52ch] text-[17px] leading-relaxed text-ink-soft">
+                ILALI is Cape Town&apos;s trusted marketplace for children&apos;s extramural activities.
+                Every provider is <strong className="text-ink font-semibold">background-checked</strong>, every review is from a
+                <strong className="text-ink font-semibold"> real family</strong>, and our AI helps you find the perfect match.
+              </p>
+              <div className="mt-9 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3.5">
+                <Link
+                  href="/home"
+                  className="inline-flex items-center justify-center gap-2 rounded-[10px] bg-gold px-9 py-4 text-[15px] font-semibold text-[#3A2402] shadow-[0_4px_0_rgba(224,143,16,0.28)] transition-transform hover:bg-[#FFB84D] active:translate-y-px"
+                >
+                  Enter ILALI
+                  <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                </Link>
+                <Link
+                  href="/for-providers"
+                  className="inline-flex items-center justify-center rounded-[10px] border border-ink/15 px-9 py-4 text-[15px] font-semibold text-ink hover:border-teal hover:text-teal-deep hover:bg-teal/5 transition-colors"
+                >
+                  I&apos;m a provider
+                </Link>
+              </div>
+              <p className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-ink-faint">
+                <span className="text-teal-deep text-[13px]">✓</span> No credit card required
+                <span className="text-ink/15">·</span>
+                <span className="text-teal-deep text-[13px]">✓</span> Free to browse
+                <span className="text-ink/15">·</span>
+                <span className="text-teal-deep text-[13px]">✓</span> Vetted providers across Cape Town
+              </p>
+            </div>
           </div>
         </section>
 
-        {/* ═══════ TRUST BAND — unified narrow band ═══════ */}
-        <section className="border-b border-ink/10 bg-paper-warm">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-6">
-              <div className="flex items-start sm:items-center gap-3">
+        {/* ───── SAFEGUARDING TRUST BAR ───── */}
+        <section className="border-b border-ink/10 bg-paper-warm py-6">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6">
+              <div className="flex items-start sm:items-center gap-3 flex-1">
                 <span className="text-xl" role="img" aria-hidden="true">🛡️</span>
                 <div>
                   <p className="text-sm font-bold text-ink">Every provider is background-checked</p>
                   <p className="text-xs text-ink-faint mt-0.5">Police clearance verified · ID confirmed · Ongoing review</p>
                 </div>
-              </div>
-              <div className="hidden sm:flex items-center gap-8">
-                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-faint">
-                  Built in partnership with
-                </span>
-                <img
-                  src="/images/assitej/assitej-sa-logo.png"
-                  alt="ASSITEJ South Africa"
-                  className="h-8 w-auto object-contain opacity-75"
-                />
-                <img
-                  src="/images/basa/basa-logo.png"
-                  alt="Business and Arts South Africa"
-                  className="h-5 w-auto object-contain opacity-75"
-                />
               </div>
               <Link href="/safeguarding" className="text-xs font-semibold text-teal-deep hover:text-teal transition-colors shrink-0">
                 Learn more →
@@ -234,68 +219,63 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ═══════ FEATURES — alternating split layout ═══════ */}
+        {/* ───── TRUST BAR ───── */}
+        <section className="border-b border-ink/10 bg-white py-8">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-10 px-4 sm:px-6 lg:px-8">
+            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-soft">
+              Built in partnership with
+            </span>
+            <img
+              src="/images/assitej/assitej-sa-logo.png"
+              alt="ASSITEJ South Africa"
+              className="h-9 w-auto object-contain opacity-80"
+            />
+            <img
+              src="/images/basa/basa-logo.png"
+              alt="Business and Arts South Africa"
+              className="h-6 w-auto object-contain opacity-80"
+            />
+          </div>
+        </section>
+
+        {/* ───── FEATURES ───── */}
         <section className="border-b border-ink/10 px-4 py-24 sm:px-6 sm:py-28 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            {/* Section head */}
-            <div className="mb-16 lg:mb-20">
+            <div className="max-w-[720px] mb-16">
               <span className="inline-flex items-center gap-2.5 pb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-teal-deep">
                 <span className="h-1.5 w-1.5 rounded-full bg-teal" /> Why families choose ILALI
               </span>
               <h2 className="font-display text-[clamp(2.2rem,4.5vw,3.4rem)] font-extrabold leading-[1.05] tracking-[-0.02em] text-ink">
                 Everything you need to find the right activity
               </h2>
-              <p className="mt-4 max-w-[56ch] text-[16px] leading-relaxed text-ink-soft">
-                No more scrolling through Facebook groups or asking around. Everything&apos;s in one place, vetted and ready to go.
+              <p className="mt-4 text-[16px] leading-relaxed text-ink-soft">
+                No more scrolling through Facebook groups or asking around. Everything&apos;s in one place, vetted and verified.
               </p>
             </div>
-
-            {/* Split feature rows — alternating left/right */}
-            <div className="flex flex-col gap-14 lg:gap-20">
-              {features.map((f) => {
-                const isLeft = f.side === "left";
-                return (
-                  <div
-                    key={f.title}
-                    className={`grid items-center gap-8 lg:grid-cols-[1fr_1fr] lg:gap-14 ${!isLeft ? "lg:[direction:rtl]" : ""}`}
-                  >
-                    {/* Text side */}
-                    <div className={!isLeft ? "lg:[direction:ltr]" : ""}>
-                      <span className={`mb-5 inline-flex h-[52px] w-[52px] items-center justify-center rounded-xl ${f.iconClass}`}>
-                        {f.icon}
-                      </span>
-                      <h3 className="mb-3 font-display text-[clamp(1.5rem,2.5vw,2rem)] font-bold text-ink leading-[1.15]">
-                        {f.title}
-                      </h3>
-                      <p className="max-w-[44ch] text-[15px] leading-relaxed text-ink-soft">{f.desc}</p>
-                      <span className={`mt-4 inline-block font-mono text-[10px] uppercase tracking-[0.18em] ${f.tagClass}`}>
-                        {f.tag}
-                      </span>
-                    </div>
-                    {/* Visual side — decorative color bar + abstract proof element */}
-                    <div className={`${!isLeft ? "lg:[direction:ltr]" : ""}`}>
-                      <div className={`relative overflow-hidden rounded-2xl border border-ink/10 bg-paper-warm p-10 lg:p-14 flex items-center justify-center min-h-[240px] ${isLeft ? "lg:ml-0" : "lg:mr-0"}`}>
-                        {/* Abstract accent geometry — distinctive signature element */}
-                        <div className="absolute inset-0 opacity-[0.06]" aria-hidden="true">
-                          <div className={`absolute top-0 ${isLeft ? "right-0" : "left-0"} h-full w-[40%] ${f.accentBar}`} />
-                          <div className={`absolute ${isLeft ? "left-[20%]" : "right-[20%]"} top-[15%] h-[70%] w-[2px] bg-ink/20 rounded-full`} />
-                          <div className={`absolute ${isLeft ? "left-[35%]" : "right-[35%]"} top-[25%] h-[50%] w-[2px] bg-ink/10 rounded-full`} />
-                        </div>
-                        <span className={`relative inline-flex h-[80px] w-[80px] items-center justify-center rounded-2xl ${f.iconClass} shadow-[0_8px_30px_rgba(16,49,46,0.06)]`}>
-                          <span className="scale-[1.8]">{f.icon}</span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="grid gap-5 md:grid-cols-3">
+              {features.map((f) => (
+                <div
+                  key={f.title}
+                  className="relative overflow-hidden rounded-2xl border border-ink/10 bg-white p-8 transition-transform hover:-translate-y-0.5 hover:border-teal/40 hover:shadow-[0_16px_40px_rgba(16,49,46,0.08)]"
+                >
+                  <span className={`absolute left-0 top-0 h-full w-1 ${f.accentBar}`} aria-hidden="true" />
+                  <span className={`mb-6 inline-flex h-[52px] w-[52px] items-center justify-center rounded-xl ${f.iconClass}`}>
+                    {f.icon}
+                  </span>
+                  <h3 className="mb-2.5 font-display text-[21px] font-bold text-ink">{f.title}</h3>
+                  <p className="text-[14.5px] leading-relaxed text-ink-soft">{f.desc}</p>
+                  <span className={`mt-4 inline-block font-mono text-[10px] uppercase tracking-[0.18em] ${f.tagClass}`}>
+                    {f.tag}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* ═══════ HOW IT WORKS + TERM PLANNER — the signature split ═══════ */}
+        {/* ───── HOW IT WORKS / TERM PLANNER ───── */}
         <section className="border-b border-ink/10 bg-paper-warm px-4 py-24 sm:px-6 sm:py-28 lg:px-8">
-          <div className="mx-auto grid max-w-7xl items-start gap-14 lg:grid-cols-[1fr_0.95fr]">
+          <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[1.1fr_0.9fr]">
             <div>
               <span className="inline-flex items-center gap-2.5 pb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-teal-deep">
                 <span className="h-1.5 w-1.5 rounded-full bg-gold" /> Three simple steps
@@ -304,7 +284,7 @@ export default function LandingPage() {
                 How ILALI works
               </h2>
               <p className="mt-4 mb-8 max-w-[720px] text-[16px] leading-relaxed text-ink-soft">
-                From sideline to schedule: find it, compare it, book it.
+                From sideline to schedule in three touches — find it, compare it, book it.
               </p>
               <div className="flex flex-col gap-7">
                 {steps.map((step) => (
@@ -328,60 +308,48 @@ export default function LandingPage() {
             </div>
 
             {/* Term planner — signature structure */}
-            <div className="lg:sticky lg:top-28">
-              <div
-                className="overflow-hidden rounded-2xl border border-gold/35 bg-white shadow-[0_24px_60px_rgba(16,49,46,0.10)]"
-                aria-hidden="true"
-              >
-                <div className="flex items-center justify-between border-b border-gold/25 bg-gradient-to-b from-gold/5 to-gold/2 px-5 py-4">
-                  <span className="font-display text-[15px] font-bold text-ink">TERM 2 · WEEK 6</span>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-gold-deep">CPT · SOUTH</span>
-                </div>
-                {plannerRows.map((row) => (
-                  <div
-                    key={row.day}
-                    className="grid grid-cols-[72px_1fr] sm:grid-cols-[72px_1fr_auto] items-center gap-x-4 gap-y-1 border-b border-ink/10 px-5 py-5 last:border-b-0"
-                  >
-                    <span className="font-mono text-xs text-gold-deep">{row.day}</span>
-                    <div>
-                      <div className="text-[15px] font-semibold text-ink">{row.name}</div>
-                      <div className="mt-0.5 text-xs text-ink-soft">{row.meta}</div>
-                    </div>
-                    <span className={`sm:col-auto col-[2] justify-self-start mt-[-6px] sm:mt-0 rounded-full border px-2.5 py-1 text-[10px] whitespace-nowrap ${row.badgeClass}`}>
-                      {row.badge}
-                    </span>
-                  </div>
-                ))}
+            <div
+              className="overflow-hidden rounded-2xl border border-gold/35 bg-white shadow-[0_24px_60px_rgba(16,49,46,0.10)]"
+              aria-hidden="true"
+            >
+              <div className="flex items-center justify-between border-b border-gold/25 bg-gradient-to-b from-gold/5 to-gold/2 px-5 py-4">
+                <span className="font-display text-[15px] font-bold text-ink">TERM 2 · WEEK 6</span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-gold-deep">CPT · SOUTH</span>
               </div>
+              {plannerRows.map((row) => (
+                <div
+                  key={row.day}
+                  className="grid grid-cols-[72px_1fr] sm:grid-cols-[72px_1fr_auto] items-center gap-x-4 gap-y-1 border-b border-ink/10 px-5 py-5 last:border-b-0"
+                >
+                  <span className="font-mono text-xs text-gold-deep">{row.day}</span>
+                  <div>
+                    <div className="text-[15px] font-semibold text-ink">{row.name}</div>
+                    <div className="mt-0.5 text-xs text-ink-soft">{row.meta}</div>
+                  </div>
+                  <span className={`sm:col-auto col-[2] justify-self-start mt-[-6px] sm:mt-0 rounded-full border px-2.5 py-1 text-[10px] whitespace-nowrap ${row.badgeClass}`}>
+                    {row.badge}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* ═══════ PROVIDER TEASER — split: image left, type right ═══════ */}
+        {/* ───── PROVIDER TEASER ───── */}
         <section className="border-b border-ink/10 px-4 py-24 sm:px-6 sm:py-28 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <div className="relative grid items-center gap-10 overflow-hidden rounded-3xl border border-teal/30 bg-white p-8 sm:p-12 lg:grid-cols-[1fr_1.4fr] lg:p-[60px]">
+            <div className="relative grid items-center gap-10 overflow-hidden rounded-3xl border border-teal/30 bg-white p-8 sm:p-12 lg:grid-cols-[1.4fr_1fr] lg:p-[60px]">
               <span className="pointer-events-none absolute right-[5%] top-[8%] font-serif text-[130px] leading-none text-gold/10" aria-hidden="true">
                 ★
               </span>
-              {/* Image side — left on desktop */}
-              <div className="flex items-center justify-center order-2 lg:order-1">
-                <Image
-                  src="/images/hero/art-studio.jpg"
-                  alt="Children painting at an art studio"
-                  width={400}
-                  height={300}
-                  className="aspect-[4/3] w-full max-w-[400px] rounded-2xl border border-ink/10 object-cover saturate-[1.05]"
-                />
-              </div>
-              {/* Text side — right on desktop */}
-              <div className="order-1 lg:order-2">
+              <div>
                 <h2 className="font-display text-[clamp(2rem,3.5vw,2.8rem)] font-extrabold leading-[1.08] tracking-[-0.02em] text-ink">
                   Are you a <span className="text-gold-deep">provider?</span>
                 </h2>
                 <p className="mt-4 max-w-[52ch] text-[15.5px] leading-relaxed text-ink-soft">
-                  List your activities for free and reach Cape Town families.
-                  Just describe your activity and we&apos;ll build your listing for you.
+                  List your activities for free and reach thousands of Cape Town families.
+                  Use our AI-powered setup — just describe your activity and we&apos;ll build
+                  your listing for you.
                 </p>
                 <div className="mt-7 flex flex-wrap gap-3.5">
                   <Link
@@ -398,18 +366,27 @@ export default function LandingPage() {
                   </Link>
                 </div>
               </div>
+              <div className="flex items-center justify-center">
+                <Image
+                  src="/images/hero/art-studio.jpg"
+                  alt="Children painting at an art studio"
+                  width={400}
+                  height={300}
+                  className="aspect-[4/3] w-full max-w-[400px] rounded-2xl border border-ink/10 object-cover saturate-[1.05]"
+                />
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ═══════ FINAL CTA — centered, the anchor ═══════ */}
+        {/* ───── FINAL CTA ───── */}
         <section className="px-4 py-24 sm:px-6 sm:py-28 lg:px-8">
           <div className="mx-auto max-w-7xl text-center">
             <h2 className="mx-auto max-w-[18ch] font-display text-[clamp(2.6rem,5.5vw,4rem)] font-extrabold leading-[1.04] tracking-[-0.02em] text-ink">
-              Ready to find your kid&apos;s next <span className="text-gold-deep">adventure?</span>
+              Ready to find your child&apos;s next <span className="text-gold-deep">adventure?</span>
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-[16px] text-ink-soft">
-              Browse vetted activities, read real reviews, and find the right fit for your family.
+              Browse vetted activities, read real reviews, and discover the perfect match with our AI-powered search.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3.5 sm:flex-row">
               <Link

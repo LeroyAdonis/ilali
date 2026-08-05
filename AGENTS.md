@@ -13,7 +13,7 @@ ILALI is a children's extramural activities marketplace for Cape Town, SA.
 - Stack: Next.js 16.2.7 App Router, React 19.2.4, TypeScript 5, Tailwind CSS v4, lucide-react, @fontsource/inter
 - Backend: Neon PostgreSQL + Drizzle ORM (21 tables), Better Auth
 - AI: NVIDIA NIM `nvidia/nemotron-3-super-120b-a12b` (free, 40 RPM), fallback: DeepSeek
-- E2E: Playwright (10 smoke tests), Unit: Vitest (48 tests)
+- E2E: Playwright (10 smoke tests), Unit: Vitest (81 tests)
 
 ## Commands
 
@@ -23,7 +23,7 @@ ILALI is a children's extramural activities marketplace for Cape Town, SA.
 | `npm run build` | Production build |
 | `npm run start` | Serve production build |
 | `npm run lint` | ESLint (flat config: `eslint.config.mjs`) |
-| `npx vitest run` | Unit tests (48 tests, 4 suites) |
+| `npx vitest run` | Unit tests (81 tests, 7 suites) |
 | `npx playwright test` | E2E smoke tests (10 tests) |
 | `npx tsc --noEmit` | Type-check |
 | `npx drizzle-kit push` | Push schema changes to Neon DB |

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import ResponsiveImage from "@/components/ResponsiveImage";
+import Header from "@/components/Header";
 import { HERO_IMAGES } from "@/lib/images";
 import Link from "next/link";
 import { ShieldCheck, Search, Users, ArrowRight } from "lucide-react";
@@ -78,47 +79,8 @@ const plannerRows = [
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-paper text-ink-soft antialiased">
-      {/* ───── NAV (minimal — logo + sign in) ───── */}
-      <header className="sticky top-0 z-50 w-full border-b border-ink/10 bg-paper/92 backdrop-blur-lg">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center hover:opacity-90 transition-opacity shrink-0">
-            <img
-              src="/images/brand/ilali-logo-76-t.png"
-              alt="ILALI"
-              width={40}
-              height={40}
-              className="h-10 w-10"
-            />
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-1">
-            <Link href="/home" className="px-3.5 py-2 text-[13px] font-medium text-ink-soft hover:text-teal-deep transition-colors rounded-lg">
-              Browse Activities
-            </Link>
-            <Link href="/for-providers" className="px-3.5 py-2 text-[13px] font-medium text-ink-soft hover:text-teal-deep transition-colors rounded-lg">
-              For Providers
-            </Link>
-            <Link href="/how-it-works" className="px-3.5 py-2 text-[13px] font-medium text-ink-soft hover:text-teal-deep transition-colors rounded-lg">
-              How it works
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/auth/signin"
-              className="rounded-[10px] border border-ink/15 px-4 py-2 text-[13px] font-semibold text-ink hover:border-teal hover:text-teal-deep transition-colors"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="rounded-[10px] bg-teal-deep px-4 py-2 text-[13px] font-semibold text-white hover:bg-teal transition-colors"
-            >
-              Get Started
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* ───── NAV (shared Header — same nav as every page) ───── */}
+      <Header />
 
       <main className="flex-1">
         {/* ───── HERO ───── */}

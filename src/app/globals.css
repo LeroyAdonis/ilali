@@ -79,11 +79,17 @@ body {
 }
 
 /* Touch targets — min 44px for buttons, nav links, header/footer links (WCAG 2.5.5).
-   Inline body-copy links are exempt (WCAG 2.5.8 inline exception). */
-.btn, button, nav a, header a, footer a {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
+   Inline body-copy links are exempt (WCAG 2.5.8 inline exception).
+   Must live in @layer components (NOT unlayered): Tailwind v4 puts utilities in
+   @layer utilities, and unlayered CSS beats layered CSS in the cascade regardless
+   of specificity — an unlayered `display: inline-flex` here was overriding
+   `md:hidden { display: none }` on the hamburger button (bug 2026-08-05). */
+@layer components {
+  .btn, button, nav a, header a, footer a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
 }
 
 /* Custom scrollbar */

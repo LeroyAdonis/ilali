@@ -25,7 +25,7 @@ interface ChatMessage {
   type: "user" | "ai";
   content: string;
   matches?: MatchResult[];
-  alternatives?: string[];
+  alternatives?: { slug: string; label: string }[];
   followUp?: string | null;
   error?: string;
 }
@@ -130,7 +130,8 @@ export default function AIChatPanel({
       const data = await res.json();
       const reply = data.reply;
       const matches: MatchResult[] = data.matches ?? [];
-      const alternatives: string[] = data.alternatives ?? [];
+      const alternatives: { slug: string; label: string }[] =
+        data.alternatives ?? [];
 
       const fallbackContent =
         matches.length > 0
@@ -303,13 +304,13 @@ export default function AIChatPanel({
                             <div className="flex flex-wrap gap-2">
                               {msg.alternatives.map((alt) => (
                                 <Link
-                                  key={alt}
+                                  key={alt.slug}
                                   href={`/browse?category=${encodeURIComponent(
-                                    alt.toLowerCase().replace(/\s+/g, "-")
+                                    alt.slug
                                   )}`}
                                   className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-white px-3.5 py-1.5 text-xs font-medium text-amber-700 transition-all hover:border-amber-400 hover:bg-amber-50"
                                 >
-                                  {alt}
+                                  {alt.label}
                                   <ChevronRight className="h-3 w-3" />
                                 </Link>
                               ))}

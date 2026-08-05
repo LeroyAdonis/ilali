@@ -163,23 +163,29 @@ function sanitizeExtracted(raw: unknown): ChatExtractedQuery | null {
 
 // ── Alternative direction normalisation ──
 
+interface CategoryOption {
+  slug: string;
+  label: string;
+}
+
 function normalizeAlternatives(
   raw: string[] | null,
-  categoryNames: string[],
+  categories: { slug: string; label: string }[],
   searchedCat: string | null
-): string[] {
+): CategoryOption[] {
   if (!raw || raw.length === 0) return [];
-  const out: string[] = [];
+  const out: CategoryOption[] = [];
   for (const alt of raw) {
     const a = alt.toLowerCase().trim();
-    const match = categoryNames.find((name) => {
-      const n = name.toLowerCase();
-      return n.includes(a) || a.includes(n);
+    const match = categories.find((c) => {
+      const slug = c.slug.toLowerCase();
+      const label = c.label.toLowerCase();
+      return slug.includes(a) || a.includes(slug) || label.includes(a) || a.includes(label);
     });
     if (
       match &&
-      !out.includes(match) &&
-      match.toLowerCase() !== searchedCat?.toLowerCase()
+      !out.some((o) => o.slug === match.slug) &&
+      match.slug.toLowerCase() !== searchedCat?.toLowerCase()
     ) {
       out.push(match);
     }
@@ -668,48 +674,48 @@ export async function POST(request: Request) {
   }
 
   // Step 6: Alternatives — concierge's directions (normalised to real
-  // category names so pills link correctly), else deterministic fallback
-  let alternatives: string[] | null = null;
+  // category slug+label pairs so pills link correctly), else deterministic
+  // fallback. Each alternative is { slug, label } — the client links with
+  // the slug (browse filter) and renders the label (display name).
+  let alternatives: CategoryOption[] | null = null;
 
-  const categoryNames = (await getCategories().catch(() => [] as { name: string; id: string }[])).map((c) => c.name);
+  const dbCategories = await getCategories().catch(() => [] as { id: string; name: string }[]);
+  const categoryOptions: CategoryOption[] = dbCategories.map((c) => ({
+    slug: c.id,
+    label: c.name,
+  }));
   const modelAlts = normalizeAlternatives(
     concierge?.alternatives ?? null,
-    categoryNames,
+    categoryOptions,
     extracted?.category ?? null
   );
 
   if (modelAlts.length > 0) {
     alternatives = modelAlts;
-    // Pad to 4 with other categories
-    const altCatIds = new Set<string>(CATEGORY_IDS);
-    const fallbackCats = (await getCategories().catch(() => [] as { name: string; id: string }[]))
-      .filter((c) => c.id !== extracted?.category && altCatIds.has(c.id))
-      .map((c) => c.name);
-    for (const f of fallbackCats) {
-      if (!alternatives.includes(f) && alternatives.length < 4) {
-        alternatives.push(f);
+    // Pad to 4 with other categories — never the searched category
+    const searched = extracted?.category ?? null;
+    for (const opt of categoryOptions) {
+      if (
+        !alternatives.some((o) => o.slug === opt.slug) &&
+        opt.slug !== searched &&
+        alternatives.length < 4
+      ) {
+        alternatives.push(opt);
       }
     }
   } else if (matches.length === 0) {
     // No picks, no model directions — fall back to deterministic categories
-    try {
-      const cats = await getCategories();
-      const searchedCat = extracted?.category;
-      const altCatIds = new Set<string>(CATEGORY_IDS);
-      const fallback = cats
-        .filter((c) => c.id !== searchedCat && altCatIds.has(c.id))
-        .slice(0, 4)
-        .map((c) => c.name);
-      if (fallback.length > 0) alternatives = fallback;
-    } catch {
-      // keep null
-    }
+    const searched = extracted?.category ?? null;
+    const fallback = categoryOptions
+      .filter((c) => c.slug !== searched)
+      .slice(0, 4);
+    if (fallback.length > 0) alternatives = fallback;
     if (!alternatives) {
       alternatives = [
-        "Sports programs",
-        "Arts & Culture classes",
-        "Music Lessons",
-        "Holiday Programs",
+        { slug: "sports", label: "Sports programs" },
+        { slug: "arts-culture", label: "Arts & Culture classes" },
+        { slug: "music-lessons", label: "Music Lessons" },
+        { slug: "holiday-programs", label: "Holiday Programs" },
       ];
     }
   }

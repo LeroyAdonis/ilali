@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import PftInit from "@/components/PftInit";
 
 export const metadata: Metadata = {
   title: {
@@ -56,6 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full scroll-smooth">
       <body className="min-h-full flex flex-col bg-paper text-ink antialiased">
+        <PftInit />
         {children}
       </body>
     </html>

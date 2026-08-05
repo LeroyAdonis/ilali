@@ -90,6 +90,55 @@ body {
     display: inline-flex;
     align-items: center;
   }
+
+  /* ── prop-for-that (spike 2026-08-05) ────────────────────────────────
+     CSS reacts to JS state via --live-* / --const-* custom properties
+     written by prop-for-that/auto (see components/PftInit.tsx).
+     Fallbacks (e.g. var(--live-local-pointer-x-ratio, .5)) keep elements
+     flat/visible if the lib hasn't loaded or the browser lacks support —
+     pure progressive enhancement. */
+
+  /* Pointer tilt — provider cards. Ratios are 0..1; .5 = centred. */
+  .pft-tilt {
+    transform: perspective(700px)
+      rotateX(calc((0.5 - var(--live-local-pointer-y-ratio, 0.5)) * 8deg))
+      rotateY(calc((var(--live-local-pointer-x-ratio, 0.5) - 0.5) * 8deg));
+    transform-style: preserve-3d;
+    /* !important beats the card's generic transition-all utility so the
+       tilt tracks 1:1 while hovering and rests smoothly on leave. */
+    transition:
+      transform 0.25s ease-out,
+      translate 0.2s ease-out,
+      box-shadow 0.2s ease-out,
+      opacity 0.55s ease-out !important;
+  }
+  .pft-tilt:hover {
+    transition:
+      transform 0s,
+      translate 0.2s ease-out,
+      box-shadow 0.2s ease-out,
+      opacity 0.55s ease-out !important;
+  }
+
+  /* Scroll reveal — fade-only (no translate: hover:-translate-y-1 owns the
+     translate property). --const-has-entered latches 0→1 the first time the
+     element is ENTIRELY in the viewport (visibility source requires full
+     visibility — an element taller than the viewport never triggers). */
+  .pft-reveal {
+    opacity: calc(0.3 + var(--const-has-entered, 0) * 0.7);
+    transition: opacity 0.55s ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pft-tilt {
+      transform: none !important;
+    }
+    .pft-reveal {
+      opacity: 1;
+      translate: none;
+      transition: none;
+    }
+  }
 }
 
 /* Custom scrollbar */

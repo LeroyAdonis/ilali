@@ -50,7 +50,7 @@ export default function ProviderCard({
 
   return (
     <Link
-      href={`/activity/${slug}`}
+      href={`/clubs/${slug}`}
       className="group flex flex-col rounded-xl border border-ink/10 bg-white shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden"
     >
       {/* Accent bar — 5px color-wheel strip */}

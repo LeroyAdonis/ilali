@@ -36,7 +36,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 47,
     priceValue: 15000, // R150 per session
     priceLabel: "per session",
-    imageUrl: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800",
+    imageUrl: "/images/providers/soccer-stars-academy.jpg",
     phone: "+2771123456",
     tags: ["outdoor", "team-sport", "high-energy", "coordination"],
     featured: true,
@@ -63,7 +63,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 63,
     priceValue: 18000, // R180 per session
     priceLabel: "per session",
-    imageUrl: "https://images.unsplash.com/photo-1622682718141-15469c2d27b7?w=800",
+    imageUrl: "/images/providers/aquakids-swimming.jpg",
     phone: "+2772123457",
     tags: ["indoor", "water-sport", "safety", "individual"],
     featured: true,
@@ -90,7 +90,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 31,
     priceValue: 12000, // R120 per session
     priceLabel: "per session",
-    imageUrl: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=800",
+    imageUrl: "/images/providers/cape-cricket-academy.jpg",
     phone: "+2773123458",
     tags: ["outdoor", "team-sport", "technique", "competitive"],
     featured: false,
@@ -119,7 +119,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 38,
     priceValue: 10000, // R100 per session
     priceLabel: "per session",
-    imageUrl: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800",
+    imageUrl: "/images/providers/creative-canvas-studio.jpg",
     phone: "+2774123459",
     tags: ["indoor", "creative", "messy-play", "fine-motor"],
     featured: true,
@@ -146,7 +146,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 24,
     priceValue: 9000, // R90 per session
     priceLabel: "per session",
-    imageUrl: "https://images.unsplash.com/photo-1508807526345-15e9b5f4eaff?w=800",
+    imageUrl: "/images/providers/dance-dynamics-ct.jpg",
     phone: "+2775123460",
     tags: ["indoor", "creative", "confidence", "performance"],
     featured: false,
@@ -173,7 +173,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 19,
     priceValue: 11000, // R110 per session
     priceLabel: "per session",
-    imageUrl: "https://images.unsplash.com/photo-1585699324267-45fd1afee2f6?w=800",
+    imageUrl: "/images/providers/drama-kids-cape-town.jpg",
     phone: "+2776123461",
     tags: ["indoor", "creative", "confidence", "teamwork", "communication"],
     featured: false,
@@ -202,7 +202,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 52,
     priceValue: 20000, // R200 per session
     priceLabel: "per session",
-    imageUrl: "https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=800",
+    imageUrl: "/images/providers/codecubs-programming-club.jpg",
     phone: "+2777123462",
     tags: ["indoor", "tech", "problem-solving", "creative", "STEM"],
     featured: false,
@@ -229,7 +229,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 41,
     priceValue: 18000, // R180 per session
     priceLabel: "per session",
-    imageUrl: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800",
+    imageUrl: "/images/providers/sciencelab-explorers.jpg",
     phone: "+2778123463",
     tags: ["indoor", "STEM", "hands-on", "experiments", "critical-thinking"],
     featured: false,
@@ -256,7 +256,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 35,
     priceValue: 16000, // R160 per session
     priceLabel: "per session",
-    imageUrl: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800",
+    imageUrl: "/images/providers/maths-mastery-tutoring.jpg",
     phone: "+2779123464",
     tags: ["indoor", "academic", "individual", "CAPS", "problem-solving"],
     featured: false,
@@ -285,7 +285,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 29,
     priceValue: 25000, // R250 per session
     priceLabel: "per session",
-    imageUrl: "https://images.unsplash.com/photo-1552422535-c45813c61732?w=800",
+    imageUrl: "/images/providers/piano-pathways.jpg",
     phone: "+2780123465",
     tags: ["indoor", "individual", "creative", "technique", "discipline"],
     featured: false,
@@ -312,7 +312,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 22,
     priceValue: 14000, // R140 per session
     priceLabel: "per session",
-    imageUrl: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=800",
+    imageUrl: "/images/providers/guitar-academy-sa.jpg",
     phone: "+2781123466",
     tags: ["indoor", "creative", "group", "instrument", "confidence"],
     featured: false,
@@ -339,7 +339,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 18,
     priceValue: 0, // FREE
     priceLabel: "free",
-    imageUrl: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=800",
+    imageUrl: "/images/providers/little-voices-community-choir.jpg",
     phone: "+2782123467",
     tags: ["indoor", "creative", "community", "group", "confidence"],
     featured: false,
@@ -368,7 +368,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 12,
     priceValue: 30000, // R300 per day (holiday program)
     priceLabel: "per day",
-    imageUrl: "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=800",
+    imageUrl: "/images/providers/nature-rangers-outdoor-club.jpg",
     phone: "+2783123468",
     tags: ["outdoor", "nature", "adventure", "environmental", "teamwork"],
     featured: false,
@@ -397,7 +397,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 26,
     priceValue: 28000, // R280 per session
     priceLabel: "per session",
-    imageUrl: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=800",
+    imageUrl: "/images/providers/trailblazers-horse-riding.jpg",
     phone: "+2784123469",
     tags: ["outdoor", "individual", "nature", "confidence", "coordination"],
     featured: false,
@@ -426,7 +426,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 15,
     priceValue: 8000, // R80 per session
     priceLabel: "per session",
-    imageUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800",
+    imageUrl: "/images/providers/mindful-minis.jpg",
     phone: "+2785123470",
     tags: ["indoor", "wellness", "confidence", "emotional-regulation", "individual"],
     featured: false,

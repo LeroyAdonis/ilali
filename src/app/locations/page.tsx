@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "Locations | ILALI",
@@ -33,8 +34,7 @@ export default function LocationsPage() {
           eyebrow="Discover"
           title="Find activities near you"
           subtitle="Select a location to discover trusted children's activities in your area."
-          imageSrc="/images/hero/hero-browse.jpg"
-          imageAlt="Kids at activity wall"
+          image={HERO_IMAGES['locations']}
         />
 
         {/* Location Grid */}

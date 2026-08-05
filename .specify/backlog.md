@@ -23,3 +23,9 @@ Items explicitly excluded from shipped specs. Revisit when the trigger condition
 | 17 | Provider-to-parent direct messaging | When inquiry volume > 50/week | Medium | proposed |
 | 18 | Provider onboarding wizard redesign (video, tooltips, examples) | After 5+ providers complete onboarding and give feedback | Small | proposed |
 | 19 | Provider settings page (notification prefs, email change, account deletion) | Post-MVP | Small | proposed |
+| 20 | Provider upload storage → CDN migration (Supabase → CDN) | When provider upload volume/size becomes a real cost or perf issue | Medium | proposed |
+| 21 | Replace remaining non-hero/category FLUX imagery (community/portal areas) | If a specific page still "looks off" after responsive images ships | Small | proposed |
+| 22 | On-the-fly AI image generation / personalized banners | If we ever need dynamic per-user imagery | Large | proposed |
+| 23 | Video banners / animated heroes | Post-MVP brand push | Medium | proposed |
+| 24 | Full image CDN swap (imgix/Cloudinary) | When user-upload-heavy flows need on-the-fly transforms | Medium | proposed |
+| 25 | Dark-mode / alternate theme image variants | If dark mode is specced | Small | proposed |

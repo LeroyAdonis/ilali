@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 import AIOnboardingForm from "@/components/AIOnboardingForm";
 
 export const metadata: Metadata = {
@@ -58,8 +59,7 @@ export default function ProviderResourcesPage() {
           eyebrow="Resources"
           title="Provider Resources"
           subtitle="Everything you need to succeed on ILALI — from getting started to growing your activity business."
-          imageSrc="/images/hero/hero-providers.jpg"
-          imageAlt="Coach with kids"
+          image={HERO_IMAGES['provider-resources']}
         />
 
         {/* Resources Grid */}

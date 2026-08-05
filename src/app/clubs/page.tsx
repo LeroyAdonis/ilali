@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 import {
   getProviders,
   getClubStats,
@@ -209,8 +210,7 @@ export default async function ClubsPage() {
             </>
           }
           subtitle="Every provider on ILALI is a club — with events, members, and ride-sharing. Find your crew and stay connected."
-          imageSrc="/images/hero/hero-clubs.jpg"
-          imageAlt="ILALI community clubs in Cape Town"
+          image={HERO_IMAGES['clubs']}
         />
 
         {/* ── Club cards grid ── */}

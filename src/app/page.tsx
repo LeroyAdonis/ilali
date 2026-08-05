@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import ResponsiveImage from "@/components/ResponsiveImage";
+import { HERO_IMAGES } from "@/lib/images";
 import Link from "next/link";
 import { ShieldCheck, Search, Users, ArrowRight } from "lucide-react";
 
@@ -122,13 +124,11 @@ export default function LandingPage() {
         {/* ───── HERO ───── */}
         <section className="relative flex min-h-[92vh] items-center overflow-hidden border-b border-ink/10 bg-paper-warm">
           <div className="absolute inset-0">
-            <Image
-              src="/images/hero/hero-kids.jpg"
-              alt="Children playing football at golden hour in Cape Town"
-              fill
+            <ResponsiveImage
+              image={HERO_IMAGES.landing}
+              variant="hero"
               priority
-              sizes="100vw"
-              className="object-cover object-[62%_40%]"
+              className="h-full w-full object-cover object-center"
             />
           </div>
           <div

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ResponsiveImage from "@/components/ResponsiveImage";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import Header from "@/components/Header";
@@ -72,9 +73,9 @@ export default async function ClubLayout({
         {/* Hero header */}
         <div className="relative mt-4 h-40 sm:h-48 w-full overflow-hidden bg-teal/10">
           {provider.image ? (
-            <img
-              src={provider.image}
-              alt={provider.name}
+            <ResponsiveImage
+              image={{ src: provider.image, alt: provider.name, crop: "entropy" }}
+              variant="banner"
               className="h-full w-full object-cover"
             />
           ) : (

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MapPin, Star, CheckCircle, Sparkles } from "lucide-react";
+import ResponsiveImage from "@/components/ResponsiveImage";
 import type { Provider } from "@/lib/types";
 
 const ACCENT_COLORS = {
@@ -59,9 +60,9 @@ export default function ProviderCard({
       {/* Image / Placeholder */}
       <div className="relative h-44 w-full overflow-hidden bg-gradient-to-br from-ilali-200 to-sunset-200">
         {image ? (
-          <img
-            src={image}
-            alt={name}
+          <ResponsiveImage
+            image={{ src: image, alt: name, crop: "entropy" }}
+            variant="card"
             className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (

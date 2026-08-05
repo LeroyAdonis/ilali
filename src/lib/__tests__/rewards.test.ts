@@ -18,6 +18,7 @@ describe("REWARD_ACTIONS — points map (spec §3.1)", () => {
       review: 25,
       welcome: 10,
       attendance: 30,
+      "club-invite": 50,
     });
   });
 

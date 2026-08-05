@@ -21,7 +21,7 @@ export default async function ClubChatPage({
       </div>
 
       {/* CHAT SLOT — live polling club chat (Task 4) */}
-      <ClubChat clubId={dbProvider.id} clubName={dbProvider.name} />
+      <ClubChat clubSlug={slug} clubName={dbProvider.name} />
     </div>
   );
 }

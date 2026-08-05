@@ -1,24 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { clubMessages } from "@/lib/db/schema";
-import { getClubMessages } from "@/lib/data-source";
+import { getClubMessages, getProviderBySlug } from "@/lib/data-source";
 
 export const dynamic = "force-dynamic";
 
 const MAX_CONTENT_LENGTH = 500;
 const FETCH_LIMIT = 100;
 
+/** Resolve the club slug → provider id, or null. */
+async function resolveClubId(slug: string): Promise<string | null> {
+  const provider = await getProviderBySlug(slug);
+  return provider?.id ?? null;
+}
+
 /**
- * GET /api/clubs/[id]/messages
+ * GET /api/clubs/[slug]/messages
  * Public read — club pages are public. Returns messages newest-first.
  * Optional ?after=<ISO timestamp> filters to messages created after the
  * given timestamp (used by the polling client for incremental fetches).
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
-  const { id } = await params;
+  const { slug } = await params;
+  const clubId = await resolveClubId(slug);
+  if (!clubId) {
+    return NextResponse.json({ error: "Club not found" }, { status: 404 });
+  }
 
   const afterParam = request.nextUrl.searchParams.get("after");
   let after: Date | null = null;
@@ -34,7 +44,7 @@ export async function GET(
   }
 
   try {
-    const messages = await getClubMessages(id, FETCH_LIMIT);
+    const messages = await getClubMessages(clubId, FETCH_LIMIT);
     const filtered = after
       ? messages.filter(
           (m) => m.createdAt && m.createdAt.getTime() > (after as Date).getTime()
@@ -52,13 +62,13 @@ export async function GET(
 }
 
 /**
- * POST /api/clubs/[id]/messages
+ * POST /api/clubs/[slug]/messages
  * Auth required. Body: { content: string } — 1–500 chars after trimming.
  * Returns the created message (with sender name) for immediate display.
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const session = await auth.api.getSession({ headers: request.headers });
@@ -69,7 +79,11 @@ export async function POST(
       );
     }
 
-    const { id } = await params;
+    const { slug } = await params;
+    const clubId = await resolveClubId(slug);
+    if (!clubId) {
+      return NextResponse.json({ error: "Club not found" }, { status: 404 });
+    }
 
     let body: unknown;
     try {
@@ -107,7 +121,7 @@ export async function POST(
     const [created] = await db
       .insert(clubMessages)
       .values({
-        clubId: id,
+        clubId,
         senderId: session.user.id,
         content: trimmed,
       })

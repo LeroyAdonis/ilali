@@ -11,19 +11,22 @@ test.describe("ILALI MVP — E2E Smoke Tests", () => {
 
   test("Browse page shows sections and categories", async ({ page }) => {
     await page.goto(`${BASE}/browse`);
-    await expect(page.getByRole("heading", { name: "New providers" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "New this week" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Local favourites" })).toBeVisible();
     // Category links exist
     await expect(page.getByRole("link", { name: /Arts & Culture/ }).first()).toBeVisible();
   });
 
-  test("Activity detail page loads with WhatsApp + similar", async ({ page }) => {
+  test("Activity detail URL redirects to the canonical club page", async ({
+    page,
+  }) => {
     await page.goto(`${BASE}/activity/ilali-creative-arts-workshop`);
+    await expect(page).toHaveURL(/\/clubs\/ilali-creative-arts-workshop/);
     await expect(page.locator("h1")).toContainText("ILALI Creative Arts Workshop");
-    // WhatsApp button
-    await expect(page.locator("text=Chat on WhatsApp")).toBeVisible();
-    // Similar providers
-    await expect(page.locator("text=You might also like")).toBeVisible();
+    // Club page renders community content
+    await expect(
+      page.getByRole("heading", { name: "Upcoming events" })
+    ).toBeVisible();
   });
 
   test("Provider signup form — validation errors", async ({ page }) => {

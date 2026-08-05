@@ -4,9 +4,12 @@ const BASE = "http://localhost:3001";
 const CLUB_SLUG = "soccer-stars-academy";
 
 test.describe("ILALI — Club / Community Pages", () => {
-  test("/clubs redirects to /browse", async ({ page }) => {
+  test("/clubs renders the community hub", async ({ page }) => {
     await page.goto(`${BASE}/clubs`);
-    await expect(page).toHaveURL(/\/browse/);
+    await expect(page.locator("h1")).toContainText("Find your club");
+    await expect(
+      page.getByRole("heading", { name: "Active clubs" })
+    ).toBeVisible();
   });
 
   test("Club home page renders header, verification badge slot and schedule", async ({

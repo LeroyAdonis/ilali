@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "For Parents | ILALI",
@@ -19,8 +20,7 @@ export default function ForParentsPage() {
           eyebrow="For Parents"
           title="A parent's guide to ILALI"
           subtitle="Everything you need to know about finding safe, fun activities for your kids — how vetting works, what to expect, and what happens after you book."
-          imageSrc="/images/hero/hero-home.jpg"
-          imageAlt="Family scene"
+          image={HERO_IMAGES['home']}
         />
 
         {/* How vetting works */}

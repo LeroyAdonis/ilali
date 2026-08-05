@@ -1,32 +1,32 @@
-import Image from "next/image";
+import type { ImageEntry } from "@/lib/images";
+import ResponsiveImage from "@/components/ResponsiveImage";
 import type { ReactNode } from "react";
 
 interface InteriorHeroProps {
   eyebrow: string;
   title: ReactNode;
   subtitle: string;
-  imageSrc: string;
-  imageAlt: string;
+  /** Curated image from the registry (HERO_IMAGES.<key>). */
+  image: ImageEntry;
 }
 
 export default function InteriorHero({
   eyebrow,
   title,
   subtitle,
-  imageSrc,
-  imageAlt,
+  image,
 }: InteriorHeroProps) {
   return (
     <header className="relative overflow-hidden min-h-[32vh] sm:min-h-[42vh] flex items-center border-b border-ink/10">
-      {/* Background image */}
-      <Image
-        src={imageSrc}
-        alt={imageAlt}
-        fill
-        priority
-        className="object-cover object-center z-0"
-        sizes="100vw"
-      />
+      {/* Background image — art-directed per breakpoint */}
+      <div className="absolute inset-0 z-0">
+        <ResponsiveImage
+          image={image}
+          variant="hero"
+          priority
+          className="h-full w-full object-cover object-center"
+        />
+      </div>
 
       {/* Warm gradient overlay */}
       <div

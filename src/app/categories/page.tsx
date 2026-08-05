@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CategoryCard from "@/components/CategoryCard";
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 import Link from "next/link";
 import { categories } from "@/lib/constants";
 
@@ -29,8 +30,7 @@ export default function CategoriesPage() {
             </>
           }
           subtitle="From arts and sports to music and holiday camps — find exactly what your child is looking for."
-          imageSrc="/images/hero/hero-categories.jpg"
-          imageAlt="Children's activities in Cape Town"
+          image={HERO_IMAGES['categories']}
         />
 
         {/* Category grid */}

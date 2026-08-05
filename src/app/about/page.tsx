@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "About | ILALI",
@@ -60,8 +61,7 @@ export default function AboutPage() {
           eyebrow="About"
           title="About ILALI"
           subtitle="Connecting families with trusted kids' activities — because it takes a village."
-          imageSrc="/images/hero/hero-about.jpg"
-          imageAlt="ILALI community"
+          image={HERO_IMAGES['about']}
         />
 
         {/* Mission */}

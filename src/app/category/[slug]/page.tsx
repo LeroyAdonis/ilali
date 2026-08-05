@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProviderCard from "@/components/ProviderCard";
 import InteriorHero from "@/components/InteriorHero";
+import { CATEGORY_IMAGES, HERO_IMAGES } from "@/lib/images";
 import { categories } from "@/lib/constants";
 import { getProviders, getCategories } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
@@ -51,8 +52,7 @@ export default async function CategoryPage({ params }: Props) {
           eyebrow={cat.name}
           title={<>{cat.icon} {cat.name}</>}
           subtitle={cat.description}
-          imageSrc={`/images/providers/${slug}.jpg`}
-          imageAlt={`${cat.name} activities in Cape Town`}
+          image={CATEGORY_IMAGES[slug] ?? HERO_IMAGES.categories}
         />
 
         {/* Back link */}

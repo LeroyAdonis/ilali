@@ -1,5 +1,7 @@
 import type { Provider, Venue } from "@/lib/types";
 import type { providers, venues } from "./schema";
+import { CATEGORY_IMAGES } from "@/lib/images";
+import { unsplashUrl } from "@/lib/images";
 
 type DbProvider = typeof providers.$inferSelect;
 type DbVenue = typeof venues.$inferSelect & { amenities?: string[] };
@@ -31,7 +33,11 @@ export function mapProvider(
     price: dbRow.isFree ? "Free" : `R${(dbRow.priceValue / 100).toLocaleString()}`,
     priceValue: dbRow.priceValue,
     priceLabel: dbRow.priceLabel ?? "per session",
-    image: dbRow.imageUrl ?? `/images/providers/${dbRow.category}.jpg`,
+    image:
+      dbRow.imageUrl ??
+      (CATEGORY_IMAGES[dbRow.category]
+        ? unsplashUrl(CATEGORY_IMAGES[dbRow.category].src, { w: 800 })
+        : `/images/providers/${dbRow.category}.jpg`),
     isFree: dbRow.isFree ?? false,
     featured: dbRow.featured ?? false,
     verified: dbRow.verified ?? false,

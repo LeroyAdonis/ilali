@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 
 const BENEFIT_COLORS = [
   { bar: "bg-teal", icon: "bg-teal/10 text-teal-deep", tag: "text-teal-deep-2" },
@@ -56,8 +57,7 @@ export default function ForProvidersPage() {
           eyebrow="For Providers"
           title={<>List your <span className="text-teal">activities</span>, grow your <span className="text-gold-deep">reach</span></>}
           subtitle="Join the platform that connects you with families looking for quality kids' activities in your area."
-          imageSrc="/images/hero/hero-for-providers.jpg"
-          imageAlt="Activity providers in Cape Town"
+          image={HERO_IMAGES['for-providers']}
         />
 
         {/* Benefits */}

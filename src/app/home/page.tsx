@@ -13,6 +13,7 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import AIChatPanel from "@/components/chat/AIChatPanel";
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 import KidsCard from "@/components/parent/KidsCard";
 import type { ChildProfile } from "@/components/parent/KidsCard";
 import WeekPlanner from "@/components/parent/WeekPlanner";
@@ -609,8 +610,7 @@ export default async function HomePage() {
                 </>
               }
               subtitle="ILALI is Cape Town's trusted marketplace for children's activities. Every provider is background-checked, every review from a real family."
-              imageSrc="/images/hero/hero-home.jpg"
-              imageAlt="Family discovering activities in Cape Town"
+              image={HERO_IMAGES['home']}
             />
 
             {/* ───── AI Chat Panel ───── */}

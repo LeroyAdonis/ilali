@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "Safeguarding | ILALI",
@@ -84,8 +85,7 @@ export default function SafeguardingPage() {
           eyebrow="Safety"
           title="Safeguarding"
           subtitle="Child safety is at the heart of everything we do. Learn how we protect your family."
-          imageSrc="/images/hero/hero-safety.jpg"
-          imageAlt="Caring teacher with children"
+          image={HERO_IMAGES['safety']}
         />
 
         {/* Commitment */}

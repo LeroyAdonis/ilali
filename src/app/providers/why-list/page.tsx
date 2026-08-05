@@ -3,6 +3,7 @@ import { Check, TrendingUp, Shield, Star, BarChart3, ArrowRight, HelpCircle } fr
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 
 export const metadata = {
   title: "Why List With Us — ILALI",
@@ -50,8 +51,7 @@ export default function WhyListPage() {
           eyebrow="For Providers"
           title={<>Why list your activity with <span className="text-warm-300">ILALI</span>?</>}
           subtitle="Stop juggling social media, spreadsheets, and WhatsApp messages. One platform to manage it all — and reach families who are ready to book."
-          imageSrc="/images/hero/hero-providers.jpg"
-          imageAlt="Coach with kids"
+          image={HERO_IMAGES['provider-resources']}
         />
 
         {/* CTA Buttons */}

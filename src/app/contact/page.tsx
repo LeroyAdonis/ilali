@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 import ContactForm from "./form";
 
 export const metadata: Metadata = {
@@ -19,8 +20,7 @@ export default function ContactPage() {
           eyebrow="Contact"
           title="Get in touch"
           subtitle="Got a question, a suggestion, or need help? We're listening."
-          imageSrc="/images/hero/hero-contact.jpg"
-          imageAlt="Welcoming community center"
+          image={HERO_IMAGES['contact']}
         />
 
         <ContactForm />

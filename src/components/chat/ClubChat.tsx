@@ -15,7 +15,7 @@ import { useSession } from "@/lib/auth-client";
 
 interface ClubChatMessage {
   id: string;
-  clubId: string;
+  clubSlug: string;
   senderId: string;
   senderName: string | null;
   content: string;
@@ -23,7 +23,7 @@ interface ClubChatMessage {
 }
 
 interface ClubChatProps {
-  clubId: string;
+  clubSlug: string;
   clubName?: string;
 }
 
@@ -46,7 +46,7 @@ function timeAgo(iso: string, now: number): string {
 
 // ── Component ──
 
-export default function ClubChat({ clubId, clubName }: ClubChatProps) {
+export default function ClubChat({ clubSlug, clubName }: ClubChatProps) {
   const { data: session, isPending: sessionPending } = useSession();
   const signedIn = !!session?.user;
 
@@ -70,7 +70,7 @@ export default function ClubChat({ clubId, clubName }: ClubChatProps) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/clubs/${clubId}/messages`);
+      const res = await fetch(`/api/clubs/${clubSlug}/messages`);
       if (!res.ok) {
         const body = await res.json().catch(() => null);
         throw new Error(
@@ -93,7 +93,7 @@ export default function ClubChat({ clubId, clubName }: ClubChatProps) {
     } finally {
       setLoading(false);
     }
-  }, [clubId]);
+  }, [clubSlug]);
 
   useEffect(() => {
     loadMessages();
@@ -107,8 +107,8 @@ export default function ClubChat({ clubId, clubName }: ClubChatProps) {
       try {
         const after = lastSeenRef.current;
         const url = after
-          ? `/api/clubs/${clubId}/messages?after=${encodeURIComponent(after)}`
-          : `/api/clubs/${clubId}/messages`;
+          ? `/api/clubs/${clubSlug}/messages?after=${encodeURIComponent(after)}`
+          : `/api/clubs/${clubSlug}/messages`;
         const res = await fetch(url);
         if (!res.ok) return; // silent — keep last good state
         const fresh = (await res.json()) as ClubChatMessage[]; // newest-first
@@ -130,7 +130,7 @@ export default function ClubChat({ clubId, clubName }: ClubChatProps) {
 
     const interval = setInterval(poll, POLL_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [clubId]);
+  }, [clubSlug]);
 
   // ── Relative-time ticker ──
   useEffect(() => {
@@ -160,7 +160,7 @@ export default function ClubChat({ clubId, clubName }: ClubChatProps) {
     setSending(true);
     setSendError(null);
     try {
-      const res = await fetch(`/api/clubs/${clubId}/messages`, {
+      const res = await fetch(`/api/clubs/${clubSlug}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
@@ -186,7 +186,7 @@ export default function ClubChat({ clubId, clubName }: ClubChatProps) {
     } finally {
       setSending(false);
     }
-  }, [input, sending, signedIn, clubId]);
+  }, [input, sending, signedIn, clubSlug]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {

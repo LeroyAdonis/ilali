@@ -8,6 +8,7 @@ import { SITE_URL } from "@/lib/constants";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 import CopyLinkButton from "@/components/invite/CopyLinkButton";
 import { Users, Gift, Share2 } from "lucide-react";
 
@@ -37,8 +38,7 @@ export default async function InvitePage() {
               </>
             }
             subtitle="Invite other parents to join ILALI. When they sign up and book their first activity, you both earn Ubuntu Rewards points."
-            imageSrc="/images/hero/hero-kids.jpg"
-            imageAlt="Parents and children at ILALI activities"
+            image={HERO_IMAGES['invite']}
           />
 
           <section className="bg-paper px-4 py-16 sm:px-6">
@@ -105,8 +105,7 @@ export default async function InvitePage() {
             </>
           }
           subtitle="Invite other parents to join ILALI. When they sign up and book their first activity, you both earn Ubuntu Rewards points."
-          imageSrc="/images/hero/hero-kids.jpg"
-          imageAlt="Parents and children at ILALI activities"
+          image={HERO_IMAGES['invite']}
         />
 
         {/* ── Referral tools ── */}

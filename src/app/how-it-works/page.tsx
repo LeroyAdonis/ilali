@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "How It Works | ILALI",
@@ -104,8 +105,7 @@ export default function HowItWorksPage() {
           eyebrow="How it works"
           title={<>Simple for <span className="text-teal">parents</span>, powerful for <span className="text-purple">providers</span></>}
           subtitle="Whether you're a parent looking for activities or a provider wanting to reach more families, here's how it works."
-          imageSrc="/images/hero/hero-how-it-works.jpg"
-          imageAlt="How ILALI works — connecting parents with providers"
+          image={HERO_IMAGES['how-it-works']}
         />
 
         {/* For Parents */}

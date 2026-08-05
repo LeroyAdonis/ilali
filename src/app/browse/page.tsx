@@ -3,6 +3,7 @@ import AIChatPanel from "@/components/chat/AIChatPanel";
 import FilterBar from "@/components/FilterBar";
 import ProviderCard from "@/components/ProviderCard";
 import InteriorHero from "@/components/InteriorHero";
+import { HERO_IMAGES } from "@/lib/images";
 import Footer from "@/components/Footer";
 import VerificationBadge from "@/components/verification/VerificationBadge";
 import Link from "next/link";
@@ -141,8 +142,7 @@ function ResultsSection({
           </>
         }
         subtitle="Browse hundreds of vetted children's activities across Cape Town. Every provider background-checked, every review from real families."
-        imageSrc="/images/hero/hero-browse.jpg"
-        imageAlt="Children discovering activities in Cape Town"
+        image={HERO_IMAGES['browse']}
       />
 
       {/* AI Chat Panel */}

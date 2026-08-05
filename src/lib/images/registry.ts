@@ -115,36 +115,44 @@ export const HERO_IMAGES: Record<string, ImageEntry> = {
 /**
  * Category images, keyed by category slug (matches `categories` table slugs
  * and the old `/images/providers/{slug}.jpg` fallback keys).
+ * Gemini-generated 2026-08-05 (2752x1536) — art-directed WebP crops:
+ * desktop 2:1, mobile 4:3. Local files, no CDN transforms.
  */
 export const CATEGORY_IMAGES: Record<string, ImageEntry> = {
   "arts-culture": {
-    src: "https://images.unsplash.com/photo-1510832842230-87253f48d74f",
-    alt: "Child painting at a table",
-    crop: "entropy",
+    src: "/images/hero/cat-arts-culture-desktop.webp",
+    mobileSrc: "/images/hero/cat-arts-culture-mobile.webp",
+    alt: "A child painting at a table with colorful paint pots",
+    local: true,
   },
   sports: {
-    src: "https://images.unsplash.com/photo-1526232761682-d26e03ac148e",
-    alt: "Children in red jerseys playing soccer",
-    crop: "faces",
+    src: "/images/hero/cat-sports-desktop.webp",
+    mobileSrc: "/images/hero/cat-sports-mobile.webp",
+    alt: "South African kids in red jerseys playing soccer on a green field",
+    local: true,
   },
   education: {
-    src: "https://images.unsplash.com/photo-1554721299-e0b8aa7666ce",
-    alt: "Two children reading and writing together",
-    crop: "entropy",
+    src: "/images/hero/cat-education-desktop.webp",
+    mobileSrc: "/images/hero/cat-education-mobile.webp",
+    alt: "Two children reading a picture book together at a table",
+    local: true,
   },
   "music-lessons": {
-    src: "https://images.unsplash.com/photo-1577877777751-3f1ec20a0715",
-    alt: "Girl with headphones playing a piano",
-    crop: "entropy",
+    src: "/images/hero/cat-music-lessons-desktop.webp",
+    mobileSrc: "/images/hero/cat-music-lessons-mobile.webp",
+    alt: "A girl wearing headphones playing a keyboard",
+    local: true,
   },
   "holiday-programs": {
-    src: "https://images.unsplash.com/photo-1776243773206-a29b683c97fb",
-    alt: "Children playing tug-of-war in a field",
-    crop: "faces",
+    src: "/images/hero/cat-holiday-programs-desktop.webp",
+    mobileSrc: "/images/hero/cat-holiday-programs-mobile.webp",
+    alt: "Kids doing a fun obstacle-course run at a holiday camp",
+    local: true,
   },
   "emotional-intelligence": {
-    src: "https://images.unsplash.com/photo-1605713288610-00c1c630ca1e",
-    alt: "Boy hugging a girl",
-    crop: "faces",
+    src: "/images/hero/cat-emotional-intelligence-desktop.webp",
+    mobileSrc: "/images/hero/cat-emotional-intelligence-mobile.webp",
+    alt: "A circle of kids sitting cross-legged with a calm facilitator",
+    local: true,
   },
 };

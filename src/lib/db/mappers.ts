@@ -36,7 +36,9 @@ export function mapProvider(
     image:
       dbRow.imageUrl ??
       (CATEGORY_IMAGES[dbRow.category]
-        ? unsplashUrl(CATEGORY_IMAGES[dbRow.category].src, { w: 800 })
+        ? CATEGORY_IMAGES[dbRow.category].local
+          ? CATEGORY_IMAGES[dbRow.category].src
+          : unsplashUrl(CATEGORY_IMAGES[dbRow.category].src, { w: 800 })
         : `/images/providers/${dbRow.category}.jpg`),
     isFree: dbRow.isFree ?? false,
     featured: dbRow.featured ?? false,

@@ -8,6 +8,8 @@ interface InteriorHeroProps {
   subtitle: string;
   /** Curated image from the registry (HERO_IMAGES.<key>). */
   image: ImageEntry;
+  /** Optional trust badge (e.g. VerificationBadge) rendered under the title. */
+  badge?: ReactNode;
 }
 
 export default function InteriorHero({
@@ -15,6 +17,7 @@ export default function InteriorHero({
   title,
   subtitle,
   image,
+  badge,
 }: InteriorHeroProps) {
   return (
     <header className="relative overflow-hidden min-h-[32vh] sm:min-h-[42vh] flex items-center border-b border-ink/10">
@@ -49,6 +52,9 @@ export default function InteriorHero({
         <h1 className="font-display font-extrabold leading-[1.05] tracking-[-0.02em] text-ink max-w-[14ch] text-[clamp(1.6rem,6vw,3.5rem)] sm:text-[clamp(2.2rem,5vw,3.5rem)]">
           {title}
         </h1>
+
+        {/* Optional trust badge */}
+        {badge ? <div className="mt-4">{badge}</div> : null}
 
         {/* Subtitle */}
         <p className="mt-3 max-w-[48ch] text-base leading-relaxed text-ink-soft">

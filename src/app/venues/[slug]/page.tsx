@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, Star, Users, Wifi } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import InteriorHero from "@/components/InteriorHero";
 import ReviewSection from "@/components/ReviewSection";
+import { HERO_IMAGES } from "@/lib/images";
 import { getVenues, getVenueBySlug } from "@/lib/data-source";
 import { mapVenue } from "@/lib/db/mappers";
 
@@ -44,27 +46,18 @@ export default async function VenuePage({ params }: { params: Promise<{ slug: st
           </nav>
         </div>
 
-        {/* Hero */}
-        <div className="relative mt-4 h-48 sm:h-64 w-full overflow-hidden bg-paper-warm">
-          {venue.image ? (
-            <img src={venue.image} alt={venue.name} className="h-full w-full object-cover" />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <div className="h-20 w-20 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center text-3xl">
-                {venue.name.charAt(0)}
-              </div>
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-          <div className="absolute bottom-6 left-6 sm:left-10">
-            <span className="inline-block rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink-soft capitalize backdrop-blur-sm mb-2">
-              {venue.type}
-            </span>
-            <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-white drop-shadow-lg">
-              {venue.name}
-            </h1>
-          </div>
-        </div>
+        {/* Hero — InteriorHero standard (height, image crop, and
+            title-in-body-container match every other page) */}
+        <InteriorHero
+          eyebrow={venue.type}
+          title={venue.name}
+          subtitle={venue.location}
+          image={
+            venue.image
+              ? { src: venue.image, alt: venue.name, crop: "entropy" }
+              : HERO_IMAGES.locations
+          }
+        />
 
         {/* Content */}
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

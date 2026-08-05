@@ -1,11 +1,12 @@
 import Link from "next/link";
-import ResponsiveImage from "@/components/ResponsiveImage";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import InteriorHero from "@/components/InteriorHero";
 import VerificationBadge from "@/components/verification/VerificationBadge";
 import ClubTabs from "@/components/community/ClubTabs";
+import { CATEGORY_IMAGES, HERO_IMAGES } from "@/lib/images";
 import { getProviderBySlug, getCategories } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
 
@@ -70,41 +71,23 @@ export default async function ClubLayout({
           </nav>
         </div>
 
-        {/* Hero header */}
-        <div className="relative mt-4 h-40 sm:h-48 w-full overflow-hidden bg-teal/10">
-          {provider.image ? (
-            <ResponsiveImage
-              image={{ src: provider.image, alt: provider.name, crop: "entropy" }}
-              variant="banner"
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <div
-                className="h-20 w-20 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center text-4xl"
-                aria-hidden="true"
-              >
-                {provider.name.charAt(0)}
-              </div>
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-          <div className="absolute bottom-5 left-4 sm:left-10">
+        {/* Hero header — InteriorHero standard (height, image crop, and
+            title-in-body-container match every other page) */}
+        <InteriorHero
+          eyebrow={provider.category}
+          title={provider.name}
+          subtitle={`Ages ${provider.ageRange.split(" years")[0]} · ${provider.price}`}
+          image={
+            provider.image
+              ? { src: provider.image, alt: provider.name }
+              : (CATEGORY_IMAGES[provider.categorySlug] ?? HERO_IMAGES.browse)
+          }
+          badge={
             <Suspense fallback={null}>
-              <VerificationBadge
-                providerId={dbProvider.id}
-                className="mb-2 shadow-sm backdrop-blur-sm text-xs"
-              />
+              <VerificationBadge providerId={dbProvider.id} />
             </Suspense>
-            <h1 className="font-display text-2xl sm:text-4xl font-extrabold text-white drop-shadow-lg">
-              {provider.name}
-            </h1>
-            <p className="mt-1 text-xs sm:text-sm font-medium text-white/90 drop-shadow">
-              {provider.category} · Ages {provider.ageRange.split(" years")[0]} ·{" "}
-              {provider.isFree ? "Free" : provider.price}
-            </p>
-          </div>
-        </div>
+          }
+        />
 
         {/* Section tabs */}
         <div className="mt-6">

@@ -18,7 +18,7 @@ const footerColumns = [
       { label: "Getting Started", href: "/for-parents" },
       { label: "Browse Activities", href: "/browse" },
       { label: "Safety & Trust", href: "/safeguarding" },
-      { label: "Ubuntu Rewards", href: "/ubuntu-rewards" },
+      { label: "Ubuntu Rewards", href: "/rewards" },
     ],
   },
   {
@@ -52,7 +52,7 @@ const footerColumns = [
     links: [
       { label: "Contact Us", href: "/contact" },
       { label: "About ILALI", href: "/about" },
-      { label: "Ubuntu Rewards", href: "/ubuntu-rewards" },
+      { label: "Ubuntu Rewards", href: "/rewards" },
       { label: "Terms of Service", href: "/terms" },
     ],
   },

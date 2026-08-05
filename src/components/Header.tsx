@@ -7,7 +7,12 @@ import { Search, Menu, X, LogOut, User } from "lucide-react";
 import { navLinks } from "@/lib/constants";
 import { useSession, signOut } from "@/lib/auth-client";
 
-export default function Header() {
+export default function Header({
+  rightSlot,
+}: {
+  /** Optional extra element in the desktop right cluster (e.g. PointsBadge). */
+  rightSlot?: React.ReactNode;
+}) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [headerQuery, setHeaderQuery] = useState("");
   const [mobileQuery, setMobileQuery] = useState("");
@@ -84,6 +89,7 @@ export default function Header() {
 
         {/* Desktop Search + Auth */}
         <div className="hidden md:flex items-center gap-3">
+          {rightSlot}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-soft/50" />
             <input

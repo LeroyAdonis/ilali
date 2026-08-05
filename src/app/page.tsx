@@ -122,7 +122,7 @@ export default function LandingPage() {
 
       <main className="flex-1">
         {/* ───── HERO ───── */}
-        <section className="relative flex min-h-[92vh] items-center overflow-hidden border-b border-ink/10 bg-paper-warm">
+        <section className="relative flex min-h-[85vh] items-center overflow-hidden border-b border-ink/10 bg-paper-warm">
           <div className="absolute inset-0">
             <ResponsiveImage
               image={HERO_IMAGES.landing}
@@ -161,13 +161,13 @@ export default function LandingPage() {
             <span className="text-[7.5px] text-purple -rotate-[8deg]">every provider</span>
           </div>
 
-          <div className="relative z-[2] w-full px-4 sm:px-6 lg:px-8 py-[140px] sm:py-[120px] lg:py-[140px] lg:pb-[120px]">
+          <div className="relative z-[2] w-full px-4 sm:px-6 lg:px-8 py-14 sm:py-16 lg:py-20">
             <div className="mx-auto max-w-7xl">
               <span className="inline-flex items-center gap-2.5 pb-6 font-mono text-xs uppercase tracking-[0.18em] text-teal-deep">
                 <span className="text-gold text-sm leading-none">★</span> Cape Town, South Africa · Term 2
                 <span className="block h-px w-12 bg-teal/40" />
               </span>
-              <h1 className="max-w-[12ch] font-display text-[clamp(3rem,7vw,5.5rem)] font-extrabold leading-[0.98] tracking-[-0.02em] text-ink sm:max-w-[12ch] sm:text-[clamp(3rem,7vw,5.5rem)]">
+              <h1 className="max-w-[12ch] font-display text-[clamp(2.75rem,6vw,5.5rem)] font-extrabold leading-[0.98] tracking-[-0.02em] text-ink sm:max-w-[12ch] sm:text-[clamp(2.75rem,6vw,5.5rem)]">
                 Find activities your <span className="text-gold-deep">kids</span> will <span className="text-teal">love</span>
               </h1>
               <p className="mt-6 max-w-[52ch] text-[17px] leading-relaxed text-ink-soft">
@@ -175,7 +175,7 @@ export default function LandingPage() {
                 Every provider is <strong className="text-ink font-semibold">background-checked</strong>, every review is from a
                 <strong className="text-ink font-semibold"> real family</strong>, and our AI helps you find the perfect match.
               </p>
-              <div className="mt-9 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3.5">
+              <div className="mt-8 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3.5">
                 <Link
                   href="/home"
                   className="inline-flex items-center justify-center gap-2 rounded-[10px] bg-gold px-9 py-4 text-[15px] font-semibold text-[#3A2402] shadow-[0_4px_0_rgba(224,143,16,0.28)] transition-transform hover:bg-[#FFB84D] active:translate-y-px"

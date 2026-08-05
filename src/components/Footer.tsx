@@ -3,22 +3,12 @@ import { SITE_NAME, SITE_TAGLINE } from "@/lib/constants";
 
 const footerColumns = [
   {
-    title: "DISCOVER",
-    links: [
-      { label: "Browse Activities", href: "/browse" },
-      { label: "Browse Venues", href: "/venues" },
-      { label: "Categories", href: "/categories" },
-      { label: "Locations", href: "/locations" },
-      { label: "How It Works", href: "/how-it-works" },
-    ],
-  },
-  {
     title: "FOR PARENTS",
     links: [
       { label: "Getting Started", href: "/for-parents" },
-      { label: "Browse Activities", href: "/browse" },
-      { label: "Safety & Trust", href: "/safeguarding" },
-      { label: "Ubuntu Rewards", href: "/rewards" },
+      { label: "Browse Venues", href: "/venues" },
+      { label: "Locations", href: "/locations" },
+      { label: "Help Centre", href: "/help-centre" },
     ],
   },
   {
@@ -47,18 +37,11 @@ const footerColumns = [
       { label: "Report a Concern", href: "/contact" },
     ],
   },
-  {
-    title: "SUPPORT",
-    links: [
-      { label: "Contact Us", href: "/contact" },
-      { label: "About ILALI", href: "/about" },
-      { label: "Ubuntu Rewards", href: "/rewards" },
-      { label: "Terms of Service", href: "/terms" },
-    ],
-  },
 ];
 
 const bottomLinks = [
+  { label: "About ILALI", href: "/about" },
+  { label: "Contact Us", href: "/contact" },
   { label: "Terms of Service", href: "/terms" },
   { label: "Privacy Policy", href: "/privacy" },
   { label: "Cookie Policy", href: "/privacy" },
@@ -128,7 +111,7 @@ export default function Footer() {
           <p className="text-xs text-ink-faint">
             &copy; {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
-          <div className="flex gap-5">
+          <div className="flex flex-wrap justify-center gap-5">
             {bottomLinks.map((link) => (
               <Link
                 key={link.label}

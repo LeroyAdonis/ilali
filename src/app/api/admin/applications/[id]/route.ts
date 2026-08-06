@@ -10,6 +10,7 @@ import {
 } from "@/lib/db/schema";
 import { and, eq, ilike } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import { sendProviderWelcomeEmail } from "@/lib/mail";
 
 /**
  * Admin application lifecycle:
@@ -248,6 +249,7 @@ export const POST = withAdmin(
     // Do the account creation FIRST so the application is only marked approved
     // once the account actually exists.
     let tempPassword: string | undefined;
+    let emailSent = false;
     if (newStatus === "approved") {
       const email = application.email.toLowerCase().trim();
       const [existingUser] = await db
@@ -276,6 +278,22 @@ export const POST = withAdmin(
           { status: 500 }
         );
       }
+
+      // WS-2: fire-and-forget the welcome email (temp password + login
+      // instructions). Email is OPTIONAL and NON-BLOCKING — if RESEND_API_KEY
+      // is unset or Resend rejects the send, the approval still succeeds and
+      // the admin copies the temp password manually, exactly as before.
+      try {
+        const mailResult = await sendProviderWelcomeEmail({
+          to: application.email,
+          providerName: application.name || application.email,
+          tempPassword,
+        });
+        emailSent = "sent" in mailResult ? mailResult.sent : false;
+      } catch (e) {
+        console.warn("[mail] Welcome email failed — approval proceeds:", e);
+        emailSent = false;
+      }
     }
 
     const [updated] = await db
@@ -286,7 +304,7 @@ export const POST = withAdmin(
 
     return NextResponse.json({
       ...updated,
-      ...(tempPassword ? { tempPassword } : {}),
+      ...(tempPassword ? { tempPassword, emailSent } : {}),
     });
   }
 );

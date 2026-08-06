@@ -50,6 +50,7 @@ export function ApplicationCard({
   );
   const [accountCreated, setAccountCreated] = useState(accountExists);
   const [tempPassword, setTempPassword] = useState<string | null>(null);
+  const [emailSent, setEmailSent] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<BusyAction>(null);
   const [copied, setCopied] = useState(false);
@@ -74,6 +75,7 @@ export function ApplicationCard({
       if (next === "approved" && body.tempPassword) {
         setAccountCreated(true);
         setTempPassword(body.tempPassword);
+        setEmailSent(typeof body.emailSent === "boolean" ? body.emailSent : null);
       }
       router.refresh();
     } catch {
@@ -247,6 +249,15 @@ export function ApplicationCard({
               <p className="mt-1 text-xs text-teal-700/80">
                 Provider must change this on first login. Share it securely.
               </p>
+              {emailSent === true ? (
+                <p className="mt-2 text-xs font-medium text-teal-700">
+                  📧 Welcome email sent to {application.email}
+                </p>
+              ) : emailSent === false ? (
+                <p className="mt-2 text-xs text-ink-faint">
+                  Email sending not configured — copy the password manually.
+                </p>
+              ) : null}
             </div>
             <div className="flex shrink-0 gap-2">
               <button

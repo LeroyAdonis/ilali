@@ -86,6 +86,14 @@ export const users = pgTable("users", {
   passwordResetRequired: boolean("password_reset_required").default(false),
   needsClaim: boolean("needs_claim").default(false),
   passphraseHash: text("passphrase_hash"),
+  // WS-3 claim-code security — admin-issued codes verify listing ownership.
+  // Plaintext codes are NEVER stored; only the bcrypt hash. Codes are
+  // single-use (cleared on successful claim), expire after 7 days, and the
+  // account locks for 15 minutes after 5 failed attempts.
+  claimCodeHash: text("claim_code_hash"),
+  claimCodeExpiresAt: timestamp("claim_code_expires_at"),
+  claimAttempts: integer("claim_attempts").default(0),
+  claimLockedUntil: timestamp("claim_locked_until"),
   emailVerified: boolean("email_verified").default(false),
   image: text("image"),
   avatarUrl: text("avatar_url"),

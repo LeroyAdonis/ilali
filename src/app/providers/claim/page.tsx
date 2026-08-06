@@ -9,6 +9,7 @@ export default function ClaimPage() {
   const router = useRouter();
   const [step, setStep] = useState<"email" | "credentials">("email");
   const [email, setEmail] = useState("");
+  const [claimCode, setClaimCode] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passphrase, setPassphrase] = useState("");
@@ -41,6 +42,10 @@ export default function ClaimPage() {
       setError("Password must be at least 8 characters");
       return;
     }
+    if (!claimCode.trim()) {
+      setError("Enter the claim code you received from the ILALI team");
+      return;
+    }
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
@@ -57,6 +62,7 @@ export default function ClaimPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: email.trim(),
+          claimCode: claimCode.trim(),
           password,
           passphrase: passphrase.trim(),
         }),
@@ -193,6 +199,25 @@ export default function ClaimPage() {
             )}
 
             <div>
+              <label htmlFor="claimCode" className="block text-sm font-medium text-ink-soft">
+                Claim code <span className="text-ink-faint">(provided by ILALI)</span>
+              </label>
+              <input
+                id="claimCode"
+                type="text"
+                autoComplete="off"
+                required
+                value={claimCode}
+                onChange={(e) => setClaimCode(e.target.value.toUpperCase())}
+                placeholder="e.g. K7XQ-M2NP-V8RT"
+                className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
+              />
+              <p className="mt-1 text-xs text-ink-faint">
+                You received a claim code from the ILALI team — enter it here to verify you own this listing.
+              </p>
+            </div>
+
+            <div>
               <label htmlFor="password" className="block text-sm font-medium text-ink-soft">
                 Password
               </label>
@@ -263,7 +288,7 @@ export default function ClaimPage() {
 
           <div className="mt-6 text-center">
             <button
-              onClick={() => { setStep("email"); setError(""); }}
+              onClick={() => { setStep("email"); setError(""); setClaimCode(""); }}
               className="inline-flex items-center gap-1 text-sm font-medium text-ilali-600 hover:text-ilali-700"
             >
               <ArrowLeft className="h-3 w-3" />

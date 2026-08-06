@@ -7,6 +7,7 @@ import {
   ClipboardList,
   Building2,
   Upload,
+  ShieldCheck,
   Menu,
   X,
 } from "lucide-react";
@@ -25,6 +26,7 @@ const NAV_LINKS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/applications", label: "Applications", icon: ClipboardList },
   { href: "/admin/import", label: "Import", icon: Upload },
+  { href: "/admin/claims", label: "Claims", icon: ShieldCheck },
   { href: "/admin/providers", label: "Providers", icon: Building2 },
 ] as const;
 

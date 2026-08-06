@@ -2,8 +2,8 @@ import { db } from "@/lib/db/index";
 import { providerApplications, users } from "@/lib/db/schema";
 import { desc, inArray } from "drizzle-orm";
 import Link from "next/link";
-import { Building2, Download } from "lucide-react";
-import { ApplicationCard } from "./ApplicationCard";
+import { Download } from "lucide-react";
+import { ApplicationsList } from "./ApplicationsList";
 
 export const dynamic = "force-dynamic";
 
@@ -15,28 +15,37 @@ const TAB_STATUSES = [
   { label: "Rejected", value: "rejected" },
 ] as const;
 
+const SOURCES = [{ label: "Bulk imports", value: "bulk-import" }] as const;
+
 export default async function ApplicationsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; source?: string }>;
 }) {
-  const { status: activeStatus } = await searchParams;
+  const params = await searchParams;
+  const activeStatus = params.status ?? "";
+  const activeSource = params.source === "bulk-import" ? "bulk-import" : null;
 
   const all = await db
     .select()
     .from(providerApplications)
     .orderBy(desc(providerApplications.createdAt));
 
-  const applications = activeStatus
-    ? all.filter((a) => a.status === activeStatus)
+  // Source filter (WS-4: bulk-import chip) applies first, then status tab.
+  const sourceFiltered = activeSource
+    ? all.filter((a) => a.onboardSource === activeSource)
     : all;
 
-  // Compute counts for each tab from the full list
+  const applications = activeStatus
+    ? sourceFiltered.filter((a) => a.status === activeStatus)
+    : sourceFiltered;
+
+  // Compute counts for each tab from the source-filtered list
   const counts: Record<string, number> = {};
   for (const tab of TAB_STATUSES) {
     counts[tab.value] = tab.value
-      ? all.filter((a) => a.status === tab.value).length
-      : all.length;
+      ? sourceFiltered.filter((a) => a.status === tab.value).length
+      : sourceFiltered.length;
   }
 
   // Which application emails already have a user account — drives the
@@ -52,6 +61,22 @@ export default async function ApplicationsPage({
     : [];
   const emailsWithAccount = new Set(accountUsers.map((u) => u.email.toLowerCase()));
 
+  function tabHref(status: string): string {
+    const qs = new URLSearchParams();
+    if (status) qs.set("status", status);
+    if (activeSource) qs.set("source", activeSource);
+    const str = qs.toString();
+    return str ? `?${str}` : "?";
+  }
+
+  function sourceHref(): string {
+    const qs = new URLSearchParams();
+    if (activeStatus) qs.set("status", activeStatus);
+    if (!activeSource) qs.set("source", "bulk-import");
+    const str = qs.toString();
+    return str ? `?${str}` : "?";
+  }
+
   return (
     <div>
       <div className="mb-8">
@@ -66,12 +91,11 @@ export default async function ApplicationsPage({
         <div className="flex gap-2 overflow-x-auto pb-1">
           {TAB_STATUSES.map((tab) => {
             const isActive =
-              tab.value === (activeStatus ?? "") ||
-              (!activeStatus && tab.value === "");
+              tab.value === activeStatus || (!activeStatus && tab.value === "");
             return (
               <Link
                 key={tab.value}
-                href={tab.value ? `?status=${tab.value}` : "?"}
+                href={tabHref(tab.value)}
                 scroll={false}
                 className={`inline-flex shrink-0 items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors min-h-[44px] ${
                   isActive
@@ -92,6 +116,33 @@ export default async function ApplicationsPage({
               </Link>
             );
           })}
+
+          {/* Source filter chip (WS-4) */}
+          {SOURCES.map((source) => {
+            const isActive = activeSource === source.value;
+            return (
+              <Link
+                key={source.value}
+                href={sourceHref()}
+                scroll={false}
+                aria-pressed={isActive}
+                className={`inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors ${
+                  isActive
+                    ? "bg-amber-600 text-white border-amber-600"
+                    : "border-ink/10 text-ink-soft hover:border-ink/10 hover:text-ink"
+                }`}
+              >
+                {source.label}
+                <span
+                  className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs tabular-nums ${
+                    isActive ? "bg-white/20 text-white" : "bg-paper-warm text-ink-soft"
+                  }`}
+                >
+                  {sourceFiltered.length}
+                </span>
+              </Link>
+            );
+          })}
         </div>
         <button
           type="button"
@@ -102,25 +153,11 @@ export default async function ApplicationsPage({
         </button>
       </div>
 
-      {/* Applications list */}
-      {applications.length === 0 ? (
-        <div className="rounded-xl border border-ink/10 bg-white px-6 py-12 text-center">
-          <Building2 className="mx-auto h-12 w-12 text-ink-faint" />
-          <p className="mt-3 text-sm text-ink-faint">No applications yet.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {applications.map((app) => (
-            <ApplicationCard
-              key={app.id}
-              application={app}
-              accountExists={emailsWithAccount.has(
-                (app.email || "").toLowerCase().trim()
-              )}
-            />
-          ))}
-        </div>
-      )}
+      {/* Applications list — selection + bulk approve live in the client wrapper */}
+      <ApplicationsList
+        applications={applications}
+        emailsWithAccount={emailsWithAccount}
+      />
     </div>
   );
 }

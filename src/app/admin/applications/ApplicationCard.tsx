@@ -16,7 +16,7 @@ import { AdminStatusBadge } from "@/components/admin";
 
 type ApplicationStatus = "pending" | "contacted" | "approved" | "rejected";
 
-type Application = {
+export type Application = {
   id: string;
   name: string;
   email: string;
@@ -29,6 +29,8 @@ type Application = {
   priceValue: number | null;
   imageUrl: string | null;
   status: string | null;
+  onboardSource?: string | null;
+  importBatchId?: string | null;
   createdAt: Date | string | null;
 };
 
@@ -40,9 +42,14 @@ const BTN_BASE =
 export function ApplicationCard({
   application,
   accountExists,
+  selected = false,
+  onToggleSelect,
 }: {
   application: Application;
   accountExists: boolean;
+  /** WS-4 bulk approve: when provided (and the app is approvable) a checkbox is shown. */
+  selected?: boolean;
+  onToggleSelect?: () => void;
 }) {
   const router = useRouter();
   const [status, setStatus] = useState<ApplicationStatus>(
@@ -56,6 +63,7 @@ export function ApplicationCard({
   const [copied, setCopied] = useState(false);
 
   const canApprove = status === "pending" || status === "contacted";
+  const selectable = canApprove && typeof onToggleSelect === "function";
 
   async function transition(next: "contacted" | "approved" | "rejected") {
     setBusy(next);
@@ -122,6 +130,15 @@ export function ApplicationCard({
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center gap-3">
+            {selectable && (
+              <input
+                type="checkbox"
+                checked={selected}
+                onChange={onToggleSelect}
+                aria-label={`Select ${application.name}`}
+                className="h-4 w-4 shrink-0 rounded border-ink/20 text-ilali-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ilali-600"
+              />
+            )}
             <h3 className="font-display text-lg font-semibold text-ink">
               {application.name}
             </h3>

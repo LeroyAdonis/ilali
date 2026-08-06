@@ -146,7 +146,22 @@ export const providerApplications = pgTable("provider_applications", {
   priceValue: integer("price_value"),
   imageUrl: text("image_url"),
   status: text("status").default("pending"), // pending, contacted, approved, rejected
-  onboardSource: text("onboard_source"), // 'email' | 'form' | 'whatsapp' | null
+  onboardSource: text("onboard_source"), // 'email' | 'form' | 'whatsapp' | 'bulk-import' | null
+  importBatchId: uuid("import_batch_id").references(() => importBatches.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ── Import Batches (WS-4 bulk import audit trail) ──
+// One row per committed import. Approved counts are NOT stored — derived by
+// counting provider_applications WHERE import_batch_id = X AND status = 'approved'.
+export const importBatches = pgTable("import_batches", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  filename: text("filename").notNull(),
+  totalRows: integer("total_rows").notNull(), // data rows in the file (excl. header)
+  importedRows: integer("imported_rows").notNull(), // inserted as applications
+  skippedRows: integer("skipped_rows").notNull(), // rows rejected at commit
+  rowErrors: jsonb("row_errors"), // [{ row, email, errors: string[] }] audit trail
+  createdBy: text("created_by").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

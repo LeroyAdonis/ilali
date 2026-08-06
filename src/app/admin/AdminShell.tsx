@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   ClipboardList,
   Building2,
+  Upload,
   Menu,
   X,
 } from "lucide-react";
@@ -23,6 +24,7 @@ interface AdminShellProps {
 const NAV_LINKS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/applications", label: "Applications", icon: ClipboardList },
+  { href: "/admin/import", label: "Import", icon: Upload },
   { href: "/admin/providers", label: "Providers", icon: Building2 },
 ] as const;
 

@@ -28,7 +28,10 @@ export const MATCH_TAGS = [
   "advanced",
 ] as const;
 
-const TIMEOUT_MS = 3000;
+// Bake-off winner (gpt-oss-120b) averages 7.2s; 3s was permanently
+// falling back to keyword mode. 15s gives the winner headroom under
+// NVIDIA shared-load spikes while keeping 4-model rotation bounded.
+const TIMEOUT_MS = 15000;
 
 export async function extractIntent(
   query: string

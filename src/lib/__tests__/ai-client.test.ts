@@ -18,8 +18,9 @@ describe("NIM AI client — rotation (DeepSeek removed 2026-08-07)", () => {
 
   it("exports a pool of verified free NIM models", () => {
     expect(NIM_MODEL_POOL.length).toBeGreaterThanOrEqual(3);
-    // Primary is the benchmarked winner
-    expect(NIM_MODEL_POOL[0]).toBe("nvidia/nemotron-3-super-120b-a12b");
+    // Primary is the bake-off winner (2026-07-31): openai/gpt-oss-120b —
+    // 7.2s avg, 100% on all metrics. NOT nemotron-3-super (13-16s).
+    expect(NIM_MODEL_POOL[0]).toBe("openai/gpt-oss-120b");
     // No DeepSeek anywhere
     expect(NIM_MODEL_POOL.join(" ").toLowerCase()).not.toContain("deepseek");
   });

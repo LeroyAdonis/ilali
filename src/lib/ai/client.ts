@@ -19,8 +19,10 @@
 const NVIDIA_BASE = "https://integrate.api.nvidia.com/v1/chat/completions";
 
 /** Free NIM chat models, verified 2026-08-07 (HTTP 200 on test call).
- *  Primary first (benchmarked winner), then rotation backups. */
+ *  Primary first (bake-off winner 2026-07-31: openai/gpt-oss-120b — 7.2s avg,
+ *  100% parse/extract/chosen/reply/followUp), then rotation backups. */
 export const NIM_MODEL_POOL = [
+  "openai/gpt-oss-120b",
   "nvidia/nemotron-3-super-120b-a12b",
   "meta/llama-3.3-70b-instruct",
   "mistralai/mistral-nemotron",
@@ -49,7 +51,7 @@ export function getAIConfig(): AIConfig {
   return {
     baseUrl: NVIDIA_BASE,
     apiKey: process.env.NVIDIA_API_KEY,
-    model: "nvidia/nemotron-3-super-120b-a12b",
+    model: "openai/gpt-oss-120b",
     provider: "nvidia",
   };
 }

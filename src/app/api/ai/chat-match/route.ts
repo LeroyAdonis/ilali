@@ -72,10 +72,11 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 // Default concierge model: NVIDIA bake-off winner (Jul 2026) —
-// nemotron-nano-12b-v2-vl: 4.8s avg latency, 100% parse/extract/chosen/reply.
-// Override anytime with CONCIERGE_MODEL env var (e.g. "openai/gpt-oss-120b").
+// openai/gpt-oss-120b: 7.2s avg latency, 100% parse/extract/chosen/reply/
+// followUp. (nemotron-nano-12b-v2-vl was fast at 4.8s but sloppy — 67%
+// chosen picks.) Override anytime with CONCIERGE_MODEL env var.
 const CONCIERGE_MODEL =
-  process.env.CONCIERGE_MODEL ?? "nvidia/nemotron-nano-12b-v2-vl";
+  process.env.CONCIERGE_MODEL ?? "openai/gpt-oss-120b";
 
 const CATALOG_LIMIT = 60;
 

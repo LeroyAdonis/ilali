@@ -17,12 +17,28 @@ describe("NIM AI client — rotation (DeepSeek removed 2026-08-07)", () => {
   });
 
   it("exports a pool of verified free NIM models", () => {
-    expect(NIM_MODEL_POOL.length).toBeGreaterThanOrEqual(3);
-    // Primary is the bake-off winner (2026-07-31): openai/gpt-oss-120b —
-    // 7.2s avg, 100% on all metrics. NOT nemotron-3-super (13-16s).
+    // Exact rotation order — bake-off winner (2026-07-31) first:
+    // openai/gpt-oss-120b (7.2s avg, 100% on all metrics), then backups.
+    expect(NIM_MODEL_POOL).toEqual([
+      "openai/gpt-oss-120b",
+      "nvidia/nemotron-3-super-120b-a12b",
+      "meta/llama-3.3-70b-instruct",
+      "mistralai/mistral-nemotron",
+    ]);
+    expect(NIM_MODEL_POOL.length).toBeGreaterThanOrEqual(4);
     expect(NIM_MODEL_POOL[0]).toBe("openai/gpt-oss-120b");
+    expect(NIM_MODEL_POOL[1]).toBe("nvidia/nemotron-3-super-120b-a12b");
+    expect(NIM_MODEL_POOL[2]).toBe("meta/llama-3.3-70b-instruct");
+    expect(NIM_MODEL_POOL[3]).toBe("mistralai/mistral-nemotron");
     // No DeepSeek anywhere
     expect(NIM_MODEL_POOL.join(" ").toLowerCase()).not.toContain("deepseek");
+  });
+
+  it("getAIConfig returns the bake-off winner with NVIDIA defaults", () => {
+    const cfg = getAIConfig();
+    expect(cfg.model).toBe("openai/gpt-oss-120b");
+    expect(cfg.provider).toBe("nvidia");
+    expect(cfg.baseUrl).toContain("integrate.api.nvidia.com");
   });
 
   it("returns the primary result when it succeeds", async () => {
@@ -73,6 +89,24 @@ describe("NIM AI client — rotation (DeepSeek removed 2026-08-07)", () => {
       const body = JSON.parse(fakeFetch.mock.calls[i][1].body);
       expect(body.model).toBe(NIM_MODEL_POOL[i]);
     }
+  });
+
+  it("rotates to the next NIM model when the primary times out (AbortError)", async () => {
+    const fakeFetch = vi
+      .fn()
+      .mockRejectedValueOnce(new DOMException("The operation was aborted.", "AbortError"))
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ choices: [{ message: { content: "after-timeout" } }] }),
+      });
+    vi.stubGlobal("fetch", fakeFetch);
+
+    const result = await chat({ systemPrompt: "s", userMessage: "u" });
+    expect(result).toBe("after-timeout");
+    // Timeout on primary → exactly one rotation, then success
+    expect(fakeFetch).toHaveBeenCalledTimes(2);
+    const secondBody = JSON.parse(fakeFetch.mock.calls[1][1].body);
+    expect(secondBody.model).toBe(NIM_MODEL_POOL[1]);
   });
 
   it("respects a per-call model override as the first attempt", async () => {

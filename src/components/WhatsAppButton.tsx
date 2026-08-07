@@ -8,17 +8,30 @@ interface WhatsAppButtonProps {
   className?: string;
 }
 
+/** Pure helper — builds the wa.me deep link. `override` (e.g. a business-wide
+ *  WhatsApp number from env) wins over the provider's own `phone`. */
+export function buildWhatsAppUrl(
+  phone: string,
+  activityName: string,
+  override?: string
+): string {
+  const contactNumber = override ?? phone;
+  const message = encodeURIComponent(
+    `Hi! I found your "${activityName}" listing on ILALI and I'm interested in learning more.`
+  );
+  return `https://wa.me/${contactNumber}?text=${message}`;
+}
+
 export default function WhatsAppButton({
   phone,
   activityName,
   className = "",
 }: WhatsAppButtonProps) {
-  const contactNumber =
-    process.env.NEXT_PUBLIC_WHATSAPP_CONTACT_NUMBER ?? phone;
-  const message = encodeURIComponent(
-    `Hi! I found your "${activityName}" listing on ILALI and I'm interested in learning more.`
+  const waUrl = buildWhatsAppUrl(
+    phone,
+    activityName,
+    process.env.NEXT_PUBLIC_WHATSAPP_CONTACT_NUMBER
   );
-  const waUrl = `https://wa.me/${contactNumber}?text=${message}`;
 
   return (
     <a

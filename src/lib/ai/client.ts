@@ -1,20 +1,30 @@
 /**
- * Shared AI client — prefers NVIDIA NIM (free), falls back to DeepSeek.
+ * Shared AI client — NVIDIA NIM only (free), with model rotation on failure.
  *
  * To use NVIDIA NIM:
  *   1. Sign up at build.nvidia.com → Developer Program (free)
  *   2. Get your nvapi- key from build.nvidia.com/settings/api-keys
  *   3. Set NVIDIA_API_KEY in .env.local (and Vercel env)
  *
- * NVIDIA NIM: 1,000 free credits, 40 RPM, OpenAI SDK compatible.
- * Default model: nvidia/nemotron-3-super-120b-a12b (Nemotron 3 Super, 120B MoE, 12B active).
+ * NVIDIA NIM: free, 40 RPM per model, OpenAI SDK compatible.
  *
- * Resilience: when NVIDIA returns an error (503 overloaded, timeout, etc.)
- * the call transparently retries once with DeepSeek.
+ * Rotation (added 2026-08-07 — DeepSeek fallback REMOVED after DeepSeek's
+ * billing-adjustment announcement; NIM is free, DeepSeek is not):
+ *   When the primary model fails (429 rate limit, 503 overload, timeout,
+ *   5xx), the call transparently retries with the next model in
+ *   NIM_MODEL_POOL. Each model has its own 40 RPM bucket on NIM, so rotating
+ *   effectively multiplies the rate ceiling. All models verified live.
  */
 
 const NVIDIA_BASE = "https://integrate.api.nvidia.com/v1/chat/completions";
-const DEEPSEEK_BASE = "https://api.deepseek.com/v1/chat/completions";
+
+/** Free NIM chat models, verified 2026-08-07 (HTTP 200 on test call).
+ *  Primary first (benchmarked winner), then rotation backups. */
+export const NIM_MODEL_POOL = [
+  "nvidia/nemotron-3-super-120b-a12b",
+  "meta/llama-3.3-70b-instruct",
+  "mistralai/mistral-nemotron",
+] as const;
 
 interface ChatOptions {
   systemPrompt: string;
@@ -32,24 +42,15 @@ interface AIConfig {
   baseUrl: string;
   apiKey: string | undefined;
   model: string;
-  provider: "nvidia" | "deepseek";
+  provider: "nvidia";
 }
 
 export function getAIConfig(): AIConfig {
-  const nvidiaKey = process.env.NVIDIA_API_KEY;
-  if (nvidiaKey) {
-    return {
-      baseUrl: NVIDIA_BASE,
-      apiKey: nvidiaKey,
-      model: "nvidia/nemotron-3-super-120b-a12b",
-      provider: "nvidia",
-    };
-  }
   return {
-    baseUrl: DEEPSEEK_BASE,
-    apiKey: process.env.DEEPSEEK_API_KEY,
-    model: "deepseek-chat",
-    provider: "deepseek",
+    baseUrl: NVIDIA_BASE,
+    apiKey: process.env.NVIDIA_API_KEY,
+    model: "nvidia/nemotron-3-super-120b-a12b",
+    provider: "nvidia",
   };
 }
 
@@ -70,7 +71,7 @@ async function attemptChat(
   const model = modelOverride ?? cfg.model;
 
   if (!cfg.apiKey) {
-    console.warn(`[ai] No API key for ${cfg.provider} — set NVIDIA_API_KEY (free) or DEEPSEEK_API_KEY`);
+    console.warn("[ai] No NVIDIA_API_KEY set — set it in .env.local and Vercel env");
     return null;
   }
 
@@ -100,7 +101,7 @@ async function attemptChat(
     });
 
     if (!response.ok) {
-      console.warn(`[ai] ${cfg.model} returned ${response.status}`);
+      console.warn(`[ai] ${model} returned ${response.status}`);
       return null;
     }
 
@@ -108,7 +109,7 @@ async function attemptChat(
     return data.choices?.[0]?.message?.content ?? null;
   } catch (err: unknown) {
     if (err instanceof DOMException && err.name === "AbortError") {
-      console.warn(`[ai] ${cfg.model} timed out`);
+      console.warn(`[ai] ${model} timed out`);
     } else {
       console.warn("[ai] Failed:", err);
     }
@@ -119,27 +120,34 @@ async function attemptChat(
 }
 
 export async function chat(opts: ChatOptions): Promise<string | null> {
-  const { timeoutMs = 5000, ...rest } = opts;
+  const { timeoutMs = 5000, model, ...rest } = opts;
 
-  const base = getAIConfig();
-  // Per-call model override (e.g. concierge uses a benchmarked winner)
-  const primary: AIConfig =
-    opts.model && opts.model !== base.model
-      ? { ...base, model: opts.model }
-      : base;
-  const fallback: AIConfig | null =
-    primary.provider === "nvidia" && process.env.DEEPSEEK_API_KEY
-      ? {
-          baseUrl: DEEPSEEK_BASE,
-          apiKey: process.env.DEEPSEEK_API_KEY,
-          model: "deepseek-chat",
-          provider: "deepseek",
-        }
-      : null;
+  const cfg = getAIConfig();
+  if (!cfg.apiKey) return null;
 
-  const result = await attemptChat(primary, { ...rest, timeoutMs });
-  if (result !== null || !fallback) return result;
+  // Build the rotation pool: per-call override first (if given and known),
+  // otherwise the full NIM pool. The override model is tried once; on failure
+  // we rotate through the rest of the pool. Unknown override models are
+  // still attempted (caller's choice) but excluded from rotation.
+  let pool: string[];
+  if (model) {
+    pool = [model, ...NIM_MODEL_POOL.filter((m) => m !== model)];
+  } else {
+    pool = [...NIM_MODEL_POOL];
+  }
 
-  console.warn(`[ai] ${primary.model} failed — falling back to ${fallback.model}`);
-  return attemptChat(fallback, { ...rest, timeoutMs });
+  let lastResult: string | null = null;
+  for (const m of pool) {
+    const result = await attemptChat(cfg, {
+      ...rest,
+      timeoutMs,
+      modelOverride: m,
+    });
+    if (result !== null) return result;
+    lastResult = result;
+    if (m !== pool[pool.length - 1]) {
+      console.warn(`[ai] ${m} failed — rotating to next NIM model`);
+    }
+  }
+  return lastResult;
 }

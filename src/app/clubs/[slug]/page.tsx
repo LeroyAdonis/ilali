@@ -6,6 +6,7 @@ import {
   ChevronRight,
   Home,
   MapPin,
+  MessageCircle,
   Sparkles,
   Trophy,
   Users,
@@ -16,6 +17,10 @@ import RideRequest from "@/components/community/RideRequest";
 import JoinClubButton from "@/components/community/JoinClubButton";
 import WelcomeCard from "@/components/community/WelcomeCard";
 import InviteBanner from "@/components/community/InviteBanner";
+import ComingSoon from "@/components/ComingSoon";
+import ProviderCard from "@/components/ProviderCard";
+import ReviewSection from "@/components/ReviewSection";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import VerificationBadge, {
   getVerificationTier,
 } from "@/components/verification/VerificationBadge";
@@ -24,6 +29,7 @@ import {
   getCategories,
   getClubEvents,
   getClubStats,
+  getSimilarProviders,
 } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
 
@@ -39,12 +45,18 @@ export default async function ClubHomePage({
   const dbProvider = await getProviderBySlug(slug);
   if (!dbProvider) notFound();
 
-  const [categories, events, stats] = await Promise.all([
+  const [categories, events, stats, similarRows] = await Promise.all([
     getCategories(),
     getClubEvents(dbProvider.id),
     getClubStats(dbProvider.id),
+    getSimilarProviders(dbProvider.id, 3),
   ]);
   const provider = mapProvider(dbProvider, categories);
+
+  // Similar providers — map raw rows to UI Providers (tag-overlap query)
+  const similarProviders = similarRows.map((row) =>
+    mapProvider(row, categories)
+  );
 
   // Verification tier for trust card
   const { tier } = await getVerificationTier(provider.id);
@@ -62,6 +74,7 @@ export default async function ClubHomePage({
     .slice(0, 3);
 
   return (
+    <>
     <div className="grid gap-10 lg:grid-cols-3">
       {/* ── Main column ── */}
       <div className="lg:col-span-2 space-y-10">
@@ -145,6 +158,11 @@ export default async function ClubHomePage({
               </p>
             </div>
           )}
+        </section>
+
+        {/* Reviews — parent social proof on the canonical provider page */}
+        <section aria-labelledby="club-reviews">
+          <ReviewSection providerId={provider.id} />
         </section>
       </div>
 
@@ -234,6 +252,46 @@ export default async function ClubHomePage({
           />
         </section>
 
+        {/* Contact — WhatsApp quick chat (parent win: one-tap contact) */}
+        {provider.phone && (
+          <section
+            aria-labelledby="club-contact"
+            className="rounded-xl border border-ink/10 bg-white p-5 shadow-sm"
+          >
+            <h2
+              id="club-contact"
+              className="font-display flex items-center gap-2 text-sm font-bold text-ink"
+            >
+              <MessageCircle className="h-4 w-4 text-ilali-500" aria-hidden="true" />
+              Contact this club
+            </h2>
+            <p className="mt-2 text-xs leading-relaxed text-ink-soft">
+              Questions about sessions or availability? Chat directly with the
+              club on WhatsApp.
+            </p>
+            <div className="mt-3">
+              <WhatsAppButton
+                phone={provider.phone}
+                activityName={provider.name}
+                className="w-full"
+              />
+            </div>
+          </section>
+        )}
+
+        {/* Booking status — online booking arrives with WS-6 Paystack */}
+        <section aria-labelledby="club-booking">
+          <ComingSoon
+            title="Online booking"
+            description={
+              provider.phone
+                ? "Book and pay online soon. For now, chat with the club on WhatsApp to reserve your spot."
+                : "Book and pay online soon. Reach out to the club directly to reserve your spot."
+            }
+            icon="📅"
+          />
+        </section>
+
         {/* Welcome card */}
         <Suspense fallback={null}>
           <WelcomeCard
@@ -294,5 +352,41 @@ export default async function ClubHomePage({
         />
       </aside>
     </div>
+
+    {/* You might also like — similar providers by tag overlap */}
+    {similarProviders.length > 0 && (
+      <section aria-labelledby="similar-providers" className="mt-14">
+        <h2
+          id="similar-providers"
+          className="font-display text-lg font-bold text-ink mb-2"
+        >
+          You might also like
+        </h2>
+        <p className="text-sm text-ink-soft mb-6">
+          Other clubs parents with similar interests are exploring.
+        </p>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {similarProviders.map((similar, idx) => (
+            <ProviderCard
+              key={similar.id}
+              provider={similar}
+              accentColor={
+                ["teal", "gold", "purple", "orange"][idx % 4] as
+                  | "teal"
+                  | "gold"
+                  | "purple"
+                  | "orange"
+              }
+              verificationBadge={
+                <Suspense fallback={null}>
+                  <VerificationBadge providerId={similar.id} />
+                </Suspense>
+              }
+            />
+          ))}
+        </div>
+      </section>
+    )}
+    </>
   );
 }

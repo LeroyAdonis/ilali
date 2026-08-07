@@ -38,6 +38,34 @@ test.describe("ILALI — Club / Community Pages", () => {
     ).toBeVisible();
   });
 
+  test("WS-5: WhatsApp contact, reviews and similar providers on club page", async ({
+    page,
+  }) => {
+    await page.goto(`${BASE}/clubs/${CLUB_SLUG}`);
+
+    // WhatsApp quick-contact card (provider has a phone in DB)
+    const whatsapp = page.getByRole("link", {
+      name: /Contact provider for Soccer Stars Academy on WhatsApp/,
+    });
+    await expect(whatsapp).toBeVisible();
+    await expect(whatsapp).toHaveAttribute("href", /wa\.me/);
+
+    // Booking status badge — online booking not live yet (WS-6)
+    await expect(
+      page.getByRole("heading", { name: /Online booking/ })
+    ).toBeVisible();
+
+    // Reviews section on the club page
+    await expect(
+      page.getByRole("heading", { name: "Reviews" })
+    ).toBeVisible();
+
+    // You might also like — similar providers grid (tag overlap)
+    await expect(
+      page.getByRole("heading", { name: "You might also like" })
+    ).toBeVisible();
+  });
+
   test("Club events page groups by month and renders schedule heading", async ({
     page,
   }) => {

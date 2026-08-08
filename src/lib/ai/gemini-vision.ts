@@ -5,12 +5,17 @@
  * free tier is per-key and far more reliable. Strategy: NIM first (free, no key),
  * Gemini second (only when NIM fails), so ILALI costs nothing until NIM lets us down.
  *
- * Uses the OpenAI-compatible endpoint (gemini-3.5-flash supports vision):
+ * Uses the OpenAI-compatible endpoint (gemini-flash-latest supports vision):
  *   https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
+ *
+ * IMPORTANT (verified 2026-08-08): this Google account can ONLY use the
+ * `gemini-flash-latest` model alias. Newer names (gemini-2.5-flash,
+ * gemini-2.0-flash, gemini-2.0-flash-001) return 429 quota `limit: 0`, and
+ * gemini-3.5-flash does not exist. Always use `gemini-flash-latest`.
  */
 import type { PosterExtract } from "./extract-poster";
 
-const GEMINI_MODEL = "gemini-3.5-flash";
+const GEMINI_MODEL = "gemini-flash-latest";
 const TIMEOUT_MS = 25000;
 
 /**

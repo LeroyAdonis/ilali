@@ -1,0 +1,549 @@
+"use client";
+
+import { useCallback, useRef, useState } from "react";
+import Link from "next/link";
+import {
+  Upload,
+  Sparkles,
+  Globe,
+  Check,
+  X,
+  MessageCircle,
+  ImageIcon,
+  Loader2,
+  History,
+} from "lucide-react";
+import type { PosterExtract } from "@/lib/ai/extract-poster";
+import type { EnrichmentSuggestion } from "@/lib/web/enrich";
+
+interface RecentImport {
+  id: string;
+  status: string;
+  contactedAt: string | null;
+  outreachMethod: string | null;
+  applicationId: string | null;
+  createdAt: string;
+  extractedJson: { name?: string } | null;
+}
+
+interface FormState {
+  name: string;
+  activityType: string;
+  description: string;
+  location: string;
+  ageMin: string;
+  ageMax: string;
+  priceValue: string;
+  phone: string;
+  website: string;
+  email: string;
+}
+
+const EMPTY_FORM: FormState = {
+  name: "",
+  activityType: "",
+  description: "",
+  location: "",
+  ageMin: "",
+  ageMax: "",
+  priceValue: "",
+  phone: "",
+  website: "",
+  email: "",
+};
+
+type Phase =
+  | { kind: "idle" }
+  | { kind: "uploading" }
+  | { kind: "extracting" }
+  | { kind: "review" }
+  | { kind: "saving" };
+
+export default function PosterImportPage() {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [posterUrl, setPosterUrl] = useState<string | null>(null);
+  const [posterImportId, setPosterImportId] = useState<string | null>(null);
+  const [applicationId, setApplicationId] = useState<string | null>(null);
+  const [phase, setPhase] = useState<Phase>({ kind: "idle" });
+  const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [suggestions, setSuggestions] = useState<EnrichmentSuggestion[]>([]);
+  const [rejectedSuggestion, setRejectedSuggestion] = useState<Set<number>>(new Set());
+  const [extractionError, setExtractionError] = useState<string | null>(null);
+  const [notifyResult, setNotifyResult] = useState<string | null>(null);
+  const [recent, setRecent] = useState<RecentImport[]>([]);
+  const [showRecent, setShowRecent] = useState(false);
+  const [busyAction, setBusyAction] = useState<string | null>(null);
+
+  const loadRecent = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/poster-imports");
+      if (res.ok) setRecent((await res.json()) as RecentImport[]);
+    } catch {
+      // non-fatal
+    }
+  }, []);
+
+  const handleFile = useCallback(
+    async (file: File) => {
+      if (!file.type.startsWith("image/")) return;
+      const localUrl = URL.createObjectURL(file);
+      setPosterUrl(localUrl);
+      setPhase({ kind: "uploading" });
+      setExtractionError(null);
+      setSuggestions([]);
+      setRejectedSuggestion(new Set());
+      setForm(EMPTY_FORM);
+      setNotifyResult(null);
+
+      const body = new FormData();
+      body.append("file", file);
+
+      try {
+        const res = await fetch("/api/admin/poster-import", {
+          method: "POST",
+          body,
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          setExtractionError(data.error ?? "Upload failed.");
+          setPhase({ kind: "review" });
+          return;
+        }
+
+        setPosterImportId(data.posterImportId);
+        if (data.status === "extraction_failed") {
+          setExtractionError(
+            data.message ?? "AI extraction unavailable — fill in manually."
+          );
+          setPhase({ kind: "review" });
+          return;
+        }
+
+        const extracted = data.extracted as PosterExtract;
+        setForm({
+          name: extracted.name ?? "",
+          activityType: extracted.category ?? "",
+          description: extracted.description ?? "",
+          location: extracted.location ?? "",
+          ageMin: extracted.ageMin != null ? String(extracted.ageMin) : "",
+          ageMax: extracted.ageMax != null ? String(extracted.ageMax) : "",
+          priceValue: extracted.priceValue != null ? String(extracted.priceValue) : "",
+          phone: extracted.phone ?? "",
+          website: extracted.website ?? "",
+          email: "",
+        });
+        setPhase({ kind: "review" });
+      } catch {
+        setExtractionError("Network error while extracting the poster.");
+        setPhase({ kind: "review" });
+      }
+    },
+    []
+  );
+
+  const runEnrich = useCallback(async () => {
+    if (!posterImportId) return;
+    setBusyAction("enrich");
+    try {
+      const res = await fetch(
+        `/api/admin/poster-import/${posterImportId}/enrich`,
+        { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }
+      );
+      const data = await res.json();
+      setSuggestions((data.suggestions ?? []) as EnrichmentSuggestion[]);
+      setRejectedSuggestion(new Set());
+    } catch {
+      // non-fatal
+    } finally {
+      setBusyAction(null);
+    }
+  }, [posterImportId]);
+
+  const applySuggestion = useCallback(
+    (index: number, suggestion: EnrichmentSuggestion) => {
+      setRejectedSuggestion((prev) => {
+        const next = new Set(prev);
+        next.delete(index);
+        return next;
+      });
+      if (suggestion.field === "website") setForm((f) => ({ ...f, website: suggestion.value }));
+      else if (suggestion.field === "phone") setForm((f) => ({ ...f, phone: suggestion.value }));
+      else if (suggestion.field === "description") setForm((f) => ({ ...f, description: suggestion.value }));
+      else if (suggestion.field === "priceValue") setForm((f) => ({ ...f, priceValue: suggestion.value }));
+      else if (suggestion.field === "instagram" || suggestion.field === "facebook") {
+        setForm((f) => ({ ...f, website: f.website || suggestion.value }));
+      }
+    },
+    []
+  );
+
+  const rejectSuggestion = useCallback((index: number) => {
+    setRejectedSuggestion((prev) => {
+      const next = new Set(prev);
+      next.add(index);
+      return next;
+    });
+  }, []);
+
+  const saveApplication = useCallback(async () => {
+    if (!posterImportId) return;
+    setBusyAction("save");
+    try {
+      const res = await fetch(
+        `/api/admin/poster-import/${posterImportId}/save`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fields: {
+              name: form.name,
+              activityType: form.activityType,
+              description: form.description,
+              location: form.location,
+              ageMin: form.ageMin ? Number(form.ageMin) : null,
+              ageMax: form.ageMax ? Number(form.ageMax) : null,
+              priceValue: form.priceValue ? Number(form.priceValue) : null,
+              phone: form.phone,
+              email: form.email,
+            },
+          }),
+        }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        setApplicationId(data.applicationId);
+        setNotifyResult(`✅ Application saved — you can now notify the provider.`);
+      } else {
+        setExtractionError(data.error ?? "Save failed.");
+      }
+    } catch {
+      setExtractionError("Network error while saving.");
+    } finally {
+      setBusyAction(null);
+    }
+  }, [posterImportId, form]);
+
+  const notifyProvider = useCallback(async () => {
+    if (!applicationId) return;
+    setBusyAction("notify");
+    try {
+      const res = await fetch(
+        `/api/admin/applications/${applicationId}/notify`,
+        { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }
+      );
+      const data = await res.json();
+      if (res.ok && data.waUrl) {
+        setNotifyResult("✅ WhatsApp message ready — open it and press send.");
+        window.open(data.waUrl, "_blank", "noopener,noreferrer");
+      } else if (res.ok && data.method === "email-draft") {
+        setNotifyResult("📧 Email draft ready — copy and send manually.");
+      } else {
+        setExtractionError(data.error ?? "Notify failed.");
+      }
+    } catch {
+      setExtractionError("Network error while notifying.");
+    } finally {
+      setBusyAction(null);
+    }
+  }, [applicationId]);
+
+  const set = useCallback(
+    (key: keyof FormState) =>
+      (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+        setForm((f) => ({ ...f, [key]: e.target.value })),
+    []
+  );
+
+  const inputCls =
+    "mt-1 block w-full rounded-lg border border-ink/10 bg-white px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200";
+  const labelCls = "block text-xs font-semibold uppercase tracking-wide text-ink-soft";
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-ink">Poster Import</h1>
+          <p className="mt-1 text-sm text-ink-soft">
+            Drop a poster from the Fun with Kids group — AI reads it, the web fills the gaps, you approve.
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            setShowRecent((s) => !s);
+            if (!showRecent) void loadRecent();
+          }}
+          className="inline-flex items-center gap-2 rounded-lg border border-ink/10 bg-white px-3 py-2 text-sm font-medium text-ink-soft hover:bg-paper-warm hover:text-ink transition-colors"
+        >
+          <History className="h-4 w-4" />
+          Recent imports
+        </button>
+      </div>
+
+      {showRecent && (
+        <div className="rounded-xl border border-ink/10 bg-white p-4 shadow-sm">
+          <h2 className="mb-3 text-sm font-semibold text-ink">Recent poster imports</h2>
+          {recent.length === 0 ? (
+            <p className="text-sm text-ink-soft">No imports yet.</p>
+          ) : (
+            <ul className="divide-y divide-ink/5">
+              {recent.map((r) => (
+                <li key={r.id} className="flex items-center justify-between py-2 text-sm">
+                  <span className="text-ink">{r.extractedJson?.name ?? "Untitled"}</span>
+                  <span className="flex items-center gap-2">
+                    <span className="rounded-full bg-paper-warm px-2 py-0.5 text-xs font-medium text-ink-soft capitalize">
+                      {r.status}
+                    </span>
+                    {r.contactedAt && (
+                      <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700">
+                        contacted
+                      </span>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
+      {/* Dropzone */}
+      <div
+        className="rounded-xl border-2 border-dashed border-ilali-300 bg-white p-8 text-center transition-colors hover:border-ilali-400 hover:bg-ilali-50/40"
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault();
+          const file = e.dataTransfer.files?.[0];
+          if (file) void handleFile(file);
+        }}
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) void handleFile(file);
+          }}
+        />
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          className="inline-flex flex-col items-center gap-2 text-ilali-600 hover:text-ilali-700 transition-colors"
+        >
+          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-ilali-100">
+            <Upload className="h-6 w-6" />
+          </span>
+          <span className="text-sm font-medium">
+            {phase.kind === "idle" ? "Drop a poster here, or click to browse" : "Upload a different poster"}
+          </span>
+          <span className="text-xs text-ink-faint">JPG · PNG · WebP — max 10MB</span>
+        </button>
+      </div>
+
+      {(phase.kind === "uploading" || phase.kind === "extracting") && (
+        <div className="flex items-center justify-center gap-3 rounded-xl border border-ink/10 bg-white p-6 text-sm text-ink-soft shadow-sm">
+          <Loader2 className="h-5 w-5 animate-spin text-ilali-600" />
+          {phase.kind === "uploading" ? "Uploading poster…" : "AI is reading the poster…"}
+        </div>
+      )}
+
+      {/* Two-pane review desk */}
+      {phase.kind === "review" && posterUrl && (
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+          {/* Left: poster */}
+          <div className="space-y-4">
+            <div className="overflow-hidden rounded-xl border border-ink/10 bg-white shadow-sm">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={posterUrl}
+                alt="Uploaded activity poster"
+                className="h-auto w-full object-contain"
+              />
+            </div>
+            {extractionError && (
+              <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+                {extractionError}
+              </div>
+            )}
+          </div>
+
+          {/* Right: editable form */}
+          <div className="space-y-4">
+            <div className="rounded-xl border border-ink/10 bg-white p-5 shadow-sm">
+              <div className="mb-4 flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-ilali-600" />
+                <h2 className="font-display text-lg font-semibold text-ink">
+                  Profile review
+                </h2>
+                <span className="ml-auto rounded-full bg-paper-warm px-2 py-0.5 text-xs font-medium text-ink-soft">
+                  {suggestions.length > 0 ? "AI + web" : "AI extracted"}
+                </span>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="sm:col-span-2">
+                  <label className={labelCls} htmlFor="f-name">Activity / business name</label>
+                  <input id="f-name" className={inputCls} value={form.name} onChange={set("name")} placeholder="e.g. Little Stars Dance" />
+                </div>
+
+                <div>
+                  <label className={labelCls} htmlFor="f-type">Category</label>
+                  <select id="f-type" className={inputCls} value={form.activityType} onChange={set("activityType")}>
+                    <option value="">Select…</option>
+                    {["Arts & Culture", "Sports", "Music Lessons", "Education & Tutoring", "Holiday Programs", "Dance & Movement", "Emotional Intelligence", "Other"].map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className={labelCls} htmlFor="f-location">Location / suburb</label>
+                  <input id="f-location" className={inputCls} value={form.location} onChange={set("location")} placeholder="e.g. Claremont" />
+                </div>
+
+                <div>
+                  <label className={labelCls} htmlFor="f-age-min">Age min</label>
+                  <input id="f-age-min" type="number" min="0" max="18" className={inputCls} value={form.ageMin} onChange={set("ageMin")} />
+                </div>
+
+                <div>
+                  <label className={labelCls} htmlFor="f-age-max">Age max</label>
+                  <input id="f-age-max" type="number" min="0" max="18" className={inputCls} value={form.ageMax} onChange={set("ageMax")} />
+                </div>
+
+                <div>
+                  <label className={labelCls} htmlFor="f-price">Price (R / session)</label>
+                  <input id="f-price" type="number" min="0" className={inputCls} value={form.priceValue} onChange={set("priceValue")} placeholder="e.g. 150" />
+                </div>
+
+                <div>
+                  <label className={labelCls} htmlFor="f-phone">Phone / WhatsApp</label>
+                  <input id="f-phone" className={inputCls} value={form.phone} onChange={set("phone")} placeholder="+27XXXXXXXXX" />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={labelCls} htmlFor="f-website">Website / socials</label>
+                  <input id="f-website" className={inputCls} value={form.website} onChange={set("website")} placeholder="https://…" />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={labelCls} htmlFor="f-email">Email (optional — placeholder used if blank)</label>
+                  <input id="f-email" type="email" className={inputCls} value={form.email} onChange={set("email")} placeholder="provider@example.com" />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={labelCls} htmlFor="f-desc">Description</label>
+                  <textarea id="f-desc" rows={3} className={inputCls} value={form.description} onChange={set("description")} placeholder="What makes this activity special?" />
+                </div>
+              </div>
+
+              {/* Enrichment suggestions */}
+              <div className="mt-5 border-t border-ink/5 pt-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
+                    <Globe className="h-4 w-4 text-ilali-600" />
+                    Web enrichment
+                  </h3>
+                  <button
+                    onClick={() => void runEnrich()}
+                    disabled={busyAction === "enrich"}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-ilali-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-ilali-700 transition-colors disabled:opacity-50"
+                  >
+                    {busyAction === "enrich" ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Globe className="h-3.5 w-3.5" />
+                    )}
+                    Search the web
+                  </button>
+                </div>
+
+                {suggestions.length === 0 ? (
+                  <p className="mt-3 text-xs text-ink-faint">
+                    Find the provider&apos;s website, socials, and pricing to fill gaps the poster left blank.
+                  </p>
+                ) : (
+                  <ul className="mt-3 space-y-2">
+                    {suggestions.map((s, i) =>
+                      rejectedSuggestion.has(i) ? null : (
+                        <li key={`${s.field}-${i}`} className="flex items-start justify-between gap-3 rounded-lg bg-paper-warm p-3">
+                          <div className="min-w-0">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft capitalize">{s.field}</p>
+                            <p className="mt-0.5 truncate text-sm text-ink">{s.value}</p>
+                            {s.sourceUrl && (
+                              <a href={s.sourceUrl} target="_blank" rel="noopener noreferrer" className="mt-0.5 block truncate text-xs text-ilali-600 hover:underline">
+                                {s.sourceUrl}
+                              </a>
+                            )}
+                          </div>
+                          <div className="flex shrink-0 gap-1">
+                            <button
+                              onClick={() => applySuggestion(i, s)}
+                              className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-50 text-green-700 hover:bg-green-100 transition-colors"
+                              aria-label={`Apply ${s.field}`}
+                            >
+                              <Check className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => rejectSuggestion(i)}
+                              className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                              aria-label={`Reject ${s.field}`}
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </li>
+                      )
+                    )}
+                  </ul>
+                )}
+              </div>
+
+              {notifyResult && (
+                <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-800">
+                  {notifyResult}
+                </div>
+              )}
+
+              {/* Sticky action bar */}
+              <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-ink/5 pt-4">
+                <button
+                  onClick={() => void saveApplication()}
+                  disabled={busyAction !== null || !form.name || !form.activityType}
+                  className="inline-flex items-center gap-2 rounded-full bg-ilali-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-ilali-700 transition-colors disabled:opacity-50"
+                >
+                  {busyAction === "save" ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Check className="h-4 w-4" />
+                  )}
+                  Save application
+                </button>
+                <button
+                  onClick={() => void notifyProvider()}
+                  disabled={busyAction !== null || !applicationId}
+                  className="inline-flex items-center gap-2 rounded-full bg-green-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-green-700 transition-colors disabled:opacity-50"
+                >
+                  {busyAction === "notify" ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <MessageCircle className="h-4 w-4" />
+                  )}
+                  Notify provider
+                </button>
+                <Link
+                  href="/admin/applications"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-ink/10 bg-white px-4 py-2.5 text-sm font-medium text-ink-soft hover:bg-paper-warm transition-colors"
+                >
+                  <ImageIcon className="h-4 w-4" />
+                  View applications
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

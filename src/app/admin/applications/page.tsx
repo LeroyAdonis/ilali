@@ -15,7 +15,10 @@ const TAB_STATUSES = [
   { label: "Rejected", value: "rejected" },
 ] as const;
 
-const SOURCES = [{ label: "Bulk imports", value: "bulk-import" }] as const;
+const SOURCES = [
+  { label: "Bulk imports", value: "bulk-import" },
+  { label: "Posters", value: "poster" },
+] as const;
 
 export default async function ApplicationsPage({
   searchParams,
@@ -24,7 +27,10 @@ export default async function ApplicationsPage({
 }) {
   const params = await searchParams;
   const activeStatus = params.status ?? "";
-  const activeSource = params.source === "bulk-import" ? "bulk-import" : null;
+  const activeSource =
+    params.source === "bulk-import" || params.source === "poster"
+      ? params.source
+      : null;
 
   const all = await db
     .select()
@@ -69,10 +75,10 @@ export default async function ApplicationsPage({
     return str ? `?${str}` : "?";
   }
 
-  function sourceHref(): string {
+  function sourceHref(value: string): string {
     const qs = new URLSearchParams();
     if (activeStatus) qs.set("status", activeStatus);
-    if (!activeSource) qs.set("source", "bulk-import");
+    if (activeSource !== value) qs.set("source", value);
     const str = qs.toString();
     return str ? `?${str}` : "?";
   }
@@ -123,7 +129,7 @@ export default async function ApplicationsPage({
             return (
               <Link
                 key={source.value}
-                href={sourceHref()}
+                href={sourceHref(source.value)}
                 scroll={false}
                 aria-pressed={isActive}
                 className={`inline-flex min-h-[44px] shrink-0 items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors ${

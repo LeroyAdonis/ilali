@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   Menu,
   X,
+  ImageIcon,
 } from "lucide-react";
 import { SignOutButton, SignOutButtonFull } from "@/components/admin/SignOutButton";
 
@@ -26,6 +27,7 @@ const NAV_LINKS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/applications", label: "Applications", icon: ClipboardList },
   { href: "/admin/import", label: "Import", icon: Upload },
+  { href: "/admin/poster-import", label: "Poster Import", icon: ImageIcon },
   { href: "/admin/claims", label: "Claims", icon: ShieldCheck },
   { href: "/admin/providers", label: "Providers", icon: Building2 },
 ] as const;

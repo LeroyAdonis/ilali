@@ -134,7 +134,7 @@ async function attemptChat(
 }
 
 export async function chat(opts: ChatOptions): Promise<string | null> {
-  const { timeoutMs = 5000, model, ...rest } = opts;
+  const { timeoutMs = 5000, model, imageUrl, ...rest } = opts;
 
   const cfg = getAIConfig();
   if (!cfg.apiKey) return null;
@@ -143,8 +143,16 @@ export async function chat(opts: ChatOptions): Promise<string | null> {
   // otherwise the full NIM pool. The override model is tried once; on failure
   // we rotate through the rest of the pool. Unknown override models are
   // still attempted (caller's choice) but excluded from rotation.
+  //
+  // Vision requests (imageUrl set) NEVER rotate into the text-only chat pool —
+  // those models reject multimodal payloads (400/500), so rotation just burns
+  // 15-20s per model for zero benefit. Hit 2026-08-08: poster extraction took
+  // ~75s instead of the ~20s single-attempt worst case when NIM vision was
+  // overloaded, blowing E2E timeouts.
   let pool: string[];
-  if (model) {
+  if (imageUrl) {
+    pool = model ? [model] : [];
+  } else if (model) {
     pool = [model, ...NIM_MODEL_POOL.filter((m) => m !== model)];
   } else {
     pool = [...NIM_MODEL_POOL];
@@ -154,6 +162,7 @@ export async function chat(opts: ChatOptions): Promise<string | null> {
   for (const m of pool) {
     const result = await attemptChat(cfg, {
       ...rest,
+      imageUrl,
       timeoutMs,
       modelOverride: m,
     });

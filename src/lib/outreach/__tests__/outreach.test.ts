@@ -36,7 +36,6 @@ describe("renderTemplate — {{var}} substitution", () => {
 describe("renderStoredTemplate — falls back to defaults when DB unavailable", () => {
   beforeEach(() => {
     vi.resetModules();
-    process.env.NODE_ENV = "test";
   });
 
   it("returns the whatsapp default when DB query fails", async () => {

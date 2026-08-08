@@ -61,7 +61,7 @@ export async function extractPosterWithGemini(
             },
           ],
           temperature: 0.1,
-          max_tokens: 800,
+          max_tokens: 1500,
           response_format: { type: "json_object" },
         }),
         signal: AbortSignal.timeout(TIMEOUT_MS),
@@ -81,7 +81,57 @@ export async function extractPosterWithGemini(
       .replace(/```json\s*/g, "")
       .replace(/```\s*/g, "")
       .trim();
-    return JSON.parse(cleaned) as PosterExtract;
+
+    // Free-tier Gemini occasionally truncates its JSON mid-object (observed
+    // 2026-08-08: "Unterminated string in JSON at position 114"). Retry once;
+    // a second attempt with the same prompt almost always completes.
+    try {
+      return JSON.parse(cleaned) as PosterExtract;
+    } catch (parseErr) {
+      console.warn(
+        "[extract-poster:gemini] parse failed (retrying once):",
+        parseErr instanceof Error ? parseErr.message : parseErr
+      );
+      try {
+        const retry = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${apiKey}`,
+            },
+            body: JSON.stringify({
+              model: GEMINI_MODEL,
+              messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: userMessage },
+              ],
+              temperature: 0.1,
+              max_tokens: 1500,
+              response_format: { type: "json_object" },
+            }),
+            signal: AbortSignal.timeout(TIMEOUT_MS),
+          }
+        );
+        if (!retry.ok) return null;
+        const retryData = await retry.json();
+        const retryContent: string | null =
+          retryData?.choices?.[0]?.message?.content ?? null;
+        if (!retryContent) return null;
+        const retryCleaned = retryContent
+          .replace(/```json\s*/g, "")
+          .replace(/```\s*/g, "")
+          .trim();
+        return JSON.parse(retryCleaned) as PosterExtract;
+      } catch (retryErr) {
+        console.warn(
+          "[extract-poster:gemini] retry failed:",
+          retryErr instanceof Error ? retryErr.message : retryErr
+        );
+        return null;
+      }
+    }
   } catch (err) {
     console.warn("[extract-poster:gemini] failed:", err instanceof Error ? err.message : err);
     return null;

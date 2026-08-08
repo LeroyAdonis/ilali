@@ -5,6 +5,7 @@
  * Same pattern as extract-provider.ts but multimodal (image + prompt).
  */
 import { chat } from "./client";
+import { extractPosterWithGemini } from "./gemini-vision";
 import { CT_SUBURBS } from "@/lib/suburbs";
 
 export interface PosterExtract {
@@ -89,7 +90,10 @@ Rules:
   const userMessage =
     "Extract the provider details from this activity poster as JSON.";
 
-  const content = await chat({
+  // Try NVIDIA NIM first (free, no key needed). If it fails or times out
+  // (shared free tier overload — observed 2026-08-08), fall back to Gemini
+  // vision (per-key free tier, far more reliable) so the pipeline still works.
+  let content = await chat({
     systemPrompt,
     userMessage,
     imageUrl,
@@ -100,6 +104,14 @@ Rules:
     responseFormat: "json",
   });
 
+  if (!content) {
+    const geminiResult = await extractPosterWithGemini(imageUrl, systemPrompt, userMessage);
+    if (geminiResult) {
+      console.log("[extract-poster] NIM unavailable — Gemini vision succeeded");
+      return normaliseExtract(geminiResult);
+    }
+  }
+
   if (!content) return null;
 
   try {
@@ -108,30 +120,33 @@ Rules:
       .replace(/```\s*/g, "")
       .trim();
 
-    const result = JSON.parse(cleaned) as PosterExtract;
-
-    const phone = typeof result.phone === "string" ? cleanPhone(result.phone) : undefined;
-
-    return {
-      name: result.name ?? undefined,
-      category: result.category ?? undefined,
-      description: result.description ?? undefined,
-      location: result.location ?? undefined,
-      ageMin: result.ageMin ?? undefined,
-      ageMax: result.ageMax ?? undefined,
-      priceValue: result.priceValue ?? undefined,
-      phone,
-      website: typeof result.website === "string" ? result.website : undefined,
-      instagram: typeof result.instagram === "string" ? result.instagram : undefined,
-      facebook: typeof result.facebook === "string" ? result.facebook : undefined,
-      tags: Array.isArray(result.tags)
-        ? result.tags.filter((t) => (MATCH_TAGS as readonly string[]).includes(t)).slice(0, 5)
-        : undefined,
-    };
+    return normaliseExtract(JSON.parse(cleaned) as PosterExtract);
   } catch {
     console.warn("[extract-poster] Failed to parse AI response");
     return null;
   }
+}
+
+/** Shared post-processing for any extraction source (NIM or Gemini). */
+export function normaliseExtract(result: PosterExtract): PosterExtract {
+  const phone = typeof result.phone === "string" ? cleanPhone(result.phone) : undefined;
+
+  return {
+    name: result.name ?? undefined,
+    category: result.category ?? undefined,
+    description: result.description ?? undefined,
+    location: result.location ?? undefined,
+    ageMin: result.ageMin ?? undefined,
+    ageMax: result.ageMax ?? undefined,
+    priceValue: result.priceValue ?? undefined,
+    phone,
+    website: typeof result.website === "string" ? result.website : undefined,
+    instagram: typeof result.instagram === "string" ? result.instagram : undefined,
+    facebook: typeof result.facebook === "string" ? result.facebook : undefined,
+    tags: Array.isArray(result.tags)
+      ? result.tags.filter((t) => (MATCH_TAGS as readonly string[]).includes(t)).slice(0, 5)
+      : undefined,
+  };
 }
 
 /** Normalise SA phone numbers to international +27 format. */

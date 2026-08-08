@@ -154,7 +154,7 @@ export const providerApplications = pgTable("provider_applications", {
   priceValue: integer("price_value"),
   imageUrl: text("image_url"),
   status: text("status").default("pending"), // pending, contacted, approved, rejected
-  onboardSource: text("onboard_source"), // 'email' | 'form' | 'whatsapp' | 'bulk-import' | null
+  onboardSource: text("onboard_source"), // 'email' | 'form' | 'whatsapp' | 'bulk-import' | 'poster' | null
   importBatchId: uuid("import_batch_id").references(() => importBatches.id),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -416,3 +416,28 @@ export const reviewReplies = pgTable(
     uniqueReviewReply: uniqueIndex("unique_review_reply").on(t.reviewId),
   }),
 );
+
+// ── Poster Imports (WS-7: Fun with Kids poster → profile intake) ──
+// One row per poster uploaded by an admin. Holds the vision extraction
+// snapshot + web-enrichment suggestions + the human-approved final fields.
+export const posterImports = pgTable("poster_imports", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  imagePath: text("image_path").notNull(),
+  extractedJson: jsonb("extracted_json"), // raw vision extraction snapshot
+  enrichmentJson: jsonb("enrichment_json"), // [{ field, value, sourceUrl }]
+  finalJson: jsonb("final_json"), // human-approved fields at save time
+  status: text("status").notNull().default("extracting"), // extracting → needs_review → saved → contacted
+  contactedAt: timestamp("contacted_at"),
+  outreachMethod: text("outreach_method"), // wa-me | email-draft | whatsapp-api | null
+  applicationId: uuid("application_id").references(() => providerApplications.id),
+  createdBy: text("created_by").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ── Message Templates (WS-7: centralised outreach copy) ──
+export const messageTemplates = pgTable("message_templates", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  templateKey: text("template_key").notNull().unique(), // whatsapp-outreach | email-subject | email-body
+  body: text("body").notNull(), // supports {{providerName}} {{activityName}} {{claimUrl}} {{claimCode}}
+  updatedAt: timestamp("updated_at").defaultNow(),
+});

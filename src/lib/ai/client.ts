@@ -32,6 +32,9 @@ interface ChatOptions {
   systemPrompt: string;
   userMessage: string;
   model?: string;
+  /** Optional image URL/URL for vision models (e.g. poster extraction).
+   *  When set, the user message becomes a multimodal content array. */
+  imageUrl?: string;
   temperature?: number;
   maxTokens?: number;
   timeoutMs?: number;
@@ -63,6 +66,7 @@ async function attemptChat(
   const {
     systemPrompt,
     userMessage,
+    imageUrl,
     temperature = 0.1,
     maxTokens = 400,
     timeoutMs,
@@ -91,7 +95,15 @@ async function attemptChat(
         model,
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: userMessage },
+          imageUrl
+            ? {
+                role: "user",
+                content: [
+                  { type: "text", text: userMessage },
+                  { type: "image_url", image_url: { url: imageUrl } },
+                ],
+              }
+            : { role: "user", content: userMessage },
         ],
         temperature,
         max_tokens: maxTokens,

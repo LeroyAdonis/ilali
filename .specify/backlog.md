@@ -29,3 +29,6 @@ Items explicitly excluded from shipped specs. Revisit when the trigger condition
 | 23 | Video banners / animated heroes | Post-MVP brand push | Medium | proposed |
 | 24 | Full image CDN swap (imgix/Cloudinary) | When user-upload-heavy flows need on-the-fly transforms | Medium | proposed |
 | 25 | Dark-mode / alternate theme image variants | If dark mode is specced | Small | proposed |
+| 26 | Batch poster import (queue multiple posters at once) | When poster intake exceeds ~10/week and single-poster flow is proven | Medium | proposed |
+| 27 | Auto WhatsApp sending via Business API | When George supplies dedicated SIM + Meta Business verification | Medium | proposed |
+| 28 | Email outreach automation to providers | When ilali.co verified in Resend (WS-2 dependency) | Small | proposed |

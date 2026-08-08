@@ -57,6 +57,12 @@ Also fixed Playwright webServer port (`PORT=3001 npm run dev`) — documented WS
 **Files (future):** new `src/lib/payments/paystack.ts`, API routes, checkout/payout UI. Env: PAYSTACK_SECRET_KEY (test + live).
 **George's side (in setup email):** sign up at paystack.com (South Africa, Business), verify business, add bank details, send API keys to Leroy.
 
+### WS-7: Poster-to-Profile (AI provider intake) ✅ SHIPPED
+**Status:** DEPLOYED TO PROD 2026-08-08 (commits `cfb11d6` + `6d74ced`, ilali.vercel.app live). SDD spec: `.specify/specs/poster-to-profile/` (spec Clarified, plan, tasks). tsc clean, 188/188 vitest (+23 WS-7 tests), build clean, poster-import E2E 3/3 green (verified independently). Full E2E: only pre-existing NIM/cold-compile flakes.
+**Flow:** `/admin/poster-import` — drop Fun with Kids poster → NIM vision extraction (90b, 20s, single-model no-rotation) → editable review desk (manual fallback if NIM down) → free Jina/DDG web enrichment (accept/reject per suggestion) → save creates `providerApplications` with `onboardSource="poster"` → Notify opens pre-filled wa.me outreach (semi-auto default; `WHATSAPP_AUTO_SEND=false` env, flip when George provides SIM + Meta verification).
+**George:** admin login prod-verified 2026-08-08 (`george@ilali.co` / `ilali-admin-2026`) — can test the poster flow.
+**Key gotchas (2026-08-08):** vision requests must NOT rotate into text-only NIM pool (reject multimodal, burns 15-20s/model); `requireAdmin()` thrown 401 becomes 500 without try/catch; poster E2E needs `test.setTimeout(90000)` for inline extraction.
+
 ### WS-0: Housekeeping (fold into WS-1/WS-2 sessions) ✅/❌
 - Fix 56 lint errors (no-explicit-any × 5 in 2 files)
 - Playwright webServer port (3001)

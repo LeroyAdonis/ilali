@@ -1,4 +1,4 @@
-import { chat } from "./client";
+import { chatWithFallback } from "./gemini-vision";
 import { CT_SUBURBS } from "@/lib/suburbs";
 
 export interface ProviderExtract {
@@ -66,12 +66,13 @@ Rules:
 - Extract price if mentioned (in Rands)
 - Infer tags from context (e.g., "football" → sport, outdoor; "drawing" → creative, indoor)`;
 
-  const content = await chat({
+  const content = await chatWithFallback({
     systemPrompt,
     userMessage: description,
     temperature: 0.1,
     maxTokens: 400,
     timeoutMs: TIMEOUT_MS,
+    json: true,
   });
 
   if (!content) return null;

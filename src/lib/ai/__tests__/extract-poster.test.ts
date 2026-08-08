@@ -22,16 +22,15 @@ describe("extractPoster — WS-7 vision extraction", () => {
     geminiMock.mockReset();
   });
 
-  it("returns null when chat fails", async () => {
-    chatMock.mockResolvedValue(null);
+  it("returns null when both Gemini and NIM fail", async () => {
     geminiMock.mockResolvedValue(null);
+    chatMock.mockResolvedValue(null);
     const result = await extractPoster("https://example.com/poster.jpg");
     expect(result).toBeNull();
-    expect(geminiMock).toHaveBeenCalled(); // fallback attempted
+    expect(chatMock).toHaveBeenCalled(); // NIM fallback attempted
   });
 
-  it("falls back to Gemini when NIM fails and returns normalised fields", async () => {
-    chatMock.mockResolvedValue(null); // NIM unavailable
+  it("uses Gemini FIRST when it succeeds (NIM not called)", async () => {
     geminiMock.mockResolvedValue({
       name: "Mini Maestros",
       phone: "082 555 1234",
@@ -39,15 +38,16 @@ describe("extractPoster — WS-7 vision extraction", () => {
     });
     const result = await extractPoster("https://example.com/poster.jpg");
     expect(result?.name).toBe("Mini Maestros");
-    expect(result?.phone).toBe("+27825551234"); // normalised through cleanPhone
+    expect(result?.phone).toBe(cleanPhone("082 555 1234")); // normalised through cleanPhone
     expect(result?.tags).toEqual(["music", "group"]);
+    expect(chatMock).not.toHaveBeenCalled();
   });
 
-  it("prefers NIM result when it succeeds (Gemini not called)", async () => {
+  it("falls back to NIM when Gemini fails", async () => {
+    geminiMock.mockResolvedValue(null); // Gemini unavailable
     chatMock.mockResolvedValue(JSON.stringify({ name: "NIM Winner" }));
     const result = await extractPoster("https://example.com/poster.jpg");
     expect(result?.name).toBe("NIM Winner");
-    expect(geminiMock).not.toHaveBeenCalled();
   });
 
   it("parses clean JSON from the vision model", async () => {

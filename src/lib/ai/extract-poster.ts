@@ -90,9 +90,15 @@ Rules:
   const userMessage =
     "Extract the provider details from this activity poster as JSON.";
 
-  // Try NVIDIA NIM first (free, no key needed). If it fails or times out
-  // (shared free tier overload — observed 2026-08-08), fall back to Gemini
-  // vision (per-key free tier, far more reliable) so the pipeline still works.
+  // Gemini FIRST (2026-08-08 flip): poster extraction is admin-facing + low
+  // volume (~tens/day), and Gemini's per-key free tier is far more reliable
+  // than NIM's shared pool (which 429s/times out regularly). NIM stays as the
+  // fallback so we don't pay Gemini quota when NIM happens to be healthy.
+  const geminiResult = await extractPosterWithGemini(imageUrl, systemPrompt, userMessage);
+  if (geminiResult) {
+    return normaliseExtract(geminiResult);
+  }
+
   let content = await chat({
     systemPrompt,
     userMessage,
@@ -103,14 +109,6 @@ Rules:
     timeoutMs: TIMEOUT_MS,
     responseFormat: "json",
   });
-
-  if (!content) {
-    const geminiResult = await extractPosterWithGemini(imageUrl, systemPrompt, userMessage);
-    if (geminiResult) {
-      console.log("[extract-poster] NIM unavailable — Gemini vision succeeded");
-      return normaliseExtract(geminiResult);
-    }
-  }
 
   if (!content) return null;
 

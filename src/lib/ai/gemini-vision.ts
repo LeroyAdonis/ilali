@@ -14,9 +14,133 @@
  * gemini-3.5-flash does not exist. Always use `gemini-flash-latest`.
  */
 import type { PosterExtract } from "./extract-poster";
+import { chat } from "./client";
 
 const GEMINI_MODEL = "gemini-flash-latest";
 const TIMEOUT_MS = 25000;
+
+/** True when a Gemini API key is configured (enables fallbacks). */
+export function isGeminiConfigured(): boolean {
+  return Boolean(process.env.GEMINI_API_KEY?.trim());
+}
+
+/**
+ * Generic text completion via Gemini (OpenAI-compatible endpoint).
+ * Returns raw text or null on failure — never throws.
+ * Used as the reliable fallback for match + extract-provider.
+ */
+export async function chatGeminiText(opts: {
+  systemPrompt: string;
+  userMessage: string;
+  temperature?: number;
+  maxTokens?: number;
+  timeoutMs?: number;
+  /** When true, unparseable JSON output triggers one retry (free-tier truncation). */
+  json?: boolean;
+}): Promise<string | null> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return null;
+
+  const call = async (): Promise<string | null> => {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: GEMINI_MODEL,
+          messages: [
+            { role: "system", content: opts.systemPrompt },
+            { role: "user", content: opts.userMessage },
+          ],
+          temperature: opts.temperature ?? 0.1,
+          max_tokens: opts.maxTokens ?? 800,
+          response_format: { type: "json_object" },
+        }),
+        signal: AbortSignal.timeout(opts.timeoutMs ?? TIMEOUT_MS),
+      }
+    );
+    if (!res.ok) {
+      console.warn(`[gemini:chat] HTTP ${res.status}`);
+      return null;
+    }
+    const data = await res.json();
+    const content: string | null = data?.choices?.[0]?.message?.content ?? null;
+    return content || null;
+  };
+
+  try {
+    let content = await call();
+    if (!content) return null;
+
+    // Free-tier Gemini occasionally truncates JSON mid-object. Retry once.
+    if (opts.json) {
+      const cleaned = content.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
+      try {
+        JSON.parse(cleaned);
+        return content;
+      } catch {
+        console.warn("[gemini:chat] truncated JSON — retrying once");
+        content = await call();
+        if (!content) return null;
+      }
+    }
+    return content;
+  } catch (err) {
+    console.warn("[gemini:chat] failed:", err instanceof Error ? err.message : err);
+    return null;
+  }
+}
+
+/**
+ * Shared AI call with fallback: try NVIDIA NIM first (free), then Gemini
+ * (per-key free tier) when NIM fails/times out. Returns raw text or null.
+ * Used by match (parent search) + extract-provider (provider add) so those
+ * flows keep working even when NIM's shared pool is overloaded.
+ */
+export async function chatWithFallback(opts: {
+  systemPrompt: string;
+  userMessage: string;
+  temperature?: number;
+  maxTokens?: number;
+  timeoutMs?: number;
+  /** When true, NIM output that fails JSON.parse also triggers Gemini fallback. */
+  json?: boolean;
+}): Promise<string | null> {
+  const nimResult = await chat({
+    systemPrompt: opts.systemPrompt,
+    userMessage: opts.userMessage,
+    temperature: opts.temperature ?? 0.1,
+    maxTokens: opts.maxTokens ?? 800,
+    timeoutMs: opts.timeoutMs ?? 15000,
+  });
+
+  // NIM succeeded: either plain text, or valid JSON (when json mode requested).
+  if (nimResult) {
+    if (!opts.json) return nimResult;
+    try {
+      const cleaned = nimResult
+        .replace(/```json\s*/g, "")
+        .replace(/```\s*/g, "")
+        .trim();
+      JSON.parse(cleaned);
+      return nimResult;
+    } catch {
+      // NIM returned unparseable junk — fall through to Gemini.
+      console.warn("[chatWithFallback] NIM returned unparseable JSON — trying Gemini");
+    }
+  }
+
+  if (!isGeminiConfigured()) return null;
+  const geminiResult = await chatGeminiText({ ...opts });
+  if (geminiResult) {
+    console.log("[chatWithFallback] NIM unavailable — Gemini succeeded");
+  }
+  return geminiResult;
+}
 
 /**
  * Extract poster fields via Gemini vision. Returns null when no key is configured

@@ -1,4 +1,4 @@
-import { chat } from "./client";
+import { chatWithFallback } from "./gemini-vision";
 import { CT_SUBURBS } from "@/lib/suburbs";
 
 export interface MatchIntent {
@@ -61,12 +61,13 @@ Rules:
 - Extract price from phrases like "under R200", "free", "affordable"
 - If you're unsure about any field, set it to null`;
 
-  const content = await chat({
+  const content = await chatWithFallback({
     systemPrompt,
     userMessage: query,
     temperature: 0.1,
     maxTokens: 300,
     timeoutMs: TIMEOUT_MS,
+    json: true,
   });
 
   if (!content) return null;

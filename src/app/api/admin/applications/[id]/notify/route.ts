@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "@/lib/auth-guard";
 import { db } from "@/lib/db/index";
-import { providerApplications, posterImports } from "@/lib/db/schema";
+import { providerApplications, posterImports, users } from "@/lib/db/schema";
 import { sendWhatsApp } from "@/lib/outreach/send-whatsapp";
 import { renderStoredTemplate } from "@/lib/outreach/templates";
+import { regenerateClaimCode } from "@/lib/claim-codes";
 
 export const runtime = "nodejs";
 
@@ -16,6 +17,12 @@ const SITE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://ilali.vercel.app";
  * Renders the outreach template and either returns a pre-filled wa.me link
  * (semi-auto, human hits send) or, when WHATSAPP_AUTO_SEND=true, calls the
  * Business API path. Idempotent — already-contacted returns the same link.
+ *
+ * Claim code: generated + persisted here (regenerateClaimCode → bcrypt hash on
+ * the user row), and the PLAINTEXT is included in the message — the provider
+ * needs it to claim their listing. The provider user must exist (application
+ * approved) before notify, or there is nowhere to store the hash → 400 with a
+ * clear "approve first" message.
  */
 export async function POST(
   request: Request,
@@ -49,15 +56,51 @@ export async function POST(
     // empty body is fine — default method
   }
 
+  // ── Find the provider user so we can issue a claim code ──
+  // The user only exists after the application is APPROVED (approveApplication
+  // creates role='provider' + auth account). Poster applications are 'pending'
+  // at save time — notify must be gated on approval.
+  const [providerUser] = app.email
+    ? await db
+        .select()
+        .from(users)
+        .where(eq(users.email, app.email.toLowerCase().trim()))
+        .limit(1)
+    : [];
+
+  let claimCode = "";
+  if (providerUser) {
+    const fresh = await regenerateClaimCode();
+    claimCode = fresh.claimCode;
+    await db
+      .update(users)
+      .set({
+        claimCodeHash: fresh.claimCodeHash,
+        claimCodeExpiresAt: fresh.claimCodeExpiresAt,
+        claimAttempts: 0,
+        claimLockedUntil: null,
+      })
+      .where(eq(users.id, providerUser.id));
+  }
+
   const vars = {
     providerName: app.name || "",
     activityName: app.activityType || "activity",
     claimUrl: `${SITE_URL}/providers/claim`,
-    claimCode: "",
+    claimCode,
   };
 
   // Email draft: return the rendered copy for manual use.
   if (body.method === "email-draft") {
+    if (!providerUser) {
+      return NextResponse.json(
+        {
+          error:
+            "Approve the application first — the provider needs an account before we can generate a claim code.",
+        },
+        { status: 400 }
+      );
+    }
     const subject = await renderStoredTemplate("email-subject", vars);
     const emailBody = await renderStoredTemplate("email-body", vars);
     return NextResponse.json({ method: "email-draft", subject, body: emailBody });
@@ -69,6 +112,16 @@ export async function POST(
       {
         error: "No phone number on this application — use the email draft instead.",
         method: "email-draft",
+      },
+      { status: 400 }
+    );
+  }
+
+  if (!providerUser) {
+    return NextResponse.json(
+      {
+        error:
+          "Approve the application first — the provider needs an account before we can send a claim code.",
       },
       { status: 400 }
     );

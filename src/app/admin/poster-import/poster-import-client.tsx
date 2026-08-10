@@ -69,6 +69,7 @@ export default function PosterImportPage() {
   const [suggestions, setSuggestions] = useState<EnrichmentSuggestion[]>([]);
   const [rejectedSuggestion, setRejectedSuggestion] = useState<Set<number>>(new Set());
   const [extractionError, setExtractionError] = useState<string | null>(null);
+  const [enrichMessage, setEnrichMessage] = useState<string | null>(null);
   const [notifyResult, setNotifyResult] = useState<string | null>(null);
   const [recent, setRecent] = useState<RecentImport[]>([]);
   const [showRecent, setShowRecent] = useState(false);
@@ -94,6 +95,7 @@ export default function PosterImportPage() {
       setRejectedSuggestion(new Set());
       setForm(EMPTY_FORM);
       setNotifyResult(null);
+      setEnrichMessage(null);
 
       const body = new FormData();
       body.append("file", file);
@@ -145,16 +147,29 @@ export default function PosterImportPage() {
   const runEnrich = useCallback(async () => {
     if (!posterImportId) return;
     setBusyAction("enrich");
+    setEnrichMessage(null);
     try {
       const res = await fetch(
         `/api/admin/poster-import/${posterImportId}/enrich`,
         { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }
       );
       const data = await res.json();
-      setSuggestions((data.suggestions ?? []) as EnrichmentSuggestion[]);
+      if (!res.ok) {
+        setEnrichMessage(data.error ?? "Web search failed.");
+        setSuggestions([]);
+        setRejectedSuggestion(new Set());
+        return;
+      }
+      const found = (data.suggestions ?? []) as EnrichmentSuggestion[];
+      setSuggestions(found);
       setRejectedSuggestion(new Set());
+      setEnrichMessage(
+        found.length === 0
+          ? "No extra info found online for this provider — the web search returned nothing usable."
+          : null
+      );
     } catch {
-      // non-fatal
+      setEnrichMessage("Web search failed — check the connection and try again.");
     } finally {
       setBusyAction(null);
     }
@@ -458,6 +473,12 @@ export default function PosterImportPage() {
                     Search the web
                   </button>
                 </div>
+
+                {enrichMessage && (
+                  <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                    {enrichMessage}
+                  </p>
+                )}
 
                 {suggestions.length === 0 ? (
                   <p className="mt-3 text-xs text-ink-faint">

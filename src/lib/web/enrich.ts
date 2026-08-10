@@ -11,6 +11,7 @@
  * Suggested fields are ALWAYS human-verified in the UI — never silently merged.
  */
 import { chat } from "@/lib/ai/client";
+import { chatGeminiText } from "@/lib/ai/gemini-vision";
 
 export interface EnrichmentSuggestion {
   field: string; // e.g. "website", "instagram", "facebook", "description", "phone", "priceValue"
@@ -28,10 +29,16 @@ function parseDdgLinks(markdown: string, limit = 5): string[] {
   const urls: string[] = [];
   // DDG HTML result links look like: [Title](https://duckduckgo.com/l/?uddg=ENCODED_URL&rut=...)
   const re = /\]\(https:\/\/duckduckgo\.com\/l\/\?uddg=([^&)]+)/g;
+  const seen = new Set<string>();
   let m: RegExpExecArray | null;
   while ((m = re.exec(markdown)) !== null && urls.length < limit) {
     try {
-      urls.push(decodeURIComponent(m[1]));
+      const url = decodeURIComponent(m[1]);
+      // DDG HTML repeats the same result multiple times (each row re-lists the
+      // URL with tracking params) — dedupe so we don't read the same page 4x.
+      if (seen.has(url)) continue;
+      seen.add(url);
+      urls.push(url);
     } catch {
       // skip malformed
     }
@@ -113,14 +120,33 @@ Rules:
 - priceValue: only if a price is stated (in Rands)
 - Max 6 suggestions. If nothing verifiable, return []`;
 
-  const content = await chat({
+  // Gemini FIRST (same flip as extract-poster.ts 2026-08-08): web enrichment is
+  // admin-facing + low volume, and Gemini's per-key free tier is far more
+  // reliable than NIM's shared pool (which 429s/times out regularly — observed
+  // 2026-08-10: "Search the web" button silently returned [] because NIM timed
+  // out on both pool models with no fallback). NIM stays as the fallback so we
+  // don't burn Gemini quota when NIM happens to be healthy.
+  const geminiContent = await chatGeminiText({
     systemPrompt,
     userMessage: `Provider name: ${name}\n\n--- SOURCE PAGES ---\n${pages.join("\n\n---\n\n")}`,
     temperature: 0.1,
     maxTokens: 800,
     timeoutMs: TIMEOUT_MS,
-    responseFormat: "json",
+    json: true,
   });
+
+  let content = geminiContent;
+  if (!content) {
+    console.warn("[enrich] Gemini unavailable — falling back to NIM");
+    content = await chat({
+      systemPrompt,
+      userMessage: `Provider name: ${name}\n\n--- SOURCE PAGES ---\n${pages.join("\n\n---\n\n")}`,
+      temperature: 0.1,
+      maxTokens: 800,
+      timeoutMs: TIMEOUT_MS,
+      responseFormat: "json",
+    });
+  }
 
   if (!content) return [];
 

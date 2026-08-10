@@ -8,11 +8,13 @@ import {
   Copy,
   KeyRound,
   Mail,
+  Pencil,
   Phone,
   RefreshCw,
   XCircle,
 } from "lucide-react";
 import { AdminStatusBadge } from "@/components/admin";
+import { ApplicationEditForm } from "./ApplicationEditForm";
 
 type ApplicationStatus = "pending" | "contacted" | "approved" | "rejected";
 
@@ -61,8 +63,10 @@ export function ApplicationCard({
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<BusyAction>(null);
   const [copied, setCopied] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const canApprove = status === "pending" || status === "contacted";
+  const canEdit = status === "pending" || status === "contacted";
   const selectable = canApprove && typeof onToggleSelect === "function";
 
   async function transition(next: "contacted" | "approved" | "rejected") {
@@ -180,13 +184,24 @@ export function ApplicationCard({
             <p className="mt-2 text-xs text-ink-faint">
               Ages {application.ageMin}–{application.ageMax}
               {application.priceValue != null &&
-                ` · R${(application.priceValue / 100).toFixed(2)}`}
+                ` · R${application.priceValue.toLocaleString()}`}
             </p>
           )}
         </div>
 
         {/* Actions */}
         <div className="ml-4 flex flex-col gap-2">
+          {canEdit && (
+            <button
+              type="button"
+              onClick={() => setEditing((e) => !e)}
+              disabled={busy !== null}
+              className={`${BTN_BASE} bg-amber-50 text-amber-700 hover:bg-amber-100`}
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              {editing ? "Close editor" : "Edit draft"}
+            </button>
+          )}
           {status === "pending" && (
             <button
               type="button"
@@ -246,6 +261,13 @@ export function ApplicationCard({
           )}
         </div>
       </div>
+
+      {editing && (
+        <ApplicationEditForm
+          application={application}
+          onDone={() => setEditing(false)}
+        />
+      )}
 
       {error && (
         <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-700">

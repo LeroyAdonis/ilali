@@ -111,12 +111,16 @@ export const POST = withAdmin(
 );
 
 /**
- * PATCH — regenerate the temp password for an approved application.
- * Overwrites the stored hash (invalidating the previous temp password) and
- * re-arms passwordResetRequired so the provider must set a new password.
+ * PATCH /api/admin/applications/[id]
+ * Two modes:
+ *  - Body { fields: {...} }  → EDIT the draft application (pending/contacted only).
+ *    Updates name, activityType, description, location, ages, priceValue (Rands),
+ *    phone, email in place. Approved/rejected are locked — 400.
+ *  - Empty body → regenerate the temp password for an approved application
+ *    (legacy behavior, invalidates the old one, re-arms password reset).
  */
 export const PATCH = withAdmin(
-  async (_request: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+  async (request: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
     const { id } = await params;
 
     const [application] = await db
@@ -126,6 +130,96 @@ export const PATCH = withAdmin(
 
     if (!application) {
       return NextResponse.json({ error: "Application not found" }, { status: 404 });
+    }
+
+    // ── Mode detection: fields body → draft edit; empty body → temp password ──
+    let fields: Record<string, unknown> | undefined;
+    try {
+      const body = await request.json();
+      if (body?.fields && typeof body.fields === "object") fields = body.fields;
+    } catch {
+      // empty body — legacy temp-password path
+    }
+
+    if (fields) {
+      if (application.status !== "pending" && application.status !== "contacted") {
+        return NextResponse.json(
+          { error: "Only pending or contacted applications can be edited" },
+          { status: 400 }
+        );
+      }
+
+      const name = typeof fields.name === "string" ? fields.name.trim() : "";
+      const activityType =
+        typeof fields.activityType === "string" ? fields.activityType.trim() : "";
+      if (!name || !activityType) {
+        return NextResponse.json(
+          { error: "Name and activity type are required." },
+          { status: 400 }
+        );
+      }
+
+      const ageMin = fields.ageMin == null || fields.ageMin === "" ? null : Number(fields.ageMin);
+      const ageMax = fields.ageMax == null || fields.ageMax === "" ? null : Number(fields.ageMax);
+      if (
+        (ageMin != null && (!Number.isInteger(ageMin) || ageMin < 0 || ageMin > 18)) ||
+        (ageMax != null && (!Number.isInteger(ageMax) || ageMax < 0 || ageMax > 18))
+      ) {
+        return NextResponse.json(
+          { error: "Ages must be whole numbers between 0 and 18." },
+          { status: 400 }
+        );
+      }
+
+      // providerApplications.priceValue is stored in Rands (whole numbers) —
+      // the cents conversion happens at APPROVAL when the providers row is
+      // created (approveApplication). Store what the admin typed, as-is.
+      const priceValue =
+        fields.priceValue == null || fields.priceValue === ""
+          ? null
+          : Number(fields.priceValue);
+      if (priceValue != null && (!Number.isFinite(priceValue) || priceValue < 0)) {
+        return NextResponse.json(
+          { error: "Price must be a positive number (in Rands)." },
+          { status: 400 }
+        );
+      }
+
+      const email =
+        typeof fields.email === "string" ? fields.email.trim() : application.email;
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return NextResponse.json(
+          { error: "A valid email address is required." },
+          { status: 400 }
+        );
+      }
+
+      const [updated] = await db
+        .update(providerApplications)
+        .set({
+          name,
+          email,
+          activityType,
+          description:
+            typeof fields.description === "string" && fields.description.trim()
+              ? fields.description.trim()
+              : null,
+          location:
+            typeof fields.location === "string" && fields.location.trim()
+              ? fields.location.trim()
+              : null,
+          ageMin,
+          ageMax,
+          priceValue,
+          phone:
+            typeof fields.phone === "string" && fields.phone.trim()
+              ? fields.phone.trim()
+              : null,
+        })
+        .where(eq(providerApplications.id, id))
+        .returning();
+
+      return NextResponse.json({ application: updated });
     }
 
     if (application.status !== "approved") {

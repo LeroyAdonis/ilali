@@ -125,6 +125,30 @@ describe("extractPoster — WS-7 vision extraction", () => {
     const result = await extractPoster("https://example.com/poster.jpg");
     expect(result?.phone).toBe("+27821234567");
   });
+
+  it("passes a valid logoBox through from the vision model", async () => {
+    geminiMock.mockResolvedValue({
+      name: "Little Stars Dance",
+      logoBox: { x: 72, y: 6, width: 20, height: 12 },
+    });
+    const result = await extractPoster("https://example.com/poster.jpg");
+    expect(result?.logoBox).toEqual({ x: 72, y: 6, width: 20, height: 12 });
+  });
+
+  it("clamps logoBox percentages to valid 0-100 bounds", async () => {
+    geminiMock.mockResolvedValue({
+      name: "Little Stars Dance",
+      logoBox: { x: -10, y: 105, width: 0, height: 250 },
+    });
+    const result = await extractPoster("https://example.com/poster.jpg");
+    expect(result?.logoBox).toEqual({ x: 0, y: 100, width: 1, height: 100 });
+  });
+
+  it("returns undefined logoBox when the model omits it", async () => {
+    geminiMock.mockResolvedValue({ name: "No Logo Club" });
+    const result = await extractPoster("https://example.com/poster.jpg");
+    expect(result?.logoBox).toBeUndefined();
+  });
 });
 
 describe("cleanPhone — SA number normalisation", () => {

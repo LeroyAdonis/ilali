@@ -32,6 +32,8 @@ export interface PosterExtract {
   contactName?: string;
   bookingInfo?: string;
   additionalInfo?: string;
+  /** Logo location on the poster as percentages (0-100) of poster dims. */
+  logoBox?: { x: number; y: number; width: number; height: number } | null;
 }
 
 const ACTIVITY_CATEGORIES = [
@@ -95,7 +97,8 @@ Output format:
   "dayOfWeek": "string | null (days the activity runs, e.g. 'Mon, Wed' or 'Saturdays')",
   "contactName": "string | null (named contact person if visible)",
   "bookingInfo": "string | null (booking instructions, e.g. 'WhatsApp to book', 'limited spaces')",
-  "additionalInfo": "string | null (ALL remaining text on the poster not captured above — capture it verbatim)"
+  "additionalInfo": "string | null (ALL remaining text on the poster not captured above — capture it verbatim)",
+  "logoBox": "object | null (the LOGO's location on the poster, as percentages of poster width/height: { x, y, width, height } where x,y is the top-left corner of the logo and width,height its size, all 0-100. A logo is a small distinct graphic mark/emblem/brand icon — often in a corner. If there is NO clear logo, return null. Do NOT include the main poster photo or artwork as a logo.)"
 }
 
 Rules:
@@ -108,6 +111,7 @@ Rules:
 - Infer tags from context (e.g., "football" → sport, outdoor; "drawing" → creative, indoor)
 - For venue/address/dates/times/dayOfWeek/contactName/bookingInfo: copy what the poster shows — keep original wording, don't reformat or invent
 - For additionalInfo: include EVERY piece of text on the poster that didn't fit another field (phone/email/website excluded — those have their own fields), verbatim where possible
+- For logoBox: locate the logo mark precisely. If the poster has a clear logo (brand emblem/icon, usually in a corner), give its bounding box as percentages. If uncertain, prefer a slightly LARGER box over a too-small one (we crop it).
 - If a field is not visible on the poster, return null — never invent it`;
 
   const userMessage =
@@ -179,6 +183,19 @@ export function normaliseExtract(result: PosterExtract): PosterExtract {
     bookingInfo: typeof result.bookingInfo === "string" ? result.bookingInfo : undefined,
     additionalInfo:
       typeof result.additionalInfo === "string" ? result.additionalInfo : undefined,
+    logoBox:
+      result.logoBox &&
+      typeof result.logoBox.x === "number" &&
+      typeof result.logoBox.y === "number" &&
+      typeof result.logoBox.width === "number" &&
+      typeof result.logoBox.height === "number"
+        ? {
+            x: Math.max(0, Math.min(100, result.logoBox.x)),
+            y: Math.max(0, Math.min(100, result.logoBox.y)),
+            width: Math.max(1, Math.min(100, result.logoBox.width)),
+            height: Math.max(1, Math.min(100, result.logoBox.height)),
+          }
+        : undefined,
   };
 }
 

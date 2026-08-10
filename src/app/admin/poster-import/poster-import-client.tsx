@@ -96,6 +96,7 @@ export default function PosterImportPage() {
   const [recent, setRecent] = useState<RecentImport[]>([]);
   const [showRecent, setShowRecent] = useState(false);
   const [busyAction, setBusyAction] = useState<string | null>(null);
+  const [logoAutoDetected, setLogoAutoDetected] = useState(false);
 
   const loadRecent = useCallback(async () => {
     try {
@@ -105,6 +106,42 @@ export default function PosterImportPage() {
       // non-fatal
     }
   }, []);
+
+  /**
+   * Auto-crop the logo from the poster using the AI's bounding box.
+   * logoBox is in % of poster dimensions — convert to pixels, draw the region
+   * onto a canvas, export as a PNG data URL (logoPath). Falls back silently if
+   * the browser can't decode the image or the box is invalid.
+   */
+  const cropLogoFromPoster = useCallback(
+    (logoBox: NonNullable<PosterExtract["logoBox"]>): Promise<string | null> =>
+      new Promise((resolve) => {
+        if (!posterUrl) return resolve(null);
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const w = img.naturalWidth;
+            const h = img.naturalHeight;
+            const x = Math.max(0, Math.round((logoBox.x / 100) * w));
+            const y = Math.max(0, Math.round((logoBox.y / 100) * h));
+            const cw = Math.max(1, Math.min(w - x, Math.round((logoBox.width / 100) * w)));
+            const ch = Math.max(1, Math.min(h - y, Math.round((logoBox.height / 100) * h)));
+            const canvas = document.createElement("canvas");
+            canvas.width = cw;
+            canvas.height = ch;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) return resolve(null);
+            ctx.drawImage(img, x, y, cw, ch, 0, 0, cw, ch);
+            resolve(canvas.toDataURL("image/png"));
+          } catch {
+            resolve(null);
+          }
+        };
+        img.onerror = () => resolve(null);
+        img.src = posterUrl;
+      }),
+    [posterUrl]
+  );
 
   const handleFile = useCallback(
     async (file: File) => {
@@ -118,6 +155,7 @@ export default function PosterImportPage() {
       setForm(EMPTY_FORM);
       setNotifyResult(null);
       setEnrichMessage(null);
+      setLogoAutoDetected(false);
 
       const body = new FormData();
       body.append("file", file);
@@ -168,6 +206,14 @@ export default function PosterImportPage() {
           additionalInfo: extracted.additionalInfo ?? "",
           logoPath: "",
         });
+        // Auto-crop the logo from the poster if AI located one.
+        if (extracted.logoBox) {
+          const cropped = await cropLogoFromPoster(extracted.logoBox);
+          if (cropped) {
+            setForm((f) => ({ ...f, logoPath: cropped }));
+            setLogoAutoDetected(true);
+          }
+        }
         setPhase({ kind: "review" });
       } catch {
         setExtractionError("Network error while extracting the poster.");
@@ -325,6 +371,7 @@ export default function PosterImportPage() {
     const reader = new FileReader();
     reader.onload = () => {
       setForm((f) => ({ ...f, logoPath: String(reader.result) }));
+      setLogoAutoDetected(false);
     };
     reader.readAsDataURL(file);
   }, []);
@@ -567,9 +614,18 @@ export default function PosterImportPage() {
                   {form.logoPath && (
                     <div className="mt-2 flex items-center gap-3">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={form.logoPath} alt="Uploaded logo" className="h-14 w-14 rounded-lg border border-ink/10 object-contain" />
-                      <span className="text-xs text-ink-faint">Logo attached — saved with the application.</span>
+                      <img src={form.logoPath} alt="Provider logo" className="h-14 w-14 rounded-lg border border-ink/10 object-contain" />
+                      <span className="text-xs text-ink-faint">
+                        {logoAutoDetected
+                          ? "Logo detected on the poster and cropped automatically — upload your own to replace it."
+                          : "Logo attached — saved with the application."}
+                      </span>
                     </div>
+                  )}
+                  {!form.logoPath && (
+                    <p className="mt-1 text-xs text-ink-faint">
+                      No logo found on the poster — upload one if you have it.
+                    </p>
                   )}
                 </div>
               </div>

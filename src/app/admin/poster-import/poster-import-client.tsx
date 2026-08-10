@@ -37,6 +37,17 @@ interface FormState {
   phone: string;
   website: string;
   email: string;
+  venue: string;
+  address: string;
+  dateStart: string;
+  dateEnd: string;
+  timeStart: string;
+  timeEnd: string;
+  dayOfWeek: string;
+  contactName: string;
+  bookingInfo: string;
+  additionalInfo: string;
+  logoPath: string;
 }
 
 const EMPTY_FORM: FormState = {
@@ -50,6 +61,17 @@ const EMPTY_FORM: FormState = {
   phone: "",
   website: "",
   email: "",
+  venue: "",
+  address: "",
+  dateStart: "",
+  dateEnd: "",
+  timeStart: "",
+  timeEnd: "",
+  dayOfWeek: "",
+  contactName: "",
+  bookingInfo: "",
+  additionalInfo: "",
+  logoPath: "",
 };
 
 type Phase =
@@ -134,6 +156,17 @@ export default function PosterImportPage() {
           phone: extracted.phone ?? "",
           website: extracted.website ?? "",
           email: "",
+          venue: extracted.venue ?? "",
+          address: extracted.address ?? "",
+          dateStart: extracted.dateStart ?? "",
+          dateEnd: extracted.dateEnd ?? "",
+          timeStart: extracted.timeStart ?? "",
+          timeEnd: extracted.timeEnd ?? "",
+          dayOfWeek: extracted.dayOfWeek ?? "",
+          contactName: extracted.contactName ?? "",
+          bookingInfo: extracted.bookingInfo ?? "",
+          additionalInfo: extracted.additionalInfo ?? "",
+          logoPath: "",
         });
         setPhase({ kind: "review" });
       } catch {
@@ -221,6 +254,17 @@ export default function PosterImportPage() {
               priceValue: form.priceValue ? Number(form.priceValue) : null,
               phone: form.phone,
               email: form.email,
+              venue: form.venue,
+              address: form.address,
+              dateStart: form.dateStart,
+              dateEnd: form.dateEnd,
+              timeStart: form.timeStart,
+              timeEnd: form.timeEnd,
+              dayOfWeek: form.dayOfWeek,
+              contactName: form.contactName,
+              bookingInfo: form.bookingInfo,
+              additionalInfo: form.additionalInfo,
+              logoPath: form.logoPath,
             },
           }),
         }
@@ -269,6 +313,21 @@ export default function PosterImportPage() {
         setForm((f) => ({ ...f, [key]: e.target.value })),
     []
   );
+
+  const handleLogo = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      setExtractionError("Logo is too large — keep it under 2MB.");
+      return;
+    }
+    setExtractionError(null);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setForm((f) => ({ ...f, logoPath: String(reader.result) }));
+    };
+    reader.readAsDataURL(file);
+  }, []);
 
   const inputCls =
     "mt-1 block w-full rounded-lg border border-ink/10 bg-white px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200";
@@ -450,6 +509,68 @@ export default function PosterImportPage() {
                 <div className="sm:col-span-2">
                   <label className={labelCls} htmlFor="f-desc">Description</label>
                   <textarea id="f-desc" rows={3} className={inputCls} value={form.description} onChange={set("description")} placeholder="What makes this activity special?" />
+                </div>
+
+                <div>
+                  <label className={labelCls} htmlFor="f-venue">Venue</label>
+                  <input id="f-venue" className={inputCls} value={form.venue} onChange={set("venue")} placeholder="e.g. Sea Point Community Hall" />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={labelCls} htmlFor="f-address">Address</label>
+                  <input id="f-address" className={inputCls} value={form.address} onChange={set("address")} placeholder="Full street address" />
+                </div>
+
+                <div>
+                  <label className={labelCls} htmlFor="f-date-start">Date start</label>
+                  <input id="f-date-start" className={inputCls} value={form.dateStart} onChange={set("dateStart")} placeholder="e.g. 12 July" />
+                </div>
+
+                <div>
+                  <label className={labelCls} htmlFor="f-date-end">Date end</label>
+                  <input id="f-date-end" className={inputCls} value={form.dateEnd} onChange={set("dateEnd")} placeholder="e.g. 14 July" />
+                </div>
+
+                <div>
+                  <label className={labelCls} htmlFor="f-time-start">Time start</label>
+                  <input id="f-time-start" className={inputCls} value={form.timeStart} onChange={set("timeStart")} placeholder="e.g. 14:00" />
+                </div>
+
+                <div>
+                  <label className={labelCls} htmlFor="f-time-end">Time end</label>
+                  <input id="f-time-end" className={inputCls} value={form.timeEnd} onChange={set("timeEnd")} placeholder="e.g. 15:30" />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={labelCls} htmlFor="f-day">Day of week</label>
+                  <input id="f-day" className={inputCls} value={form.dayOfWeek} onChange={set("dayOfWeek")} placeholder="e.g. Mon, Wed, Fri" />
+                </div>
+
+                <div>
+                  <label className={labelCls} htmlFor="f-contact-name">Contact name</label>
+                  <input id="f-contact-name" className={inputCls} value={form.contactName} onChange={set("contactName")} placeholder="Person to contact" />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={labelCls} htmlFor="f-booking">Booking information</label>
+                  <input id="f-booking" className={inputCls} value={form.bookingInfo} onChange={set("bookingInfo")} placeholder="e.g. WhatsApp to book" />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={labelCls} htmlFor="f-additional">Additional info (all poster text)</label>
+                  <textarea id="f-additional" rows={3} className={inputCls} value={form.additionalInfo} onChange={set("additionalInfo")} placeholder="Any other text on the poster not covered above" />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={labelCls} htmlFor="f-logo">Logo (optional)</label>
+                  <input id="f-logo" type="file" accept="image/jpeg,image/png,image/webp" className={inputCls} onChange={handleLogo} />
+                  {form.logoPath && (
+                    <div className="mt-2 flex items-center gap-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={form.logoPath} alt="Uploaded logo" className="h-14 w-14 rounded-lg border border-ink/10 object-contain" />
+                      <span className="text-xs text-ink-faint">Logo attached — saved with the application.</span>
+                    </div>
+                  )}
                 </div>
               </div>
 

@@ -37,6 +37,19 @@ export function ApplicationEditForm({
   );
   const [phone, setPhone] = useState(application.phone ?? "");
   const [email, setEmail] = useState(application.email ?? "");
+  const [venue, setVenue] = useState(application.venue ?? "");
+  const [address, setAddress] = useState(application.address ?? "");
+  const [dateStart, setDateStart] = useState(application.dateStart ?? "");
+  const [dateEnd, setDateEnd] = useState(application.dateEnd ?? "");
+  const [timeStart, setTimeStart] = useState(application.timeStart ?? "");
+  const [timeEnd, setTimeEnd] = useState(application.timeEnd ?? "");
+  const [dayOfWeek, setDayOfWeek] = useState(application.dayOfWeek ?? "");
+  const [contactName, setContactName] = useState(application.contactName ?? "");
+  const [bookingInfo, setBookingInfo] = useState(application.bookingInfo ?? "");
+  const [additionalInfo, setAdditionalInfo] = useState(
+    application.additionalInfo ?? ""
+  );
+  const [logoPath, setLogoPath] = useState(application.logoPath ?? "");
 
   const inputCls =
     "mt-1 block w-full rounded-lg border border-ink/10 bg-white px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200";
@@ -60,6 +73,17 @@ export function ApplicationEditForm({
             priceValue: priceValue === "" ? null : Number(priceValue),
             phone,
             email,
+            venue,
+            address,
+            dateStart,
+            dateEnd,
+            timeStart,
+            timeEnd,
+            dayOfWeek,
+            contactName,
+            bookingInfo,
+            additionalInfo,
+            logoPath,
           },
         }),
       });
@@ -204,6 +228,135 @@ export function ApplicationEditForm({
             />
           </div>
         </div>
+        <div>
+          <label className={labelCls} htmlFor={`edit-venue-${application.id}`}>
+            Venue
+          </label>
+          <input
+            id={`edit-venue-${application.id}`}
+            className={inputCls}
+            value={venue}
+            onChange={(e) => setVenue(e.target.value)}
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <label className={labelCls} htmlFor={`edit-address-${application.id}`}>
+            Address
+          </label>
+          <input
+            id={`edit-address-${application.id}`}
+            className={inputCls}
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className={labelCls} htmlFor={`edit-datestart-${application.id}`}>
+            Date start
+          </label>
+          <input
+            id={`edit-datestart-${application.id}`}
+            className={inputCls}
+            value={dateStart}
+            onChange={(e) => setDateStart(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className={labelCls} htmlFor={`edit-dateend-${application.id}`}>
+            Date end
+          </label>
+          <input
+            id={`edit-dateend-${application.id}`}
+            className={inputCls}
+            value={dateEnd}
+            onChange={(e) => setDateEnd(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className={labelCls} htmlFor={`edit-timestart-${application.id}`}>
+            Time start
+          </label>
+          <input
+            id={`edit-timestart-${application.id}`}
+            className={inputCls}
+            value={timeStart}
+            onChange={(e) => setTimeStart(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className={labelCls} htmlFor={`edit-timeend-${application.id}`}>
+            Time end
+          </label>
+          <input
+            id={`edit-timeend-${application.id}`}
+            className={inputCls}
+            value={timeEnd}
+            onChange={(e) => setTimeEnd(e.target.value)}
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <label className={labelCls} htmlFor={`edit-day-${application.id}`}>
+            Day of week
+          </label>
+          <input
+            id={`edit-day-${application.id}`}
+            className={inputCls}
+            value={dayOfWeek}
+            onChange={(e) => setDayOfWeek(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className={labelCls} htmlFor={`edit-contact-${application.id}`}>
+            Contact name
+          </label>
+          <input
+            id={`edit-contact-${application.id}`}
+            className={inputCls}
+            value={contactName}
+            onChange={(e) => setContactName(e.target.value)}
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <label className={labelCls} htmlFor={`edit-booking-${application.id}`}>
+            Booking info
+          </label>
+          <textarea
+            id={`edit-booking-${application.id}`}
+            rows={2}
+            className={inputCls}
+            value={bookingInfo}
+            onChange={(e) => setBookingInfo(e.target.value)}
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <label
+            className={labelCls}
+            htmlFor={`edit-additional-${application.id}`}
+          >
+            Additional info
+          </label>
+          <textarea
+            id={`edit-additional-${application.id}`}
+            rows={3}
+            className={inputCls}
+            value={additionalInfo}
+            onChange={(e) => setAdditionalInfo(e.target.value)}
+          />
+        </div>
+        {application.logoPath && (
+          <div className="sm:col-span-2">
+            <span className={labelCls}>Logo</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={application.logoPath}
+              alt="Provider logo"
+              className="mt-1 h-16 w-16 rounded-lg border border-ink/10 object-contain"
+            />
+            <p className="mt-1 text-xs text-ink-faint">
+              Logo is set — upload a replacement in the poster review desk.
+            </p>
+          </div>
+        )}
       </div>
 
       {error && (

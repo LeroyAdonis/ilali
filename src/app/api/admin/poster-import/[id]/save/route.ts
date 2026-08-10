@@ -17,6 +17,17 @@ export interface PosterFinalFields {
   phone?: string;
   email?: string;
   imageUrl?: string;
+  venue?: string;
+  address?: string;
+  dateStart?: string;
+  dateEnd?: string;
+  timeStart?: string;
+  timeEnd?: string;
+  dayOfWeek?: string;
+  contactName?: string;
+  bookingInfo?: string;
+  additionalInfo?: string;
+  logoPath?: string;
 }
 
 /**
@@ -88,6 +99,17 @@ export async function POST(
       ageMin: typeof f.ageMin === "number" ? f.ageMin : null,
       ageMax: typeof f.ageMax === "number" ? f.ageMax : null,
       priceValue: typeof f.priceValue === "number" ? f.priceValue : null,
+      venue: f.venue?.trim() || null,
+      address: f.address?.trim() || null,
+      dateStart: f.dateStart?.trim() || null,
+      dateEnd: f.dateEnd?.trim() || null,
+      timeStart: f.timeStart?.trim() || null,
+      timeEnd: f.timeEnd?.trim() || null,
+      dayOfWeek: f.dayOfWeek?.trim() || null,
+      contactName: f.contactName?.trim() || null,
+      bookingInfo: f.bookingInfo?.trim() || null,
+      additionalInfo: f.additionalInfo?.trim() || null,
+      logoPath: f.logoPath || null,
       imageUrl: f.imageUrl || poster.imagePath,
       status: "pending",
       onboardSource: "poster",

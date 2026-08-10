@@ -8,6 +8,7 @@ import {
   Copy,
   KeyRound,
   Mail,
+  MapPin,
   Pencil,
   Phone,
   RefreshCw,
@@ -30,6 +31,17 @@ export type Application = {
   ageMax: number | null;
   priceValue: number | null;
   imageUrl: string | null;
+  venue?: string | null;
+  address?: string | null;
+  dateStart?: string | null;
+  dateEnd?: string | null;
+  timeStart?: string | null;
+  timeEnd?: string | null;
+  dayOfWeek?: string | null;
+  contactName?: string | null;
+  bookingInfo?: string | null;
+  additionalInfo?: string | null;
+  logoPath?: string | null;
   status: string | null;
   onboardSource?: string | null;
   importBatchId?: string | null;
@@ -168,6 +180,13 @@ export function ApplicationCard({
               <span className="flex items-center gap-1">
                 <Phone className="h-3.5 w-3.5" />
                 {application.phone}
+              </span>
+            )}
+            {application.venue && (
+              <span className="flex items-center gap-1">
+                <MapPin className="h-3.5 w-3.5" />
+                {application.venue}
+                {application.address ? `, ${application.address}` : ""}
               </span>
             )}
             {application.createdAt && (

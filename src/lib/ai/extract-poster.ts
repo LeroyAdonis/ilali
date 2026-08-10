@@ -21,6 +21,17 @@ export interface PosterExtract {
   instagram?: string;
   facebook?: string;
   tags?: string[];
+  // George's extended fields (2026-08-10) — capture everything on the poster.
+  venue?: string;
+  address?: string;
+  dateStart?: string;
+  dateEnd?: string;
+  timeStart?: string;
+  timeEnd?: string;
+  dayOfWeek?: string;
+  contactName?: string;
+  bookingInfo?: string;
+  additionalInfo?: string;
 }
 
 const ACTIVITY_CATEGORIES = [
@@ -74,7 +85,17 @@ Output format:
   "website": "string | null (website URL if visible)",
   "instagram": "string | null (Instagram handle if visible)",
   "facebook": "string | null (Facebook page/handle if visible)",
-  "tags": ["string"] (up to 5 from the available list)
+  "tags": ["string"] (up to 5 from the available list),
+  "venue": "string | null (venue name where the activity happens)",
+  "address": "string | null (full street address if visible)",
+  "dateStart": "string | null (start date, keep poster wording e.g. '12 July' or '2026-08-12')",
+  "dateEnd": "string | null (end date if a range is given)",
+  "timeStart": "string | null (start time e.g. '14:00' or '2pm')",
+  "timeEnd": "string | null (end time if visible)",
+  "dayOfWeek": "string | null (days the activity runs, e.g. 'Mon, Wed' or 'Saturdays')",
+  "contactName": "string | null (named contact person if visible)",
+  "bookingInfo": "string | null (booking instructions, e.g. 'WhatsApp to book', 'limited spaces')",
+  "additionalInfo": "string | null (ALL remaining text on the poster not captured above — capture it verbatim)"
 }
 
 Rules:
@@ -83,8 +104,10 @@ Rules:
 - Write a warm, family-friendly description based on what the poster advertises
 - Extract age range from phrases like "ages 5-10", "for 8 year olds", "teens"
 - Extract price if mentioned (in Rands, whole number)
-- Normalise phone numbers to international +27 format (e.g. 082 123 4567 → +27821234567)
+- Normalise phone numbers to international +27 format (e.g. "082 XXX XXXX" → "+27 82 XXX XXXX": strip the leading 0, prepend +27)
 - Infer tags from context (e.g., "football" → sport, outdoor; "drawing" → creative, indoor)
+- For venue/address/dates/times/dayOfWeek/contactName/bookingInfo: copy what the poster shows — keep original wording, don't reformat or invent
+- For additionalInfo: include EVERY piece of text on the poster that didn't fit another field (phone/email/website excluded — those have their own fields), verbatim where possible
 - If a field is not visible on the poster, return null — never invent it`;
 
   const userMessage =
@@ -144,6 +167,18 @@ export function normaliseExtract(result: PosterExtract): PosterExtract {
     tags: Array.isArray(result.tags)
       ? result.tags.filter((t) => (MATCH_TAGS as readonly string[]).includes(t)).slice(0, 5)
       : undefined,
+    // George's extended poster fields — pass through as strings.
+    venue: typeof result.venue === "string" ? result.venue : undefined,
+    address: typeof result.address === "string" ? result.address : undefined,
+    dateStart: typeof result.dateStart === "string" ? result.dateStart : undefined,
+    dateEnd: typeof result.dateEnd === "string" ? result.dateEnd : undefined,
+    timeStart: typeof result.timeStart === "string" ? result.timeStart : undefined,
+    timeEnd: typeof result.timeEnd === "string" ? result.timeEnd : undefined,
+    dayOfWeek: typeof result.dayOfWeek === "string" ? result.dayOfWeek : undefined,
+    contactName: typeof result.contactName === "string" ? result.contactName : undefined,
+    bookingInfo: typeof result.bookingInfo === "string" ? result.bookingInfo : undefined,
+    additionalInfo:
+      typeof result.additionalInfo === "string" ? result.additionalInfo : undefined,
   };
 }
 

@@ -153,6 +153,19 @@ export const providerApplications = pgTable("provider_applications", {
   ageMax: integer("age_max"),
   priceValue: integer("price_value"),
   imageUrl: text("image_url"),
+  // George's extended poster fields (2026-08-10) — captured from poster / AI
+  // extraction into the draft profile, editable in the review desk + edit form.
+  venue: text("venue"),
+  address: text("address"),
+  dateStart: text("date_start"), // free text (posters are messy): "12 July" or ISO
+  dateEnd: text("date_end"),
+  timeStart: text("time_start"),
+  timeEnd: text("time_end"),
+  dayOfWeek: text("day_of_week"),
+  contactName: text("contact_name"),
+  bookingInfo: text("booking_info"),
+  additionalInfo: text("additional_info"), // capture ALL text on the poster
+  logoPath: text("logo_path"), // base64 data URL (same pattern as poster image)
   status: text("status").default("pending"), // pending, contacted, approved, rejected
   onboardSource: text("onboard_source"), // 'email' | 'form' | 'whatsapp' | 'bulk-import' | 'poster' | null
   importBatchId: uuid("import_batch_id").references(() => importBatches.id),

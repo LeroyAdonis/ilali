@@ -115,7 +115,8 @@ export const POST = withAdmin(
  * Two modes:
  *  - Body { fields: {...} }  → EDIT the draft application (pending/contacted only).
  *    Updates name, activityType, description, location, ages, priceValue (Rands),
- *    phone, email in place. Approved/rejected are locked — 400.
+ *    phone, email, venue, address, dates/times, day of week, contact name,
+ *    booking/additional info, and logo in place. Approved/rejected are locked — 400.
  *  - Empty body → regenerate the temp password for an approved application
  *    (legacy behavior, invalidates the old one, re-arms password reset).
  */
@@ -215,6 +216,49 @@ export const PATCH = withAdmin(
             typeof fields.phone === "string" && fields.phone.trim()
               ? fields.phone.trim()
               : null,
+          venue:
+            typeof fields.venue === "string" && fields.venue.trim()
+              ? fields.venue.trim()
+              : null,
+          address:
+            typeof fields.address === "string" && fields.address.trim()
+              ? fields.address.trim()
+              : null,
+          dateStart:
+            typeof fields.dateStart === "string" && fields.dateStart.trim()
+              ? fields.dateStart.trim()
+              : null,
+          dateEnd:
+            typeof fields.dateEnd === "string" && fields.dateEnd.trim()
+              ? fields.dateEnd.trim()
+              : null,
+          timeStart:
+            typeof fields.timeStart === "string" && fields.timeStart.trim()
+              ? fields.timeStart.trim()
+              : null,
+          timeEnd:
+            typeof fields.timeEnd === "string" && fields.timeEnd.trim()
+              ? fields.timeEnd.trim()
+              : null,
+          dayOfWeek:
+            typeof fields.dayOfWeek === "string" && fields.dayOfWeek.trim()
+              ? fields.dayOfWeek.trim()
+              : null,
+          contactName:
+            typeof fields.contactName === "string" && fields.contactName.trim()
+              ? fields.contactName.trim()
+              : null,
+          bookingInfo:
+            typeof fields.bookingInfo === "string" && fields.bookingInfo.trim()
+              ? fields.bookingInfo.trim()
+              : null,
+          additionalInfo:
+            typeof fields.additionalInfo === "string" &&
+            fields.additionalInfo.trim()
+              ? fields.additionalInfo.trim()
+              : null,
+          logoPath:
+            typeof fields.logoPath === "string" ? fields.logoPath : null,
         })
         .where(eq(providerApplications.id, id))
         .returning();

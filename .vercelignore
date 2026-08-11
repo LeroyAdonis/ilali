@@ -1,0 +1,9 @@
+# Exclude ad-hoc debug scripts from Vercel CLI uploads.
+# (vercel deploy CLI reads THIS file for upload exclusions — .gitignore is
+# not enough for local CLI uploads; stray root .ts files break the build's
+# type check: "Failed to type check. ./logo-test.ts ... Cannot find module".)
+/logo-test*.ts
+/extract-cmp*.ts
+/check-url.ts
+/verify-*.ts
+/cleanup-*.ts

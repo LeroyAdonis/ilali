@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import type { PosterExtract } from "@/lib/ai/extract-poster";
 import type { EnrichmentSuggestion } from "@/lib/web/enrich";
+import { buildUploadFormData } from "@/lib/upload-compress";
 
 interface RecentImport {
   id: string;
@@ -157,32 +158,52 @@ export default function PosterImportPage() {
       setEnrichMessage(null);
       setLogoAutoDetected(false);
 
-      const body = new FormData();
-      body.append("file", file);
+      const { formData, usedCompression } = await buildUploadFormData(file);
 
       try {
         const res = await fetch("/api/admin/poster-import", {
           method: "POST",
-          body,
+          body: formData,
         });
-        const data = await res.json();
+
+        // Vercel rejects oversized bodies (413, text/plain) BEFORE the route
+        // runs — res.json() would throw on that. Check status first, then
+        // parse defensively so a non-JSON error page surfaces a useful
+        // message instead of a bogus "network error".
+        let data: Record<string, unknown> | null = null;
+        try {
+          data = (await res.json()) as Record<string, unknown>;
+        } catch {
+          data = null;
+        }
 
         if (!res.ok) {
-          setExtractionError(data.error ?? "Upload failed.");
+          const msg =
+            typeof data?.error === "string"
+              ? data.error
+              : res.status === 413
+                ? "That image is too large. We compressed it, but it still exceeded the upload limit — try a smaller photo or a screenshot of the poster."
+                : `Upload failed (HTTP ${res.status}).`;
+          setExtractionError(msg);
           setPhase({ kind: "review" });
           return;
         }
-
-        setPosterImportId(data.posterImportId);
-        if (data.status === "extraction_failed") {
+        setPosterImportId((data?.posterImportId as string | undefined) ?? null);
+        if (data?.status === "extraction_failed") {
           setExtractionError(
-            data.message ?? "AI extraction unavailable — fill in manually."
+            (data.message as string | undefined) ??
+              "AI extraction unavailable — fill in manually."
           );
           setPhase({ kind: "review" });
           return;
         }
 
-        const extracted = data.extracted as PosterExtract;
+        const extracted = data?.extracted as PosterExtract | undefined;
+        if (!extracted) {
+          setExtractionError("No extraction data returned — try again.");
+          setPhase({ kind: "review" });
+          return;
+        }
         setForm({
           name: extracted.name ?? "",
           activityType: extracted.category ?? "",

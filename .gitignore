@@ -44,3 +44,11 @@ next-env.d.ts
 
 # Playwright artifacts
 test-results/
+
+# Ad-hoc debug scripts (created during debugging; Vercel CLI uploads stray root
+# .ts files and the build worker chokes on them — keep them gitignored).
+/logo-test*.ts
+/extract-cmp*.ts
+/check-url.ts
+/verify-*.ts
+/cleanup-*.ts

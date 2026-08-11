@@ -3,6 +3,11 @@
  * structured provider fields via the AI vision tier (Gemini first, then
  * OpenRouter free vision model).
  *
+ * Logo reliability (2026-08-11): the combined extraction asks for logoBox
+ * among ~25 fields, and free-tier vision models frequently skip it on small/
+ * simple images. When the main extraction misses the logo, a dedicated
+ * focused logo-detection pass runs so George's logo requirement is reliable.
+ *
  * Same pattern as extract-provider.ts but multimodal (image + prompt).
  */
 import { chat, OPENROUTER_VISION_MODEL } from "./client";
@@ -124,7 +129,9 @@ Rules:
   // fallback so we don't pay Gemini quota when NIM happens to be healthy.
   const geminiResult = await extractPosterWithGemini(imageUrl, systemPrompt, userMessage);
   if (geminiResult) {
-    return normaliseExtract(geminiResult);
+    // Normalise FIRST (phone +27, tag filter, logoBox clamp), then run the
+    // dedicated logo pass if the main extraction missed the logo.
+    return await ensureLogo(normaliseExtract(geminiResult), imageUrl);
   }
 
   let content = await chat({
@@ -146,11 +153,75 @@ Rules:
       .replace(/```\s*/g, "")
       .trim();
 
-    return normaliseExtract(JSON.parse(cleaned) as PosterExtract);
+    return await ensureLogo(
+      normaliseExtract(JSON.parse(cleaned) as PosterExtract),
+      imageUrl
+    );
   } catch {
     console.warn("[extract-poster] Failed to parse AI response");
     return null;
   }
+}
+
+/**
+ * Logo reliability pass (2026-08-11): when the main extraction returned other
+ * fields but MISSED the logo, run a focused logo-only detection. A dedicated
+ * prompt ("return ONLY the logo bounding box") is far more reliable than the
+ * ~25-field combined extraction, and it's cheap (admin-facing, low volume).
+ */
+async function ensureLogo(
+  result: PosterExtract,
+  imageUrl: string
+): Promise<PosterExtract> {
+  if (result.logoBox) return result; // already located — no extra call
+
+  const logoSystemPrompt = `You locate the LOGO on a children's activity poster.
+A logo is a small distinct graphic mark / emblem / brand icon — often in a corner.
+Do NOT include the main poster photo, artwork, or decorative shapes.
+
+Return ONLY valid JSON, no other text, no markdown:
+{
+  "logoBox": { "x": number, "y": number, "width": number, "height": number } | null
+}
+All values are PERCENTAGES (0-100) of the poster's width/height, where x,y is the top-left corner of the logo and width,height its size. If there is NO clear logo, return {"logoBox": null}. If uncertain, prefer a slightly LARGER box over a too-small one (we crop it).`;
+
+  // Try Gemini first (reliable + free), then the OpenRouter vision fallback.
+  // IMPORTANT: merge only the logoBox into the existing result — do NOT
+  // re-normalise (normaliseExtract drops fields not in its output shape).
+  const geminiLogo = await extractPosterWithGemini(
+    imageUrl,
+    logoSystemPrompt,
+    "Locate the logo on this poster. Return ONLY JSON."
+  );
+  if (geminiLogo?.logoBox) {
+    return { ...result, logoBox: geminiLogo.logoBox };
+  }
+
+  const logoContent = await chat({
+    systemPrompt: logoSystemPrompt,
+    userMessage: "Locate the logo on this poster. Return ONLY JSON.",
+    imageUrl,
+    model: VISION_MODEL,
+    temperature: 0.1,
+    maxTokens: 200,
+    timeoutMs: TIMEOUT_MS,
+    responseFormat: "json",
+  });
+  if (!logoContent) return result;
+
+  try {
+    const cleaned = logoContent
+      .replace(/```json\s*/g, "")
+      .replace(/```\s*/g, "")
+      .trim();
+    const logoParse = JSON.parse(cleaned) as { logoBox?: PosterExtract["logoBox"] };
+    if (logoParse.logoBox) {
+      return { ...result, logoBox: logoParse.logoBox };
+    }
+  } catch {
+    console.warn("[extract-poster] Failed to parse logo pass");
+  }
+  return result;
 }
 
 /** Shared post-processing for any extraction source (Gemini or OpenRouter). */

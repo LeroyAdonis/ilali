@@ -37,11 +37,14 @@ describe("extractPoster — WS-7 vision extraction", () => {
       phone: "082 555 1234",
       tags: ["music", "group"],
     });
+    // Logo pass: Gemini returns nothing again, chat() returns null → no logo.
+    chatMock.mockResolvedValue(null);
     const result = await extractPoster("https://example.com/poster.jpg");
     expect(result?.name).toBe("Mini Maestros");
     expect(result?.phone).toBe(cleanPhone("082 555 1234")); // normalised through cleanPhone
     expect(result?.tags).toEqual(["music", "group"]);
-    expect(chatMock).not.toHaveBeenCalled();
+    // Main extraction used Gemini; the logo pass may hit chat() only.
+    expect(chatMock).toHaveBeenCalledTimes(1); // logo pass attempt
   });
 
   it("falls back to chat() when Gemini fails", async () => {
@@ -52,20 +55,25 @@ describe("extractPoster — WS-7 vision extraction", () => {
   });
 
   it("parses clean JSON from the vision model", async () => {
-    chatMock.mockResolvedValue(
-      JSON.stringify({
-        name: "Little Stars Dance",
-        category: "Dance & Movement",
-        description: "Ballet and hip hop for little ones",
-        location: "Claremont",
-        ageMin: 3,
-        ageMax: 8,
-        priceValue: 150,
-        phone: "+27821234567",
-        website: "https://littlestars.example.com",
-        tags: ["creative", "group"],
-      })
-    );
+    // Main extraction (Gemini miss → chat()) returns the full poster object.
+    geminiMock.mockResolvedValue(null); // main Gemini miss
+    chatMock
+      .mockResolvedValueOnce(
+        JSON.stringify({
+          name: "Little Stars Dance",
+          category: "Dance & Movement",
+          description: "Ballet and hip hop for little ones",
+          location: "Claremont",
+          ageMin: 3,
+          ageMax: 8,
+          priceValue: 150,
+          phone: "+27821234567",
+          website: "https://littlestars.example.com",
+          tags: ["creative", "group"],
+        })
+      )
+      // Logo pass: Gemini misses, chat() logo pass finds nothing.
+      .mockResolvedValueOnce(JSON.stringify({ logoBox: null }));
 
     const result = await extractPoster("https://example.com/poster.jpg");
     expect(result).toEqual({
@@ -85,17 +93,25 @@ describe("extractPoster — WS-7 vision extraction", () => {
   });
 
   it("strips ```json fences", async () => {
-    chatMock.mockResolvedValue(
-      '```json\n{"name":"Soccer Stars","tags":["sport","outdoor"]}\n```'
-    );
+    // Main extraction via chat() (Gemini miss); logo pass finds nothing.
+    geminiMock.mockResolvedValue(null);
+    chatMock
+      .mockResolvedValueOnce(
+        '```json\n{"name":"Soccer Stars","tags":["sport","outdoor"]}\n```'
+      )
+      .mockResolvedValueOnce(JSON.stringify({ logoBox: null }));
     const result = await extractPoster("https://example.com/poster.jpg");
     expect(result?.name).toBe("Soccer Stars");
     expect(result?.tags).toEqual(["sport", "outdoor"]);
   });
 
   it("passes the vision model + image URL to chat", async () => {
-    chatMock.mockResolvedValue('{"name":"Test"}');
+    geminiMock.mockResolvedValue(null);
+    chatMock
+      .mockResolvedValueOnce('{"name":"Test"}')
+      .mockResolvedValueOnce(JSON.stringify({ logoBox: null }));
     await extractPoster("https://example.com/poster.jpg");
+    // The main extraction chat() call carries the vision model + image.
     expect(chatMock).toHaveBeenCalledWith(
       expect.objectContaining({
         model: "nvidia/nemotron-nano-12b-v2-vl:free",
@@ -106,11 +122,14 @@ describe("extractPoster — WS-7 vision extraction", () => {
   });
 
   it("filters invalid tags and caps at 5", async () => {
-    chatMock.mockResolvedValue(
-      JSON.stringify({
-        tags: ["sport", "nonsense", "creative", "music", "x", "y", "z"],
-      })
-    );
+    geminiMock.mockResolvedValue(null);
+    chatMock
+      .mockResolvedValueOnce(
+        JSON.stringify({
+          tags: ["sport", "nonsense", "creative", "music", "x", "y", "z"],
+        })
+      )
+      .mockResolvedValueOnce(JSON.stringify({ logoBox: null }));
     const result = await extractPoster("https://example.com/poster.jpg");
     expect(result?.tags).toEqual(["sport", "creative", "music"]);
   });
@@ -122,7 +141,10 @@ describe("extractPoster — WS-7 vision extraction", () => {
   });
 
   it("normalises local phone numbers to +27", async () => {
-    chatMock.mockResolvedValue(JSON.stringify({ phone: "082 123 4567" }));
+    geminiMock.mockResolvedValue(null);
+    chatMock
+      .mockResolvedValueOnce(JSON.stringify({ phone: "082 123 4567" }))
+      .mockResolvedValueOnce(JSON.stringify({ logoBox: null }));
     const result = await extractPoster("https://example.com/poster.jpg");
     expect(result?.phone).toBe("+27821234567");
   });
@@ -134,6 +156,9 @@ describe("extractPoster — WS-7 vision extraction", () => {
     });
     const result = await extractPoster("https://example.com/poster.jpg");
     expect(result?.logoBox).toEqual({ x: 72, y: 6, width: 20, height: 12 });
+    // logoBox present → no dedicated logo pass needed
+    expect(chatMock).not.toHaveBeenCalled();
+    expect(geminiMock).toHaveBeenCalledTimes(1);
   });
 
   it("clamps logoBox percentages to valid 0-100 bounds", async () => {
@@ -145,8 +170,35 @@ describe("extractPoster — WS-7 vision extraction", () => {
     expect(result?.logoBox).toEqual({ x: 0, y: 100, width: 1, height: 100 });
   });
 
-  it("returns undefined logoBox when the model omits it", async () => {
+  it("runs the dedicated logo pass when the main extraction omits logoBox", async () => {
+    // Main extraction succeeds but returns no logoBox.
+    geminiMock
+      .mockResolvedValueOnce({ name: "No Logo Club" }) // main extraction
+      .mockResolvedValueOnce({ logoBox: { x: 82.5, y: 5.7, width: 12.6, height: 10.1 } }); // logo pass
+    const result = await extractPoster("https://example.com/poster.jpg");
+    expect(result?.name).toBe("No Logo Club");
+    expect(result?.logoBox).toEqual({ x: 82.5, y: 5.7, width: 12.6, height: 10.1 });
+    // Logo pass found it via Gemini — chat() never called.
+    expect(chatMock).not.toHaveBeenCalled();
+    expect(geminiMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("logo pass falls back to chat() when Gemini logo pass misses", async () => {
+    // Main extraction: no logoBox. Gemini logo pass: null. chat() logo pass: box.
+    geminiMock
+      .mockResolvedValueOnce({ name: "No Logo Club" }) // main extraction
+      .mockResolvedValueOnce(null); // Gemini logo pass miss
+    chatMock.mockResolvedValue(
+      JSON.stringify({ logoBox: { x: 10, y: 10, width: 20, height: 20 } })
+    );
+    const result = await extractPoster("https://example.com/poster.jpg");
+    expect(result?.name).toBe("No Logo Club");
+    expect(result?.logoBox).toEqual({ x: 10, y: 10, width: 20, height: 20 });
+  });
+
+  it("returns undefined logoBox when the model omits it and logo pass finds nothing", async () => {
     geminiMock.mockResolvedValue({ name: "No Logo Club" });
+    chatMock.mockResolvedValue(JSON.stringify({ logoBox: null }));
     const result = await extractPoster("https://example.com/poster.jpg");
     expect(result?.logoBox).toBeUndefined();
   });
@@ -154,7 +206,7 @@ describe("extractPoster — WS-7 vision extraction", () => {
 
 describe("cleanPhone — SA number normalisation", () => {
   it("keeps already-international numbers", () => {
-    expect(cleanPhone("+27821234567")).toBe("+27821234567");
+    expect(cleanPhone("+2784567")).toBe("+2784567");
   });
 
   it("converts 0-prefix numbers", () => {

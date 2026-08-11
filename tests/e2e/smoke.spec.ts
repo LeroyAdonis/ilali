@@ -66,10 +66,26 @@ test.describe("ILALI MVP — E2E Smoke Tests", () => {
     });
     expect(res.status()).toBe(200);
     const json = await res.json();
-    expect(json.mode).toBe("ai");
+    // Fast path (deterministic/cache) now handles parseable queries in <1s —
+    // the AI tier is only hit for fuzzy ones. Any successful mode is correct;
+    // what matters is that matches came back without a fallback.
+    expect(["ai", "deterministic", "cache"]).toContain(json.mode);
     expect(json.fallback).toBe(false);
     expect(json.matches.length).toBeGreaterThanOrEqual(1);
     expect(json.matches[0].score).toBeGreaterThan(50);
+  });
+
+  test("AI matching — fuzzy query falls through to the AI tier", async ({ request }) => {
+    // A vague query the deterministic parser cannot parse — must reach the
+    // AI tier (OpenCode → OpenRouter → Gemini).
+    const res = await request.post(`${BASE}/api/match`, {
+      headers: { "Content-Type": "application/json" },
+      data: { query: "something special for my amazing little one" },
+    });
+    expect(res.status()).toBe(200);
+    const json = await res.json();
+    expect(json.mode).toBe("ai");
+    expect(json.fallback).toBe(false);
   });
 
   test("Search API returns results", async ({ request }) => {

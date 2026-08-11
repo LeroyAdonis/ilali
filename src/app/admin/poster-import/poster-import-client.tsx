@@ -113,11 +113,19 @@ export default function PosterImportPage() {
    * logoBox is in % of poster dimensions — convert to pixels, draw the region
    * onto a canvas, export as a PNG data URL (logoPath). Falls back silently if
    * the browser can't decode the image or the box is invalid.
+   *
+   * sourceUrl is passed explicitly (NOT read from state) — handleFile has
+   * empty deps so it captures the first-render cropLogoFromPoster, whose
+   * posterUrl closure was still null (stale-closure bug: the crop silently
+   * returned null and the logo was never extracted, fixed 2026-08-11).
    */
   const cropLogoFromPoster = useCallback(
-    (logoBox: NonNullable<PosterExtract["logoBox"]>): Promise<string | null> =>
+    (
+      logoBox: NonNullable<PosterExtract["logoBox"]>,
+      sourceUrl: string
+    ): Promise<string | null> =>
       new Promise((resolve) => {
-        if (!posterUrl) return resolve(null);
+        if (!sourceUrl) return resolve(null);
         const img = new Image();
         img.onload = () => {
           try {
@@ -139,9 +147,9 @@ export default function PosterImportPage() {
           }
         };
         img.onerror = () => resolve(null);
-        img.src = posterUrl;
+        img.src = sourceUrl;
       }),
-    [posterUrl]
+    []
   );
 
   const handleFile = useCallback(
@@ -229,7 +237,7 @@ export default function PosterImportPage() {
         });
         // Auto-crop the logo from the poster if AI located one.
         if (extracted.logoBox) {
-          const cropped = await cropLogoFromPoster(extracted.logoBox);
+          const cropped = await cropLogoFromPoster(extracted.logoBox, localUrl);
           if (cropped) {
             setForm((f) => ({ ...f, logoPath: cropped }));
             setLogoAutoDetected(true);

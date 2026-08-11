@@ -69,6 +69,34 @@ test.describe("WS-7 Poster Import — admin pipeline", () => {
     await expect(page.getByText(/Application saved/)).toBeVisible({ timeout: 15000 });
   });
 
+  test("auto-crops the logo when the AI detects one on the poster", async ({ page }) => {
+    await loginAsAdmin(page);
+    await page.goto(`${BASE}/admin/poster-import`);
+
+    await expect(page.getByRole("heading", { name: "Poster Import" })).toBeVisible();
+
+    // Upload the poster that has a clear logo (top-right corner).
+    await page.setInputFiles(
+      'input[type="file"]',
+      "tests/e2e/fixtures/poster-with-logo.png"
+    );
+
+    // Review desk renders.
+    await expect(page.getByRole("heading", { name: "Profile review" })).toBeVisible({
+      timeout: 60000,
+    });
+
+    // The logo should be cropped + displayed automatically (regression test
+    // for the stale-closure bug: cropLogoFromPoster captured a null posterUrl
+    // because handleFile had empty deps — the logo was NEVER extracted even
+    // though the AI returned logoBox. Fixed 2026-08-11 by passing the source
+    // URL explicitly instead of reading it from a stale closure.)
+    await expect(page.locator("img[alt='Provider logo']")).toBeVisible({
+      timeout: 15000,
+    });
+    await expect(page.getByText(/Logo detected on the poster/)).toBeVisible();
+  });
+
   test("applications page has a Posters filter chip", async ({ page }) => {
     await loginAsAdmin(page);
     await page.goto(`${BASE}/admin/applications`);

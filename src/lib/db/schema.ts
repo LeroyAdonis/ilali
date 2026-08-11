@@ -454,3 +454,16 @@ export const messageTemplates = pgTable("message_templates", {
   body: text("body").notNull(), // supports {{providerName}} {{activityName}} {{claimUrl}} {{claimCode}}
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+// ── Match Intent Cache (2026-08-11 — fast path latency fix) ──
+// Caches extracted search intents by normalized query so repeat searches
+// skip the slow AI tier entirely (parents repeat searches a lot: "soccer",
+// "swimming", "art classes"). TTL enforced in code (createdAt + 7 days);
+// rows are cheap and the table is pruned opportunistically on write.
+export const matchIntentCache = pgTable("match_intent_cache", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  queryKey: text("query_key").notNull().unique(), // normalized lowercase query
+  intentJson: jsonb("intent_json").notNull(), // MatchIntent
+  mode: text("mode").notNull(), // deterministic | ai
+  createdAt: timestamp("created_at").defaultNow(),
+});

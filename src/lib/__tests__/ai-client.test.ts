@@ -181,7 +181,7 @@ describe("AI client — OpenCode primary → OpenRouter fallback (NIM removed 20
     expect(fakeFetch).not.toHaveBeenCalled();
   });
 
-  it("vision requests skip OpenCode and use the OpenRouter vision model first", async () => {
+  it("vision requests skip OpenCode and try the OpenRouter vision model once", async () => {
     const fetchMock = vi
       .fn()
       .mockResolvedValueOnce({
@@ -203,6 +203,30 @@ describe("AI client — OpenCode primary → OpenRouter fallback (NIM removed 20
     const [url, init] = fetchMock.mock.calls[0];
     expect(String(url)).toContain("openrouter.ai");
     expect(JSON.parse(init.body).model).toBe(OPENROUTER_VISION_MODEL);
+  });
+
+  it("vision requests use the model override when provided", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { content: "vision-override" } }],
+        }),
+      });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await chat({
+      systemPrompt: "s",
+      userMessage: "u",
+      imageUrl: "https://example.com/poster.png",
+      model: "my/custom-vision-model",
+    });
+
+    expect(result).toBe("vision-override");
+    expect(fetchMock).toHaveBeenCalledTimes(1); // single attempt, no text-pool rotation
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(JSON.parse(init.body).model).toBe("my/custom-vision-model");
   });
 
   it("passes response_format json_object when requested", async () => {

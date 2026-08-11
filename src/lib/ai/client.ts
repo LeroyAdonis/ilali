@@ -226,16 +226,22 @@ export async function chat(opts: ChatOptions): Promise<string | null> {
 
   const cfg = getAIConfig();
 
-  // ── Vision path: skip OpenCode, use OpenRouter vision model first ──
+  // ── Vision path: try ONLY vision-capable models, never the text pool.
+  // Text models reject multimodal payloads (400/500) and each failed attempt
+  // burns 15-20s. The old code hit this exact trap (75s poster uploads).
+  // Gemini is the reliable vision tier (extractPosterWithGemini runs first in
+  // extract-poster.ts, ~5.7s); OpenRouter VL free models are flaky (the
+  // nemotron-nano-12b-v2-vl:free probe timed out at 120s on 2026-08-11), so
+  // vision degrades gracefully to manual form rather than hanging.
   if (imageUrl) {
-    const visionModels = model
-      ? [model, ...OPENROUTER_MODEL_POOL.filter((m) => m !== model)]
-      : [OPENROUTER_VISION_MODEL, ...OPENROUTER_MODEL_POOL];
-    for (const m of visionModels) {
-      const result = await attemptOpenRouter(cfg, m, { ...rest, imageUrl, timeoutMs });
-      if (result !== null) return result;
-    }
-    return null;
+    if (!cfg.openRouterKey) return null;
+    const visionModel = model ?? OPENROUTER_VISION_MODEL;
+    const result = await attemptOpenRouter(cfg, visionModel, {
+      ...rest,
+      imageUrl,
+      timeoutMs: Math.min(timeoutMs, 20000),
+    });
+    return result;
   }
 
   // ── Text path: OpenCode primary ──

@@ -7,6 +7,11 @@ import { extractPoster } from "@/lib/ai/extract-poster";
 
 export const runtime = "nodejs";
 
+// Vision extraction can take 20s+ (Gemini 5.7s typical, retries on truncation).
+// Default Vercel function timeout is 10s — without this the admin poster
+// upload would error on slow extraction instead of returning needs_review.
+export const maxDuration = 60;
+
 const MAX_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 

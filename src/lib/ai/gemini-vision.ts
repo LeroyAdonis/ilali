@@ -1,9 +1,11 @@
 /**
- * WS-7: Gemini vision fallback — used when NVIDIA NIM vision is overloaded/unavailable.
+ * WS-7: Gemini vision fallback — used when the OpenRouter/OpenCode vision
+ * path is overloaded/unavailable.
  *
- * Why: NIM's free tier is a shared pool (observed 429s/timeouts 2026-08-08). Gemini's
- * free tier is per-key and far more reliable. Strategy: NIM first (free, no key),
- * Gemini second (only when NIM fails), so ILALI costs nothing until NIM lets us down.
+ * Why: Gemini's per-key free tier is far more reliable than shared pools
+ * (observed 429s/timeouts on shared tiers 2026-08-08). Strategy: callers try
+ * their primary tier first, Gemini second, so ILALI costs nothing until the
+ * primary tiers let us down.
  *
  * Uses the OpenAI-compatible endpoint (gemini-flash-latest supports vision):
  *   https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
@@ -96,10 +98,11 @@ export async function chatGeminiText(opts: {
 }
 
 /**
- * Shared AI call with fallback: try NVIDIA NIM first (free), then Gemini
- * (per-key free tier) when NIM fails/times out. Returns raw text or null.
+ * Shared AI call with fallback: try chat() first (OpenCode → OpenRouter free
+ * pool — see client.ts), then Gemini (per-key free tier) when those
+ * fail/timeout. Returns raw text or null.
  * Used by match (parent search) + extract-provider (provider add) so those
- * flows keep working even when NIM's shared pool is overloaded.
+ * flows keep working even when the free tiers are overloaded.
  */
 export async function chatWithFallback(opts: {
   systemPrompt: string;
@@ -107,10 +110,10 @@ export async function chatWithFallback(opts: {
   temperature?: number;
   maxTokens?: number;
   timeoutMs?: number;
-  /** When true, NIM output that fails JSON.parse also triggers Gemini fallback. */
+  /** When true, chat() output that fails JSON.parse also triggers Gemini fallback. */
   json?: boolean;
 }): Promise<string | null> {
-  const nimResult = await chat({
+  const primaryResult = await chat({
     systemPrompt: opts.systemPrompt,
     userMessage: opts.userMessage,
     temperature: opts.temperature ?? 0.1,
@@ -118,26 +121,26 @@ export async function chatWithFallback(opts: {
     timeoutMs: opts.timeoutMs ?? 15000,
   });
 
-  // NIM succeeded: either plain text, or valid JSON (when json mode requested).
-  if (nimResult) {
-    if (!opts.json) return nimResult;
+  // chat() succeeded: either plain text, or valid JSON (when json mode requested).
+  if (primaryResult) {
+    if (!opts.json) return primaryResult;
     try {
-      const cleaned = nimResult
+      const cleaned = primaryResult
         .replace(/```json\s*/g, "")
         .replace(/```\s*/g, "")
         .trim();
       JSON.parse(cleaned);
-      return nimResult;
+      return primaryResult;
     } catch {
-      // NIM returned unparseable junk — fall through to Gemini.
-      console.warn("[chatWithFallback] NIM returned unparseable JSON — trying Gemini");
+      // chat() returned unparseable junk — fall through to Gemini.
+      console.warn("[chatWithFallback] chat() returned unparseable JSON — trying Gemini");
     }
   }
 
   if (!isGeminiConfigured()) return null;
   const geminiResult = await chatGeminiText({ ...opts });
   if (geminiResult) {
-    console.log("[chatWithFallback] NIM unavailable — Gemini succeeded");
+    console.log("[chatWithFallback] OpenCode/OpenRouter unavailable — Gemini succeeded");
   }
   return geminiResult;
 }

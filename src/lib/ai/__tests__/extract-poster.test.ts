@@ -5,6 +5,7 @@ const { chatMock } = vi.hoisted(() => ({ chatMock: vi.fn() }));
 
 vi.mock("@/lib/ai/client", () => ({
   chat: chatMock,
+  OPENROUTER_VISION_MODEL: "nvidia/nemotron-nano-12b-v2-vl:free",
 }));
 
 // Mock the Gemini fallback so tests are deterministic.
@@ -22,15 +23,15 @@ describe("extractPoster — WS-7 vision extraction", () => {
     geminiMock.mockReset();
   });
 
-  it("returns null when both Gemini and NIM fail", async () => {
+  it("returns null when both Gemini and chat() fail", async () => {
     geminiMock.mockResolvedValue(null);
     chatMock.mockResolvedValue(null);
     const result = await extractPoster("https://example.com/poster.jpg");
     expect(result).toBeNull();
-    expect(chatMock).toHaveBeenCalled(); // NIM fallback attempted
+    expect(chatMock).toHaveBeenCalled(); // chat() fallback attempted
   });
 
-  it("uses Gemini FIRST when it succeeds (NIM not called)", async () => {
+  it("uses Gemini FIRST when it succeeds (chat() not called)", async () => {
     geminiMock.mockResolvedValue({
       name: "Mini Maestros",
       phone: "082 555 1234",
@@ -43,11 +44,11 @@ describe("extractPoster — WS-7 vision extraction", () => {
     expect(chatMock).not.toHaveBeenCalled();
   });
 
-  it("falls back to NIM when Gemini fails", async () => {
+  it("falls back to chat() when Gemini fails", async () => {
     geminiMock.mockResolvedValue(null); // Gemini unavailable
-    chatMock.mockResolvedValue(JSON.stringify({ name: "NIM Winner" }));
+    chatMock.mockResolvedValue(JSON.stringify({ name: "Vision Winner" }));
     const result = await extractPoster("https://example.com/poster.jpg");
-    expect(result?.name).toBe("NIM Winner");
+    expect(result?.name).toBe("Vision Winner");
   });
 
   it("parses clean JSON from the vision model", async () => {
@@ -97,7 +98,7 @@ describe("extractPoster — WS-7 vision extraction", () => {
     await extractPoster("https://example.com/poster.jpg");
     expect(chatMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: "meta/llama-3.2-90b-vision-instruct",
+        model: "nvidia/nemotron-nano-12b-v2-vl:free",
         imageUrl: "https://example.com/poster.jpg",
         responseFormat: "json",
       })

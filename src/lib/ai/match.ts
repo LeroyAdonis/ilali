@@ -29,9 +29,9 @@ export const MATCH_TAGS = [
 ] as const;
 
 // Bake-off winner (gpt-oss-120b) averages 7.2s; 3s was permanently
-// falling back to keyword mode. 15s gives the winner headroom under
-// NVIDIA shared-load spikes while keeping 4-model rotation bounded.
-const TIMEOUT_MS = 15000;
+// falling back to keyword mode. OpenCode big-pickle primary is 12-23s, so
+// 25s gives the primary headroom while keeping fallback bounded.
+const TIMEOUT_MS = 25000;
 
 export async function extractIntent(
   query: string

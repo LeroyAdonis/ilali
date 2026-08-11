@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { chat } from "@/lib/ai/client";
 
+// AI route — OpenCode primary is slow (12-23s); allow up to 60s.
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   let body: { query: string; availableCategories: string[] };
   try {
@@ -37,7 +40,7 @@ Rules:
     userMessage: `Parent searched: "${query}"\n\nAvailable categories: ${cats}\n\nSuggest alternatives.`,
     temperature: 0.3,
     maxTokens: 250,
-    timeoutMs: 4000,
+    timeoutMs: 25000,
   });
 
   if (!content) {

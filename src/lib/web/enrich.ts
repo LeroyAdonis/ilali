@@ -137,7 +137,7 @@ Rules:
 
   let content = geminiContent;
   if (!content) {
-    console.warn("[enrich] Gemini unavailable — falling back to NIM");
+    console.warn("[enrich] Gemini unavailable — falling back to chat()");
     content = await chat({
       systemPrompt,
       userMessage: `Provider name: ${name}\n\n--- SOURCE PAGES ---\n${pages.join("\n\n---\n\n")}`,

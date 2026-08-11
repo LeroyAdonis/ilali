@@ -1,14 +1,23 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { chat, NIM_MODEL_POOL, getAIConfig } from "../ai/client";
+import {
+  chat,
+  OPENCODE_MODEL,
+  OPENROUTER_MODEL_POOL,
+  OPENROUTER_VISION_MODEL,
+  getAIConfig,
+} from "../ai/client";
 
-const MOCK_KEY = "nvapi-test-key-123";
+const MOCK_OC_PASS = "oc-test-password-123";
+const MOCK_OR_KEY = "sk-or-v1-test-key-123";
 
-describe("NIM AI client — rotation (DeepSeek removed 2026-08-07)", () => {
+describe("AI client — OpenCode primary → OpenRouter fallback (NIM removed 2026-08-11)", () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
     process.env = { ...originalEnv };
-    process.env.NVIDIA_API_KEY = MOCK_KEY;
+    process.env.OPENCODE_SERVER_PASSWORD = MOCK_OC_PASS;
+    process.env.OPENCODE_SERVER_URL = "http://opencode.test:4055";
+    process.env.OPENROUTER_API_KEY = MOCK_OR_KEY;
     vi.restoreAllMocks();
   });
 
@@ -16,124 +25,154 @@ describe("NIM AI client — rotation (DeepSeek removed 2026-08-07)", () => {
     process.env = originalEnv;
   });
 
-  it("exports a pool of verified free NIM models", () => {
-    // Exact rotation order — bake-off winner (2026-07-31) first:
-    // openai/gpt-oss-120b (7.2s avg, 100% on all metrics), then backups.
-    expect(NIM_MODEL_POOL).toEqual([
-      "openai/gpt-oss-120b",
-      "nvidia/nemotron-3-super-120b-a12b",
-      "meta/llama-3.3-70b-instruct",
-      "mistralai/mistral-nemotron",
-    ]);
-    expect(NIM_MODEL_POOL.length).toBeGreaterThanOrEqual(4);
-    expect(NIM_MODEL_POOL[0]).toBe("openai/gpt-oss-120b");
-    expect(NIM_MODEL_POOL[1]).toBe("nvidia/nemotron-3-super-120b-a12b");
-    expect(NIM_MODEL_POOL[2]).toBe("meta/llama-3.3-70b-instruct");
-    expect(NIM_MODEL_POOL[3]).toBe("mistralai/mistral-nemotron");
-    // No DeepSeek anywhere
-    expect(NIM_MODEL_POOL.join(" ").toLowerCase()).not.toContain("deepseek");
-  });
-
-  it("getAIConfig returns the bake-off winner with NVIDIA defaults", () => {
-    const cfg = getAIConfig();
-    expect(cfg.model).toBe("openai/gpt-oss-120b");
-    expect(cfg.provider).toBe("nvidia");
-    expect(cfg.baseUrl).toContain("integrate.api.nvidia.com");
-  });
-
-  it("returns the primary result when it succeeds", async () => {
-    const fakeFetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ choices: [{ message: { content: "ok" } }] }),
-    });
-    vi.stubGlobal("fetch", fakeFetch);
-
-    const result = await chat({ systemPrompt: "s", userMessage: "u" });
-    expect(result).toBe("ok");
-    // Exactly one attempt — no rotation when primary works
-    expect(fakeFetch).toHaveBeenCalledTimes(1);
-    const body = JSON.parse(fakeFetch.mock.calls[0][1].body);
-    expect(body.model).toBe(NIM_MODEL_POOL[0]);
-    expect(body.messages).toEqual([
-      { role: "system", content: "s" },
-      { role: "user", content: "u" },
-    ]);
-  });
-
-  it("rotates to the next NIM model when the primary fails (429)", async () => {
-    const fakeFetch = vi
-      .fn()
-      .mockResolvedValueOnce({ ok: false, status: 429 })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ choices: [{ message: { content: "backup" } }] }),
-      });
-    vi.stubGlobal("fetch", fakeFetch);
-
-    const result = await chat({ systemPrompt: "s", userMessage: "u" });
-    expect(result).toBe("backup");
-    expect(fakeFetch).toHaveBeenCalledTimes(2);
-    const secondBody = JSON.parse(fakeFetch.mock.calls[1][1].body);
-    expect(secondBody.model).toBe(NIM_MODEL_POOL[1]);
-  });
-
-  it("rotates through the whole pool when every model fails", async () => {
-    const fakeFetch = vi.fn().mockResolvedValue({ ok: false, status: 503 });
-    vi.stubGlobal("fetch", fakeFetch);
-
-    const result = await chat({ systemPrompt: "s", userMessage: "u" });
-    expect(result).toBeNull();
-    expect(fakeFetch).toHaveBeenCalledTimes(NIM_MODEL_POOL.length);
-    // Each model tried exactly once, in pool order
-    for (let i = 0; i < NIM_MODEL_POOL.length; i++) {
-      const body = JSON.parse(fakeFetch.mock.calls[i][1].body);
-      expect(body.model).toBe(NIM_MODEL_POOL[i]);
+  it("exports the OpenCode big-pickle model and OpenRouter free pool", () => {
+    expect(OPENCODE_MODEL).toEqual({ providerID: "opencode", modelID: "big-pickle" });
+    // Free pool: gpt-oss-20b first (4.8s benchmark winner), 4 models, all :free
+    expect(OPENROUTER_MODEL_POOL.length).toBeGreaterThanOrEqual(4);
+    expect(OPENROUTER_MODEL_POOL[0]).toBe("openai/gpt-oss-20b:free");
+    for (const m of OPENROUTER_MODEL_POOL) {
+      expect(m).toContain(":free");
     }
+    // No NIM base URL anywhere in the pool (all :free OpenRouter models)
+    expect(OPENROUTER_MODEL_POOL.join(" ")).not.toContain("integrate.api.nvidia.com");
   });
 
-  it("rotates to the next NIM model when the primary times out (AbortError)", async () => {
-    const fakeFetch = vi
+  it("getAIConfig reads OpenCode + OpenRouter env with defaults", () => {
+    const cfg = getAIConfig();
+    expect(cfg.opencodeUrl).toBe("http://opencode.test:4055");
+    expect(cfg.opencodeUsername).toBe("opencode");
+    expect(cfg.opencodePassword).toBe(MOCK_OC_PASS);
+    expect(cfg.openRouterKey).toBe(MOCK_OR_KEY);
+  });
+
+  it("getAIConfig defaults OpenCode URL to localhost when env missing", () => {
+    delete process.env.OPENCODE_SERVER_URL;
+    const cfg = getAIConfig();
+    expect(cfg.opencodeUrl).toBe("http://127.0.0.1:4055");
+  });
+
+  it("chat() calls OpenCode (session create + message) and returns its text", async () => {
+    const fetchMock = vi
       .fn()
-      .mockRejectedValueOnce(new DOMException("The operation was aborted.", "AbortError"))
+      // session create
       .mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ choices: [{ message: { content: "after-timeout" } }] }),
+        json: async () => ({ id: "ses_test123" }),
+      })
+      // message
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          parts: [
+            { type: "step-start", title: "" },
+            { type: "text", text: '{"ageMin":7}' },
+          ],
+        }),
       });
-    vi.stubGlobal("fetch", fakeFetch);
+    vi.stubGlobal("fetch", fetchMock);
 
-    const result = await chat({ systemPrompt: "s", userMessage: "u" });
-    expect(result).toBe("after-timeout");
-    // Timeout on primary → exactly one rotation, then success
-    expect(fakeFetch).toHaveBeenCalledTimes(2);
-    const secondBody = JSON.parse(fakeFetch.mock.calls[1][1].body);
-    expect(secondBody.model).toBe(NIM_MODEL_POOL[1]);
+    const result = await chat({ systemPrompt: "sys", userMessage: "7yo football" });
+
+    expect(result).toBe('{"ageMin":7}');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+
+    // Session create: POST to /session with Basic auth
+    const [createUrl, createInit] = fetchMock.mock.calls[0];
+    expect(String(createUrl)).toContain("/session");
+    expect(createInit.method).toBe("POST");
+    expect(String(createInit.headers.Authorization)).toContain("Basic ");
+
+    // Message: POST to /session/{id}/message with system + disabled tools
+    const [msgUrl, msgInit] = fetchMock.mock.calls[1];
+    expect(String(msgUrl)).toContain("/session/ses_test123/message");
+    const body = JSON.parse(msgInit.body);
+    expect(body.system).toBe("sys");
+    expect(body.parts[0].text).toBe("7yo football");
+    expect(body.model).toEqual({ providerID: "opencode", modelID: "big-pickle" });
+    // Agent tools explicitly disabled — pure completion, no bash/file access
+    expect(body.tools.bash).toBe(false);
+    expect(body.tools.edit).toBe(false);
   });
 
-  it("respects a per-call model override as the first attempt", async () => {
-    const fakeFetch = vi
+  it("falls back to OpenRouter pool when OpenCode fails", async () => {
+    const fetchMock = vi
       .fn()
+      // session create fails (500)
+      .mockResolvedValueOnce({ ok: false, status: 500 })
+      // OpenRouter first model succeeds
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { content: "or-fallback" } }],
+        }),
+      });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await chat({ systemPrompt: "s", userMessage: "u" });
+
+    expect(result).toBe("or-fallback");
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    const [orUrl, orInit] = fetchMock.mock.calls[1];
+    expect(String(orUrl)).toContain("openrouter.ai");
+    expect(JSON.parse(orInit.body).model).toBe(OPENROUTER_MODEL_POOL[0]);
+  });
+
+  it("rotates through OpenRouter pool when earlier models fail", async () => {
+    const fetchMock = vi
+      .fn()
+      // OpenCode session create fails
+      .mockResolvedValueOnce({ ok: false, status: 503 })
+      // OpenRouter model 1: 429
       .mockResolvedValueOnce({ ok: false, status: 429 })
+      // OpenRouter model 2: success
       .mockResolvedValueOnce({
         ok: true,
         json: async () => ({ choices: [{ message: { content: "rotated" } }] }),
       });
-    vi.stubGlobal("fetch", fakeFetch);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await chat({ systemPrompt: "s", userMessage: "u" });
+    expect(result).toBe("rotated");
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    const secondBody = JSON.parse(fetchMock.mock.calls[2][1].body);
+    expect(secondBody.model).toBe(OPENROUTER_MODEL_POOL[1]);
+  });
+
+  it("tries model override first in the OpenRouter pool", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 503 }) // OpenCode down
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ choices: [{ message: { content: "override" } }] }),
+      });
+    vi.stubGlobal("fetch", fetchMock);
 
     const result = await chat({
       systemPrompt: "s",
       userMessage: "u",
-      model: "some/custom-model",
+      model: "some/custom-model:free",
     });
-    expect(result).toBe("rotated");
-    const firstBody = JSON.parse(fakeFetch.mock.calls[0][1].body);
-    expect(firstBody.model).toBe("some/custom-model");
-    // Rotates to pool[0] next, not the override again
-    const secondBody = JSON.parse(fakeFetch.mock.calls[1][1].body);
-    expect(secondBody.model).toBe(NIM_MODEL_POOL[0]);
+    expect(result).toBe("override");
+    const firstOrBody = JSON.parse(fetchMock.mock.calls[1][1].body);
+    expect(firstOrBody.model).toBe("some/custom-model:free");
   });
 
-  it("returns null immediately when NVIDIA_API_KEY is missing", async () => {
-    delete process.env.NVIDIA_API_KEY;
+  it("returns null when every tier fails", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: false, status: 503 });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await chat({ systemPrompt: "s", userMessage: "u" });
+    expect(result).toBeNull();
+    // OpenCode session + 4 OpenRouter models
+    expect(fetchMock).toHaveBeenCalledTimes(1 + OPENROUTER_MODEL_POOL.length);
+  });
+
+  it("returns null immediately when OpenCode + OpenRouter keys are missing", async () => {
+    delete process.env.OPENCODE_SERVER_PASSWORD;
+    delete process.env.OPENROUTER_API_KEY;
     const fakeFetch = vi.fn();
     vi.stubGlobal("fetch", fakeFetch);
 
@@ -142,21 +181,42 @@ describe("NIM AI client — rotation (DeepSeek removed 2026-08-07)", () => {
     expect(fakeFetch).not.toHaveBeenCalled();
   });
 
-  it("passes response_format json_object when requested", async () => {
-    const fakeFetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ choices: [{ message: { content: "{}" } }] }),
-    });
-    vi.stubGlobal("fetch", fakeFetch);
+  it("vision requests skip OpenCode and use the OpenRouter vision model first", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          choices: [{ message: { content: "vision-ok" } }],
+        }),
+      });
+    vi.stubGlobal("fetch", fetchMock);
 
-    await chat({ systemPrompt: "s", userMessage: "u", responseFormat: "json" });
-    const body = JSON.parse(fakeFetch.mock.calls[0][1].body);
-    expect(body.response_format).toEqual({ type: "json_object" });
+    const result = await chat({
+      systemPrompt: "s",
+      userMessage: "u",
+      imageUrl: "https://example.com/poster.png",
+    });
+
+    expect(result).toBe("vision-ok");
+    expect(fetchMock).toHaveBeenCalledTimes(1); // no OpenCode session call
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(String(url)).toContain("openrouter.ai");
+    expect(JSON.parse(init.body).model).toBe(OPENROUTER_VISION_MODEL);
   });
 
-  it("never references DeepSeek in the config", () => {
-    const cfg = getAIConfig();
-    expect(cfg.provider).toBe("nvidia");
-    expect(cfg.baseUrl).toContain("nvidia.com");
+  it("passes response_format json_object when requested", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 503 }) // OpenCode down
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ choices: [{ message: { content: "{}" } }] }),
+      });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await chat({ systemPrompt: "s", userMessage: "u", responseFormat: "json" });
+    const orBody = JSON.parse(fetchMock.mock.calls[1][1].body);
+    expect(orBody.response_format).toEqual({ type: "json_object" });
   });
 });

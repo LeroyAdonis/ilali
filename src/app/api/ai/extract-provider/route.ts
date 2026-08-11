@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { extractProviderDetails } from "@/lib/ai/extract-provider";
 
+// AI route — OpenCode primary is slow (12-23s); allow up to 60s.
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   let body: { description: string };
   try {

@@ -62,13 +62,13 @@ describe("extractIntent — post-production AI extraction (f66e869)", () => {
     expect(result).toBeNull();
   });
 
-  it("uses the 15s timeout", async () => {
+  it("uses the 25s timeout", async () => {
     chatMock.mockResolvedValue('{"tags":["sport"]}');
 
     await extractIntent("tennis");
     expect(chatMock).toHaveBeenCalledTimes(1);
     expect(chatMock).toHaveBeenCalledWith(
-      expect.objectContaining({ timeoutMs: 15000 })
+      expect.objectContaining({ timeoutMs: 25000 })
     );
   });
 });

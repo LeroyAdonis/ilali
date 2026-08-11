@@ -29,7 +29,10 @@ const MATCH_TAGS = [
   "after-school", "holiday-program", "free", "beginner", "advanced",
 ];
 
-const TIMEOUT_MS = 4000;
+// OpenCode big-pickle (free zen) is 12-23s; 4s would skip it every time and
+// defeat the primary tier. 25s gives OpenCode headroom; the OpenRouter pool
+// and Gemini fallback still fire inside chatWithFallback on failure.
+const TIMEOUT_MS = 25000;
 
 export async function extractProviderDetails(
   description: string

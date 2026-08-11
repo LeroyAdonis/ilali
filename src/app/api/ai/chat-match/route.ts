@@ -4,6 +4,9 @@ import { getProviders, getCategories } from "@/lib/data-source";
 import { eq } from "drizzle-orm";
 import type { ChildProfile } from "@/lib/db/types";
 
+// AI routes call free tiers (OpenCode 12-23s + fallbacks) — allow up to 60s.
+export const maxDuration = 60;
+
 // ── Types ──
 
 interface ChatExtractedQuery {
@@ -71,12 +74,12 @@ const CATEGORY_LABELS: Record<string, string> = {
   "holiday-programs": "Holiday Programs",
 };
 
-// Default concierge model: NVIDIA bake-off winner (Jul 2026) —
-// openai/gpt-oss-120b: 7.2s avg latency, 100% parse/extract/chosen/reply/
-// followUp. (nemotron-nano-12b-v2-vl was fast at 4.8s but sloppy — 67%
-// chosen picks.) Override anytime with CONCIERGE_MODEL env var.
+// Default concierge model: OpenRouter free bake-off winner (Aug 2026) —
+// openai/gpt-oss-20b:free: 4.8s avg latency, perfect JSON on extraction.
+// chat() tries OpenCode big-pickle first, then this model override, then the
+// free pool. Override anytime with CONCIERGE_MODEL env var.
 const CONCIERGE_MODEL =
-  process.env.CONCIERGE_MODEL ?? "openai/gpt-oss-120b";
+  process.env.CONCIERGE_MODEL ?? "openai/gpt-oss-20b:free";
 
 const CATALOG_LIMIT = 60;
 
@@ -272,7 +275,7 @@ Rules:
     model: CONCIERGE_MODEL,
     temperature: 0.3,
     maxTokens: 1200,
-    timeoutMs: 20000,
+    timeoutMs: 25000,
     responseFormat: "json",
   });
 

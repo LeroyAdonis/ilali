@@ -1,10 +1,11 @@
 /**
  * WS-7: Poster extraction — reads a Fun with Kids poster image and returns
- * structured provider fields via the NVIDIA NIM vision model (free).
+ * structured provider fields via the AI vision tier (Gemini first, then
+ * OpenRouter free vision model).
  *
  * Same pattern as extract-provider.ts but multimodal (image + prompt).
  */
-import { chat } from "./client";
+import { chat, OPENROUTER_VISION_MODEL } from "./client";
 import { extractPosterWithGemini } from "./gemini-vision";
 import { CT_SUBURBS } from "@/lib/suburbs";
 
@@ -56,7 +57,7 @@ const MATCH_TAGS = [
 // Vision models are slower than chat; bake-off showed 90b-vision ~5-15s.
 const TIMEOUT_MS = 20000;
 
-const VISION_MODEL = "meta/llama-3.2-90b-vision-instruct";
+const VISION_MODEL = OPENROUTER_VISION_MODEL;
 
 export async function extractPoster(
   imageUrl: string
@@ -152,7 +153,7 @@ Rules:
   }
 }
 
-/** Shared post-processing for any extraction source (NIM or Gemini). */
+/** Shared post-processing for any extraction source (Gemini or OpenRouter). */
 export function normaliseExtract(result: PosterExtract): PosterExtract {
   const phone = typeof result.phone === "string" ? cleanPhone(result.phone) : undefined;
 

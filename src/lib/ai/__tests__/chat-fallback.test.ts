@@ -10,7 +10,7 @@ const { fetchMock } = vi.hoisted(() => ({ fetchMock: vi.fn() }));
 
 import { chatWithFallback } from "@/lib/ai/gemini-vision";
 
-describe("chatWithFallback — NIM first, Gemini second", () => {
+describe("chatWithFallback — chat() (OpenCode→OpenRouter) first, Gemini second", () => {
   beforeEach(() => {
     chatMock.mockReset();
     fetchMock.mockReset();
@@ -23,17 +23,17 @@ describe("chatWithFallback — NIM first, Gemini second", () => {
     vi.unstubAllGlobals();
   });
 
-  it("returns NIM result when NIM succeeds (Gemini not called)", async () => {
-    chatMock.mockResolvedValue("NIM response");
+  it("returns chat() result when it succeeds (Gemini not called)", async () => {
+    chatMock.mockResolvedValue("OpenCode response");
     const result = await chatWithFallback({
       systemPrompt: "sys",
       userMessage: "hi",
     });
-    expect(result).toBe("NIM response");
+    expect(result).toBe("OpenCode response");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("falls back to Gemini when NIM returns null", async () => {
+  it("falls back to Gemini when chat() returns null", async () => {
     chatMock.mockResolvedValue(null);
     fetchMock.mockResolvedValue(
       new Response(
@@ -54,7 +54,7 @@ describe("chatWithFallback — NIM first, Gemini second", () => {
     expect(JSON.parse(String(init.body)).model).toBe("gemini-flash-latest");
   });
 
-  it("falls back to Gemini when NIM returns unparseable JSON (json mode)", async () => {
+  it("falls back to Gemini when chat() returns unparseable JSON (json mode)", async () => {
     chatMock.mockResolvedValue("this is not json at all");
     // Fresh Response per call — a Response body is a one-shot stream, and
     // json mode retries once (free-tier truncation handling).
@@ -77,7 +77,7 @@ describe("chatWithFallback — NIM first, Gemini second", () => {
     expect(fetchMock).toHaveBeenCalled();
   });
 
-  it("returns NIM JSON without calling Gemini when parseable", async () => {
+  it("returns chat() JSON without calling Gemini when parseable", async () => {
     chatMock.mockResolvedValue('{"ok": true}');
     const result = await chatWithFallback({
       systemPrompt: "sys",
@@ -91,7 +91,7 @@ describe("chatWithFallback — NIM first, Gemini second", () => {
   it("returns null when both fail", async () => {
     chatMock.mockResolvedValue(null);
     fetchMock.mockResolvedValue(
-      new Response("{}", { status: 500 })
+      new Response("{ }", { status: 500 })
     );
     const result = await chatWithFallback({
       systemPrompt: "sys",
@@ -100,7 +100,7 @@ describe("chatWithFallback — NIM first, Gemini second", () => {
     expect(result).toBeNull();
   });
 
-  it("passes timeout through to NIM call", async () => {
+  it("passes timeout through to chat() call", async () => {
     chatMock.mockResolvedValue("ok");
     await chatWithFallback({
       systemPrompt: "sys",

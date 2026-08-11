@@ -4,6 +4,9 @@ import { scoreAllProviders } from "@/lib/ai/score";
 import { getProviders, searchProviders, getCategories } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
 
+// AI route — OpenCode primary is slow (12-23s); allow up to 60s.
+export const maxDuration = 60;
+
 export async function POST(request: Request) {
   let body: { query: string };
   try {

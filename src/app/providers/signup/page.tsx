@@ -4,6 +4,7 @@ import { Users, Shield, Zap, Check, ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProviderSignupForm from "./form";
+import { pricing } from "@/lib/pricing";
 
 export function generateMetadata() {
   return { title: "Provider Sign Up — ILALI" };
@@ -57,8 +58,8 @@ export default function ProviderSignupPage() {
               Reach thousands of local families looking for trusted programs.
             </p>
             <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-white px-6 py-3 shadow-sm">
-              <span className="text-2xl font-extrabold text-teal-deep">R99</span>
-              <span className="text-sm text-ink-faint">/month — first 30 days free</span>
+              <span className="text-2xl font-extrabold text-teal-deep">R{pricing.monthlyFeeRands}</span>
+              <span className="text-sm text-ink-faint">/month — first {pricing.trialDays} days free</span>
             </div>
           </div>
         </section>

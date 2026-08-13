@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { TERMS_COMMISSION_SENTENCE } from "@/lib/pricing";
 
 export const metadata: Metadata = {
   title: "Terms of Service | ILALI",
@@ -27,7 +28,9 @@ const sections = [
   {
     title: "Payments & Fees",
     content:
-      "All payments are processed securely through the ILALI platform. Activity prices are set by providers and include any applicable fees unless otherwise stated. ILALI charges a service fee on bookings, which will be clearly displayed before you complete your transaction. Payment is due at the time of booking unless alternative arrangements are agreed upon with the provider. Refunds are subject to the provider's cancellation policy and ILALI's refund policy. All prices are in South African Rand (ZAR) unless otherwise indicated.",
+      "All payments are processed securely through the ILALI platform. Activity prices are set by providers and include any applicable fees unless otherwise stated. " +
+        TERMS_COMMISSION_SENTENCE +
+        " Payment is due at the time of booking unless alternative arrangements are agreed upon with the provider. Refunds are subject to the provider's cancellation policy and ILALI's refund policy. All prices are in South African Rand (ZAR) unless otherwise indicated.",
   },
   {
     title: "Cancellations & Refunds",

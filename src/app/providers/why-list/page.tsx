@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InteriorHero from "@/components/InteriorHero";
 import { HERO_IMAGES } from "@/lib/images";
+import { MONTHLY_PRICING_SHORT, PRICING_FAQ_LONG, TRIAL_CTA_LINE } from "@/lib/pricing";
 
 export const metadata = {
   title: "Why List With Us — ILALI",
@@ -16,13 +17,13 @@ const comparisons = [
   { ilali: "Ubuntu Rewards loyalty programme", other: "No recurring engagement" },
   { ilali: "Reviews and ratings from real customers", other: "Referrals scattered across platforms" },
   { ilali: "Marketing exposure to thousands of users", other: "Your posts get buried in algorithms" },
-  { ilali: "R99/month — first 30 days free", other: "Free — but no tools or audience" },
+  { ilali: MONTHLY_PRICING_SHORT, other: "Free — but no tools or audience" },
 ];
 
 const faqs = [
   {
     q: "How much does it cost to list?",
-    a: "Just R99 per month, and your first 30 days are completely free. No setup fees, no hidden costs.",
+    a: PRICING_FAQ_LONG,
   },
   {
     q: "How long does it take to get approved?",
@@ -190,7 +191,7 @@ export default function WhyListPage() {
               Ready to grow?
             </h2>
             <p className="mt-3 text-sm text-ink-faint">
-              Join hundreds of providers on ILALI. First 30 days free — no strings attached.
+              Join hundreds of providers on ILALI. {TRIAL_CTA_LINE}
             </p>
             <Link
               href="/providers/signup"

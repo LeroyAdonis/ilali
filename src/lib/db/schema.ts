@@ -49,6 +49,11 @@ export const providers = pgTable("providers", {
   isFree: boolean("is_free").default(false),
   verified: boolean("verified").default(false),
   userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
+  // Tier 2 provision (FR-12/FR-14): billing columns — collection infra ships
+  // with WS-6 (Paystack). Assitej terms are a config flip, never a rebuild.
+  billingPlan: text("billing_plan").default("standard"), // standard | assitej | custom
+  planFreeUntil: timestamp("plan_free_until", { withTimezone: true }), // trial end (30 days)
+  assitejExempt: boolean("assitej_exempt").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import { PRICING_EXPLAINER } from "@/lib/pricing";
 
 export const metadata: Metadata = {
   title: "Help Centre | ILALI",
@@ -51,7 +52,7 @@ const categories = [
     icon: "📋",
     questions: [
       { q: "How do I list my activities?", a: "Visit our For Providers page to get started. Fill in the application form and our team will review your submission within 2 business days." },
-      { q: "What are the fees?", a: "Our standard plan is R99/month plus a 10% commission on bookings. There are no setup fees or hidden costs." },
+      { q: "What are the fees?", a: PRICING_EXPLAINER },
       { q: "How do I get paid?", a: "Payouts are processed automatically after each completed activity. Funds are transferred to your bank account within 3-5 business days." },
     ],
   },

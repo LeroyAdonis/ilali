@@ -3,11 +3,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AIOnboardingForm from "@/components/AIOnboardingForm";
 import ProviderInquiryForm from "./form";
+import { pricing, PRICING_ONE_LINER, PRICING_CARD_LINE } from "@/lib/pricing";
 
 export const metadata: Metadata = {
   title: "For Providers | ILALI",
-  description:
-    "List your kids' activities on ILALI. Reach more families, manage bookings, and grow your business. R99/month + 10% commission.",
+  description: `List your kids' activities on ILALI. Reach more families, manage bookings, and grow your business. ${PRICING_ONE_LINER}.`,
 };
 
 import InteriorHero from "@/components/InteriorHero";
@@ -115,12 +115,12 @@ export default function ForProvidersPage() {
               </p>
               <div className="mt-6">
                 <span className="text-5xl font-extrabold text-ilali-600">
-                  R99
+                  R{pricing.monthlyFeeRands}
                 </span>
                 <span className="text-lg text-ink-faint">/month</span>
               </div>
               <p className="mt-2 text-sm text-ink-soft">
-                Plus a small 10% commission on bookings
+                {PRICING_CARD_LINE}
               </p>
               <ul className="mx-auto mt-6 space-y-3 text-left text-sm text-ink-soft">
                 <li className="flex items-center gap-2">

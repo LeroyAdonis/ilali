@@ -3,6 +3,8 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db/index";
 import { savedActivities, providers } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
+import { sendNotification } from "@/lib/notifications";
+import { appUrl } from "@/lib/mail";
 
 export const dynamic = "force-dynamic";
 
@@ -83,7 +85,7 @@ export async function POST(request: Request) {
     const notifyWhenOpen = b.notifyWhenOpen === true;
 
     const [provider] = await db
-      .select({ id: providers.id })
+      .select({ id: providers.id, name: providers.name, slug: providers.slug })
       .from(providers)
       .where(eq(providers.id, b.providerId))
       .limit(1);
@@ -108,6 +110,19 @@ export async function POST(request: Request) {
     } else {
       await insert.onConflictDoNothing({
         target: [savedActivities.parentId, savedActivities.providerId],
+      });
+    }
+
+    // Painless Journeys FR-6: "notify me when booking opens" → fire the
+    // `saved` notification right away so the parent knows we've got them.
+    // The sendNotification service never throws, so a notification problem
+    // can never fail the save itself.
+    if (hasNotifyFlag && notifyWhenOpen) {
+      const activityName = provider.name;
+      await sendNotification(user.id, "saved", {
+        providerName: activityName,
+        activityName,
+        link: `${appUrl()}/activity/${provider.slug}`,
       });
     }
 

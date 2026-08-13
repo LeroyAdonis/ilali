@@ -19,6 +19,9 @@ export type NotificationPreferences = {
   notifyNewProviders: boolean;
   notifyCommunity: boolean;
   notifyRewards: boolean;
+  notifyBookings: boolean;
+  notifyReminders: boolean;
+  notifyDigest: boolean;
   createdAt: Date;
   updatedAt: Date;
 };

@@ -266,8 +266,34 @@ export const notificationPreferences = pgTable("notification_preferences", {
   notifyNewProviders: boolean("notify_new_providers").default(true),
   notifyCommunity: boolean("notify_community").default(true),
   notifyRewards: boolean("notify_rewards").default(true),
+  // Painless Journeys Phase 3 — per-trigger toggles for the notification
+  // state machine (FR-6). Transactional triggers (saved / provider-status /
+  // first-booking) are always sent — these gate the rest.
+  notifyBookings: boolean("notify_bookings").default(true),
+  notifyReminders: boolean("notify_reminders").default(true),
+  notifyDigest: boolean("notify_digest").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// ── Notification Events (Painless Journeys Phase 3 — FR-6 state machine) ──
+// One row per triggered notification = audit trail + dedupe (each trigger
+// sends once). `type` is the state-machine stage, `status` its lifecycle.
+// `payload` carries the context the template renders (providerName, childName,
+// date, link...). Sent via the channel abstraction (email today, WhatsApp
+// behind WHATSAPP_NOTIFY_ENABLED) in src/lib/notifications.
+export const notificationEvents = pgTable("notification_events", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  type: text("type").notNull(), // saved|booking-confirmed|reminder-24h|review-nudge|digest-weekly|digest-monthly|provider-status|first-booking
+  channel: text("channel").default("email"),
+  payload: jsonb("payload").$type<Record<string, unknown>>(),
+  status: text("status").default("pending"), // pending|sent|failed|skipped
+  scheduledFor: timestamp("scheduled_for"),
+  sentAt: timestamp("sent_at"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 // ── Community Layer: Club Events ──

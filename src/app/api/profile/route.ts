@@ -13,6 +13,9 @@ const updateProfileSchema = z.object({
   notifyNewProviders: z.boolean().optional(),
   notifyCommunity: z.boolean().optional(),
   notifyRewards: z.boolean().optional(),
+  notifyBookings: z.boolean().optional(),
+  notifyReminders: z.boolean().optional(),
+  notifyDigest: z.boolean().optional(),
 });
 
 // ── PATCH Handler ──
@@ -55,8 +58,16 @@ export async function PATCH(request: Request) {
       );
     }
 
-    const { name, suburb, notifyNewProviders, notifyCommunity, notifyRewards } =
-      parseResult.data;
+    const {
+      name,
+      suburb,
+      notifyNewProviders,
+      notifyCommunity,
+      notifyRewards,
+      notifyBookings,
+      notifyReminders,
+      notifyDigest,
+    } = parseResult.data;
 
     // 3. Update user record if name or suburb provided
     if (name !== undefined || suburb !== undefined) {
@@ -73,7 +84,10 @@ export async function PATCH(request: Request) {
     const hasNotifUpdates =
       notifyNewProviders !== undefined ||
       notifyCommunity !== undefined ||
-      notifyRewards !== undefined;
+      notifyRewards !== undefined ||
+      notifyBookings !== undefined ||
+      notifyReminders !== undefined ||
+      notifyDigest !== undefined;
 
     if (hasNotifUpdates) {
       await db
@@ -83,6 +97,9 @@ export async function PATCH(request: Request) {
           ...(notifyNewProviders !== undefined && { notifyNewProviders }),
           ...(notifyCommunity !== undefined && { notifyCommunity }),
           ...(notifyRewards !== undefined && { notifyRewards }),
+          ...(notifyBookings !== undefined && { notifyBookings }),
+          ...(notifyReminders !== undefined && { notifyReminders }),
+          ...(notifyDigest !== undefined && { notifyDigest }),
         })
         .onConflictDoUpdate({
           target: notificationPreferences.userId,
@@ -90,6 +107,9 @@ export async function PATCH(request: Request) {
             ...(notifyNewProviders !== undefined && { notifyNewProviders }),
             ...(notifyCommunity !== undefined && { notifyCommunity }),
             ...(notifyRewards !== undefined && { notifyRewards }),
+            ...(notifyBookings !== undefined && { notifyBookings }),
+            ...(notifyReminders !== undefined && { notifyReminders }),
+            ...(notifyDigest !== undefined && { notifyDigest }),
           },
         });
     }
@@ -120,6 +140,9 @@ export async function PATCH(request: Request) {
           notifyNewProviders: prefsRow.notifyNewProviders,
           notifyCommunity: prefsRow.notifyCommunity,
           notifyRewards: prefsRow.notifyRewards,
+          notifyBookings: prefsRow.notifyBookings,
+          notifyReminders: prefsRow.notifyReminders,
+          notifyDigest: prefsRow.notifyDigest,
         };
       }
     } catch {
@@ -134,6 +157,9 @@ export async function PATCH(request: Request) {
         notifyNewProviders: notifyNewProviders ?? true,
         notifyCommunity: notifyCommunity ?? true,
         notifyRewards: notifyRewards ?? true,
+        notifyBookings: notifyBookings ?? true,
+        notifyReminders: notifyReminders ?? true,
+        notifyDigest: notifyDigest ?? true,
       },
     });
   } catch (error) {

@@ -24,7 +24,8 @@ import {
 } from "@/lib/db/schema";
 import { eq, ilike } from "drizzle-orm";
 import bcrypt from "bcryptjs";
-import { sendProviderWelcomeEmail } from "@/lib/mail";
+import { sendProviderWelcomeEmail, appUrl } from "@/lib/mail";
+import { sendNotification } from "@/lib/notifications";
 
 export const EMAIL_EXISTS_ERROR = "A user with this email already exists";
 
@@ -230,9 +231,11 @@ export async function approveApplication(
   }
 
   let tempPassword: string;
+  let providerUserId: string;
   try {
     const result = await createProviderAccount(application);
     tempPassword = result.tempPassword;
+    providerUserId = result.userId;
   } catch (e) {
     console.error("Auto-create provider account failed:", e);
     throw new ApproveError(
@@ -262,6 +265,24 @@ export async function approveApplication(
     .update(providerApplications)
     .set({ status: "approved" })
     .where(eq(providerApplications.id, application.id));
+
+  // Painless Journeys FR-6: fire the provider-status notification (status →
+  // Live) the moment the listing goes live. Non-blocking by design — the
+  // sendNotification service never throws, so the approval can never fail
+  // because of email/WhatsApp problems. Fired here (the shared helper) so the
+  // single-approve route AND batch-approve both notify.
+  try {
+    await sendNotification(providerUserId, "provider-status", {
+      status: "live",
+      providerName: application.name || application.email,
+      activityName: application.activityType || "",
+      link: `${appUrl()}/provider`,
+    });
+  } catch (e) {
+    // Belt-and-braces — sendNotification is contractually non-throwing, but a
+    // regression here must never break the admin approval flow.
+    console.warn("[approve] provider-status notification failed — approval proceeds:", e);
+  }
 
   return { tempPassword, emailSent };
 }

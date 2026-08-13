@@ -40,7 +40,13 @@ function getResend(): Resend | null {
   return resendClient;
 }
 
-async function sendEmail(payload: {
+/**
+ * Send a raw email through the lazy Resend wrapper. Exported so the
+ * notification state machine (src/lib/notifications) can dispatch rendered
+ * templates without knowing anything about Resend. Same contract as every
+ * other helper here: never throws, { skipped: true } when no key.
+ */
+export async function sendEmail(payload: {
   to: string;
   subject: string;
   text: string;

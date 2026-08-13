@@ -12,6 +12,9 @@ interface NotificationPrefs {
   notifyNewProviders: boolean;
   notifyCommunity: boolean;
   notifyRewards: boolean;
+  notifyBookings: boolean;
+  notifyReminders: boolean;
+  notifyDigest: boolean;
 }
 
 export default function ProfileSettingsPanel() {
@@ -24,6 +27,9 @@ export default function ProfileSettingsPanel() {
     notifyNewProviders: true,
     notifyCommunity: true,
     notifyRewards: true,
+    notifyBookings: true,
+    notifyReminders: true,
+    notifyDigest: true,
   });
   const [suburbSuggestions, setSuburbSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -52,6 +58,9 @@ export default function ProfileSettingsPanel() {
             notifyNewProviders: data.preferences.notifyNewProviders ?? true,
             notifyCommunity: data.preferences.notifyCommunity ?? true,
             notifyRewards: data.preferences.notifyRewards ?? true,
+            notifyBookings: data.preferences.notifyBookings ?? true,
+            notifyReminders: data.preferences.notifyReminders ?? true,
+            notifyDigest: data.preferences.notifyDigest ?? true,
           });
         }
       }
@@ -136,6 +145,9 @@ export default function ProfileSettingsPanel() {
       body.notifyNewProviders = prefs.notifyNewProviders;
       body.notifyCommunity = prefs.notifyCommunity;
       body.notifyRewards = prefs.notifyRewards;
+      body.notifyBookings = prefs.notifyBookings;
+      body.notifyReminders = prefs.notifyReminders;
+      body.notifyDigest = prefs.notifyDigest;
 
       const res = await fetch("/api/profile", {
         method: "PATCH",
@@ -341,6 +353,75 @@ export default function ProfileSettingsPanel() {
                 <span
                   className={`${toggleKnob} ${
                     prefs.notifyRewards ? "translate-x-5" : "translate-x-0"
+                  }`}
+                />
+              </button>
+            </label>
+
+            {/* Notify Booking updates */}
+            <label className="flex items-center justify-between gap-3 cursor-pointer group">
+              <span className="text-sm text-ink-soft group-hover:text-ink transition-colors">
+                Booking updates
+              </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={prefs.notifyBookings}
+                aria-label="Toggle booking update notifications"
+                onClick={() => togglePref("notifyBookings")}
+                className={`${toggleStyles} ${
+                  prefs.notifyBookings ? "bg-teal" : "bg-ink/15"
+                }`}
+              >
+                <span
+                  className={`${toggleKnob} ${
+                    prefs.notifyBookings ? "translate-x-5" : "translate-x-0"
+                  }`}
+                />
+              </button>
+            </label>
+
+            {/* Notify Reminders */}
+            <label className="flex items-center justify-between gap-3 cursor-pointer group">
+              <span className="text-sm text-ink-soft group-hover:text-ink transition-colors">
+                Reminders &amp; review nudges
+              </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={prefs.notifyReminders}
+                aria-label="Toggle reminder notifications"
+                onClick={() => togglePref("notifyReminders")}
+                className={`${toggleStyles} ${
+                  prefs.notifyReminders ? "bg-teal" : "bg-ink/15"
+                }`}
+              >
+                <span
+                  className={`${toggleKnob} ${
+                    prefs.notifyReminders ? "translate-x-5" : "translate-x-0"
+                  }`}
+                />
+              </button>
+            </label>
+
+            {/* Notify Digest */}
+            <label className="flex items-center justify-between gap-3 cursor-pointer group">
+              <span className="text-sm text-ink-soft group-hover:text-ink transition-colors">
+                Monthly digest
+              </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={prefs.notifyDigest}
+                aria-label="Toggle monthly digest notification"
+                onClick={() => togglePref("notifyDigest")}
+                className={`${toggleStyles} ${
+                  prefs.notifyDigest ? "bg-teal" : "bg-ink/15"
+                }`}
+              >
+                <span
+                  className={`${toggleKnob} ${
+                    prefs.notifyDigest ? "translate-x-5" : "translate-x-0"
                   }`}
                 />
               </button>

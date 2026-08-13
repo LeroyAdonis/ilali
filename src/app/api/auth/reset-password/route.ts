@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { PASSWORD_MIN_LENGTH } from "@/lib/constants";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db/index";
 import { users, authAccounts } from "@/lib/db/schema";
@@ -52,9 +53,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!newPassword || typeof newPassword !== "string" || newPassword.length < 8) {
+    if (!newPassword || typeof newPassword !== "string" || newPassword.length < PASSWORD_MIN_LENGTH) {
       return NextResponse.json(
-        { error: "New password must be at least 8 characters" },
+        { error: `New password must be at least ${PASSWORD_MIN_LENGTH} characters` },
         { status: 400 }
       );
     }

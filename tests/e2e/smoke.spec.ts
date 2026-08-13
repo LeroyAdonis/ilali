@@ -44,6 +44,8 @@ test.describe("ILALI MVP — E2E Smoke Tests", () => {
 
   test("Auth — signin with valid admin credentials", async ({ page }) => {
     await page.goto(`${BASE}/auth/signin`);
+    // Magic link is the primary path; password sign-in is secondary (T004).
+    await page.click("text=Use password instead");
     await page.fill("#email", "leroy@ilali.co");
     await page.fill("#password", "ilali-admin-2026");
     await page.click("button[type='submit']");

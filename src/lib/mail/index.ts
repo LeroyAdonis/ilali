@@ -135,6 +135,85 @@ The ILALI Team`;
 }
 
 /**
+ * Magic-link sign-in email (email-first auth, WS-1 "Painless Journeys").
+ * Contains the one-tap link; no passwords or secrets beyond the short-lived
+ * single-use token. Safe to send from the Better Auth magicLink plugin's
+ * sendMagicLink hook — never throws, returns the standard MailResult.
+ */
+export function sendMagicLinkEmail({
+  email,
+  url,
+}: {
+  email: string;
+  url: string;
+}): Promise<MailResult> {
+  const subject = "Your ILALI sign-in link";
+
+  const text = `Hi there,
+
+You're one tap away from ILALI.
+
+Open this link to sign in (it works once and expires in 5 minutes):
+${url}
+
+If you didn't ask for this link, you can safely ignore this email.
+
+The ILALI Team`;
+
+  const html = `<div style="font-family: Arial, Helvetica, sans-serif; line-height: 1.6; color: #1f2937; max-width: 560px; margin: 0 auto;">
+  <h2 style="color: #0d9488;">You're one tap away 🎉</h2>
+  <p>Hi there,</p>
+  <p>Click the button below to continue to ILALI. This link works once and expires in <strong>5 minutes</strong>.</p>
+  <p style="margin: 24px 0; text-align: center;">
+    <a href="${url}" style="display: inline-block; background: #0d9488; color: #ffffff; padding: 12px 28px; border-radius: 999px; text-decoration: none; font-weight: bold;">Continue to ILALI</a>
+  </p>
+  <p style="font-size: 13px; color: #6b7280;">If the button doesn't work, copy and paste this link into your browser:<br/><a href="${url}" style="color: #0d9488;">${url}</a></p>
+  <p style="font-size: 13px; color: #6b7280;">If you didn't ask for this link, you can safely ignore this email.</p>
+  <p>The ILALI Team</p>
+</div>`;
+
+  return sendEmail({ to: email, subject, text, html });
+}
+
+/**
+ * Welcome email sent to a brand-new user right after their first magic-link
+ * sign-up. Warm, human, no "Dear User". Non-blocking by design — never throws.
+ */
+export function sendWelcomeEmail({
+  email,
+  name,
+}: {
+  email: string;
+  name?: string;
+}): Promise<MailResult> {
+  const subject = "Welcome to ILALI 👋";
+  const greeting = name ? `Hi ${name},` : "Hi there,";
+
+  const text = `${greeting}
+
+Welcome to ILALI — the easiest way to find amazing activities for your kids in Cape Town.
+
+You can browse, search and match with activities whenever you like. We'll keep you posted about anything you save or book — nothing spammy, promise.
+
+Start exploring: ${appUrl()}/browse
+
+The ILALI Team`;
+
+  const html = `<div style="font-family: Arial, Helvetica, sans-serif; line-height: 1.6; color: #1f2937; max-width: 560px; margin: 0 auto;">
+  <h2 style="color: #0d9488;">Welcome to ILALI 👋</h2>
+  <p>${greeting}</p>
+  <p>Welcome to ILALI — the easiest way to find amazing activities for your kids in Cape Town.</p>
+  <p>You can browse, search and AI-match activities whenever you like. We'll keep you posted about anything you save or book — nothing spammy, promise.</p>
+  <p style="margin: 24px 0; text-align: center;">
+    <a href="${appUrl()}/browse" style="display: inline-block; background: #0d9488; color: #ffffff; padding: 12px 28px; border-radius: 999px; text-decoration: none; font-weight: bold;">Start exploring</a>
+  </p>
+  <p>The ILALI Team</p>
+</div>`;
+
+  return sendEmail({ to: email, subject, text, html });
+}
+
+/**
  * Informational password-reset email. The existing forgot-password flow is
  * fully passphrase-based (no codes/tokens/emails) — this email just reminds
  * the provider where to go and what they'll need. Safe to fire from anywhere

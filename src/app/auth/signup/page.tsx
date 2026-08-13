@@ -1,56 +1,114 @@
 "use client";
 
-import { createAuthClient } from "better-auth/client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
-
-const authClient = createAuthClient();
+import { Loader2, MailCheck } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 export default function SignUpPage() {
-  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [accountType, setAccountType] = useState<"parent" | "provider">("parent");
-  const [terms, setTerms] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function sendLink() {
     setError("");
 
-    if (!terms) {
-      setError("You must agree to the Terms of Service and Privacy Policy");
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters");
+    if (!email.trim()) {
+      setError("Please enter your email address");
       return;
     }
 
     setLoading(true);
 
     try {
-      const result = await authClient.signUp.email({
-        name,
-        email,
-        password,
+      const result = await authClient.signIn.magicLink({
+        email: email.trim(),
+        name: name.trim() || undefined,
+        callbackURL: "/home",
       });
 
       if (result.error) {
-        setError(result.error.message ?? "Could not create account");
+        setError(result.error.message ?? "Could not send the link. Please try again.");
       } else {
-        router.push("/browse");
+        setSent(true);
       }
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    void sendLink();
+  }
+
+  if (sent) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-paper-warm px-4 py-12 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md">
+          <div className="mb-8 text-center">
+            <Link href="/" className="inline-block">
+              <img
+                src="/images/brand/ilali-logo-76-t.png"
+                alt="ILALI"
+                className="mx-auto h-16 w-auto"
+              />
+            </Link>
+          </div>
+
+          <div className="rounded-2xl border border-ink/10 bg-white p-8 shadow-sm">
+            <div className="mb-6 text-center">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-ilali-50">
+                <MailCheck className="h-7 w-7 text-ilali-600" aria-hidden="true" />
+              </div>
+              <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">
+                Check your inbox
+              </h1>
+              <p className="mt-2 text-sm text-ink-faint">
+                We&apos;ve sent a magic link to{" "}
+                <span className="font-medium text-ink-soft">{email.trim()}</span>. Tap it to
+                continue to ILALI — no password needed.
+              </p>
+            </div>
+
+            <p className="mb-6 text-center text-xs text-ink-faint">
+              Didn&apos;t get it? Check spam, or{" "}
+              <button
+                type="button"
+                onClick={() => void sendLink()}
+                disabled={loading}
+                className="font-medium text-ilali-600 underline hover:text-ilali-700 disabled:opacity-50"
+              >
+                {loading ? "Resending…" : "resend the link"}
+              </button>
+              .
+            </p>
+
+            {error && (
+              <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 border border-red-200">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => {
+                setSent(false);
+                setError("");
+              }}
+              className="mt-4 w-full text-center text-sm text-ink-faint hover:text-ilali-600 transition-colors"
+            >
+              Use a different email
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -73,7 +131,7 @@ export default function SignUpPage() {
               Create your account
             </h1>
             <p className="mt-2 text-sm text-ink-faint">
-              Join the ILALI community today
+              No password needed — we&apos;ll email you a magic link
             </p>
           </div>
 
@@ -89,7 +147,8 @@ export default function SignUpPage() {
                 htmlFor="name"
                 className="block text-sm font-medium text-ink-soft"
               >
-                Full name
+                What should we call you?{" "}
+                <span className="font-normal text-ink-faint">(optional)</span>
               </label>
               <input
                 id="name"
@@ -98,8 +157,7 @@ export default function SignUpPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 autoComplete="name"
-                required
-                placeholder="Your full name"
+                placeholder="Your name"
                 className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
               />
             </div>
@@ -125,31 +183,8 @@ export default function SignUpPage() {
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-ink-soft"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="new-password"
-                required
-                placeholder="Create a strong password"
-                className="mt-1 block w-full rounded-lg border border-ink/10 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-faint focus:border-ilali-500 focus:outline-none focus:ring-2 focus:ring-ilali-200"
-              />
-              <p className="mt-1 text-xs text-ink-faint">
-                At least 8 characters
-              </p>
-            </div>
-
-            <div>
               <label className="block text-sm font-medium text-ink-soft">
-                Account type
+                I am a…
               </label>
               <div className="mt-2 grid grid-cols-2 gap-3">
                 <label className="flex cursor-pointer items-center justify-center rounded-lg border border-ink/10 bg-white p-3 text-sm font-medium text-ink-soft hover:bg-paper-warm has-[:checked]:border-ilali-500 has-[:checked]:bg-ilali-50 has-[:checked]:text-ilali-700">
@@ -177,33 +212,6 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            <div className="flex items-start gap-2">
-              <input
-                type="checkbox"
-                id="terms"
-                checked={terms}
-                onChange={(e) => setTerms(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-ink/10 text-ilali-600 focus:ring-ilali-500"
-              />
-              <label htmlFor="terms" className="text-xs text-ink-faint">
-                I agree to the{" "}
-                <a
-                  href="/terms"
-                  className="font-medium text-ilali-600 underline hover:text-ilali-700"
-                >
-                  Terms of Service
-                </a>{" "}
-                and{" "}
-                <a
-                  href="/privacy"
-                  className="font-medium text-ilali-600 underline hover:text-ilali-700"
-                >
-                  Privacy Policy
-                </a>
-                .
-              </label>
-            </div>
-
             <button
               type="submit"
               disabled={loading}
@@ -212,9 +220,27 @@ export default function SignUpPage() {
               {loading ? (
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
               ) : (
-                "Sign Up"
+                "Send magic link"
               )}
             </button>
+
+            <p className="text-xs text-ink-faint">
+              By continuing you agree to the{" "}
+              <a
+                href="/terms"
+                className="font-medium text-ilali-600 underline hover:text-ilali-700"
+              >
+                Terms of Service
+              </a>{" "}
+              and{" "}
+              <a
+                href="/privacy"
+                className="font-medium text-ilali-600 underline hover:text-ilali-700"
+              >
+                Privacy Policy
+              </a>
+              .
+            </p>
           </form>
 
           <div className="mt-6 text-center">

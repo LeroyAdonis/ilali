@@ -15,6 +15,9 @@ export const SITE_DESCRIPTION =
   "Find background-checked activities your kids will love. Every provider is vetted — because your child's safety matters.";
 export const SITE_URL = "https://preview.ilali.co";
 
+/** Minimum password length for all account passwords (single source of truth). */
+export const PASSWORD_MIN_LENGTH = 8;
+
 export const categories: Category[] = [
   {
     id: "arts-culture",

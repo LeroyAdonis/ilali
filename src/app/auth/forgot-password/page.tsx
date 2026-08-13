@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PASSWORD_MIN_LENGTH } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -82,8 +83,8 @@ export default function ForgotPasswordPage() {
     e.preventDefault();
     setError("");
 
-    if (newPassword.length < 8) {
-      setError("Password must be at least 8 characters");
+    if (newPassword.length < PASSWORD_MIN_LENGTH) {
+      setError(`Password must be at least ${PASSWORD_MIN_LENGTH} characters`);
       return;
     }
     if (newPassword !== confirmNewPassword) {

@@ -133,6 +133,16 @@ export const navLinks = [
   { label: "Community", href: "/clubs" },
   { label: "Rewards", href: "/rewards" },
   { label: "How It Works", href: "/how-it-works" },
+  { label: "For Parents", href: "/for-parents" },
+  { label: "For Providers", href: "/for-providers" },
+];
+
+/** Secondary links grouped under the desktop "More" dropdown (main-navigation spec). */
+export const desktopMoreLinks = [
+  { label: "How It Works", href: "/how-it-works" },
+  { label: "For Parents", href: "/for-parents" },
+  { label: "For Providers", href: "/for-providers" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export const stats = [

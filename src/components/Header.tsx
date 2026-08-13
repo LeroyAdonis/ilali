@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, Menu, X, LogOut, User, Heart } from "lucide-react";
-import { navLinks } from "@/lib/constants";
+import { Search, Menu, X, LogOut, User, Heart, ChevronDown } from "lucide-react";
+import { navLinks, desktopMoreLinks } from "@/lib/constants";
 import { useSession, signOut } from "@/lib/auth-client";
 
 export default function Header({
@@ -16,7 +16,28 @@ export default function Header({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [headerQuery, setHeaderQuery] = useState("");
   const [mobileQuery, setMobileQuery] = useState("");
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  // Close the desktop "More" dropdown on outside-click or Escape (main-navigation spec).
+  useEffect(() => {
+    if (!moreOpen) return;
+    const onDocClick = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMoreOpen(false);
+    };
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [moreOpen]);
   const { data: session } = useSession();
   const user = session?.user as { role?: string; name?: string; email?: string } | undefined;
   const isSignedIn = !!session;
@@ -59,7 +80,7 @@ export default function Header({
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
+          {navLinks.slice(0, 5).map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -68,13 +89,46 @@ export default function Header({
               {link.label}
             </Link>
           ))}
-          {/* Conditional: Parent / Provider space */}
+          {/* More dropdown — absorbs How It Works + audience info pages (main-navigation spec) */}
+          <div className="relative" ref={moreRef}>
+            <button
+              type="button"
+              onClick={() => setMoreOpen((v) => !v)}
+              aria-expanded={moreOpen}
+              aria-haspopup="menu"
+              className="flex items-center gap-1 rounded-lg px-3.5 py-2 text-[13px] font-medium text-ink-soft hover:text-teal-deep transition-colors"
+            >
+              More
+              <ChevronDown
+                className={`h-3.5 w-3.5 transition-transform ${moreOpen ? "rotate-180" : ""}`}
+                aria-hidden="true"
+              />
+            </button>
+            {moreOpen && (
+              <div
+                role="menu"
+                className="absolute left-0 top-full mt-1 w-56 rounded-xl border border-ink/10 bg-paper p-1.5 shadow-lg"
+              >
+                {desktopMoreLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMoreOpen(false)}
+                    className="block rounded-lg px-3 py-2 text-[13px] font-medium text-ink-soft hover:bg-ink/5 hover:text-teal-deep transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+          {/* Conditional: Parent / Provider profile entries */}
           {role === "parent" && (
             <Link
               href="/home"
               className="ml-2 rounded-lg px-3.5 py-2 text-[13px] font-semibold text-gold-deep-2 bg-gold/10 hover:bg-gold/20 transition-colors"
             >
-              🏠 Parent
+              🏠 Parent Profile
             </Link>
           )}
           {role === "provider" && (
@@ -82,7 +136,7 @@ export default function Header({
               href="/provider"
               className="ml-2 rounded-lg px-3.5 py-2 text-[13px] font-semibold text-teal-deep bg-teal/10 hover:bg-teal/20 transition-colors"
             >
-              📋 Provider
+              📋 Provider Portal
             </Link>
           )}
         </nav>
@@ -155,14 +209,14 @@ export default function Header({
                 {link.label}
               </Link>
             ))}
-            {/* Conditional: Parent / Provider space */}
+            {/* Conditional: Parent / Provider profile entries */}
             {role === "parent" && (
               <Link
                 href="/home"
                 onClick={() => setMobileOpen(false)}
                 className="text-sm font-semibold text-gold-deep-2"
               >
-                🏠 Parent Space
+                🏠 Parent Profile
               </Link>
             )}
             {role === "provider" && (

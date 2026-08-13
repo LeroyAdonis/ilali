@@ -29,11 +29,18 @@ test.describe("ILALI MVP — E2E Smoke Tests", () => {
     ).toBeVisible();
   });
 
-  test("Provider signup form — validation errors", async ({ page }) => {
+  test("Provider signup — guest gate opens with a magic-link panel", async ({
+    page,
+  }) => {
     await page.goto(`${BASE}/providers/signup`);
-    // Try submitting empty
-    await page.click("button[type='submit']");
-    await expect(page.locator("text=Full name")).toBeVisible();
+    // Guest-first: a magic-link email panel precedes the wizard (no temp
+    // password ever). Invalid email shows a validation error.
+    await expect(
+      page.getByRole("heading", { name: /Get started — it's free/ })
+    ).toBeVisible();
+    await page.fill("#wizard-guest-email", "not-an-email");
+    await page.getByRole("button", { name: "Send magic link" }).click();
+    await expect(page.getByText("Please enter a valid email address")).toBeVisible();
   });
 
   test("Auth — signin page loads, /admin redirects to signin", async ({ page }) => {

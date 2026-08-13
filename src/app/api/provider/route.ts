@@ -1,14 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db/index";
-import { providers, clubMemberships, clubEvents, reviews, providerInquiries } from "@/lib/db/schema";
+import {
+  providers,
+  providerApplications,
+  clubMemberships,
+  clubEvents,
+  reviews,
+  providerInquiries,
+} from "@/lib/db/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 
 /**
  * GET /api/provider
  *
- * Returns the current provider's dashboard data.
- * Requires session with role='provider'.
+ * Returns the current provider's dashboard data. Requires a session but NOT a
+ * provider role: a wizard user who has submitted (or even saved a draft) gets
+ * their application back with `provider: null` so the dashboard can render the
+ * status tracker (Draft → Submitted → Reviewing → Live). Once the listing is
+ * approved, the full dashboard payload comes back as before.
  */
 export async function GET(request: NextRequest) {
   try {
@@ -21,9 +31,6 @@ export async function GET(request: NextRequest) {
     }
 
     const userRecord = session.user as { id: string; role?: string };
-    if (userRecord.role !== "provider") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
 
     // Find provider by linked userId
     const [providerRecord] = await db
@@ -33,7 +40,34 @@ export async function GET(request: NextRequest) {
       .limit(1);
 
     if (!providerRecord) {
-      return NextResponse.json({ error: "Provider not found" }, { status: 404 });
+      // Pre-live: the user's application is the source of truth for the
+      // status tracker until an admin approves the listing.
+      const [application] = await db
+        .select({
+          id: providerApplications.id,
+          name: providerApplications.name,
+          status: providerApplications.status,
+          activityType: providerApplications.activityType,
+          location: providerApplications.location,
+          createdAt: providerApplications.createdAt,
+        })
+        .from(providerApplications)
+        .where(eq(providerApplications.userId, userRecord.id))
+        .limit(1);
+
+      return NextResponse.json({
+        provider: null,
+        application: application ?? null,
+        inquiries: [],
+        stats: {
+          inquiryCount: 0,
+          memberCount: 0,
+          eventCount: 0,
+          reviewCount: 0,
+        },
+        upcomingEvents: [],
+        recentReviews: [],
+      });
     }
 
     // Get inquiries (last 10)

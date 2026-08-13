@@ -3,15 +3,24 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, ChevronRight, Star, Calendar, MessageSquare } from "lucide-react";
+import { Loader2, ChevronRight, Star, Calendar, MessageSquare, Sparkles } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import ProfileWizard from "@/components/provider/ProfileWizard";
 import ListingCardPreview from "@/components/provider/ListingCardPreview";
 import ActivityStats from "@/components/provider/ActivityStats";
+import StatusTracker from "@/components/provider/StatusTracker";
 import { mapProvider } from "@/lib/db/mappers";
 
 interface DashboardData {
-  provider: Record<string, unknown>;
+  provider: Record<string, unknown> | null;
+  application: {
+    id: string;
+    name: string | null;
+    status: string | null;
+    activityType: string | null;
+    location: string | null;
+    createdAt: string | null;
+  } | null;
   inquiries: unknown[];
   stats: {
     inquiryCount: number;
@@ -44,17 +53,12 @@ export default function ProviderDashboardPage() {
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
-  // Auth check
+  // Auth check — the provider layout gates non-provider roles; here we only
+  // bounce guests. Providers who submitted via the wizard (or approved listings)
+  // land on the status tracker / dashboard below.
   useEffect(() => {
     if (!sessionLoading && !session) {
       router.replace("/auth/signin");
-      return;
-    }
-    if (!sessionLoading && session) {
-      const user = session.user as { role?: string };
-      if (user.role !== "provider") {
-        router.replace("/auth/signin");
-      }
     }
   }, [session, sessionLoading, router]);
 
@@ -136,6 +140,55 @@ export default function ProviderDashboardPage() {
         >
           Try again
         </button>
+      </div>
+    );
+  }
+
+  // ── Pre-live: no providers row yet — show the status tracker ──
+  if (!data.provider) {
+    const appStatus = data.application?.status ?? null;
+    return (
+      <div className="space-y-6 animate-fade-in-up">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">
+            {appStatus === "draft" || appStatus === null
+              ? "Create your listing"
+              : "Your listing is on its way"}
+          </h1>
+          <p className="mt-1 text-sm text-ink-faint">
+            Follow the steps below — we&apos;ll email you the moment you go live.
+          </p>
+        </div>
+
+        <StatusTracker
+          status={appStatus}
+          providerName={data.application?.name}
+        />
+
+        {appStatus === null && (
+          <div className="rounded-xl border border-ink/10 bg-white p-6">
+            <div className="flex items-start gap-4">
+              <div className="rounded-full bg-ilali-50 p-3">
+                <Sparkles className="h-6 w-6 text-ilali-600" />
+              </div>
+              <div className="flex-1">
+                <h2 className="font-display text-lg font-bold text-ink">
+                  You haven&apos;t started a listing yet
+                </h2>
+                <p className="mt-1 text-sm text-ink-soft">
+                  Set up your activity in about 5 minutes — it&apos;s free and
+                  there&apos;s no pressure until you submit.
+                </p>
+                <Link
+                  href="/providers/signup"
+                  className="mt-4 inline-flex min-h-[44px] items-center rounded-lg bg-ilali-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-ilali-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ilali-600"
+                >
+                  Start your listing
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

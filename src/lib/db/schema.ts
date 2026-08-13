@@ -168,8 +168,13 @@ export const providerApplications = pgTable("provider_applications", {
   bookingInfo: text("booking_info"),
   additionalInfo: text("additional_info"), // capture ALL text on the poster
   logoPath: text("logo_path"), // base64 data URL (same pattern as poster image)
-  status: text("status").default("pending"), // pending, contacted, approved, rejected
-  onboardSource: text("onboard_source"), // 'email' | 'form' | 'whatsapp' | 'bulk-import' | 'poster' | null
+  // Painless Journeys Phase 4 (wizard): the signed-in user this application
+  // belongs to. Set on first wizard save; null for admin/bulk/poster paths.
+  userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
+  schedule: text("schedule"), // wizard Step 2 free-text schedule / notes
+  priceLabel: text("price_label"), // wizard Step 2 price label ("per session", "per term", ...)
+  status: text("status").default("pending"), // draft, pending, contacted, approved, rejected
+  onboardSource: text("onboard_source"), // 'email' | 'form' | 'wizard' | 'whatsapp' | 'bulk-import' | 'poster' | null
   importBatchId: uuid("import_batch_id").references(() => importBatches.id),
   createdAt: timestamp("created_at").defaultNow(),
 });

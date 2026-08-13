@@ -45,6 +45,7 @@ export type Application = {
   status: string | null;
   onboardSource?: string | null;
   importBatchId?: string | null;
+  userId?: string | null;
   createdAt: Date | string | null;
 };
 
@@ -80,6 +81,7 @@ export function ApplicationCard({
   const canApprove = status === "pending" || status === "contacted";
   const canEdit = status === "pending" || status === "contacted";
   const selectable = canApprove && typeof onToggleSelect === "function";
+  const isWizardAccount = Boolean(application.userId);
 
   async function transition(next: "contacted" | "approved" | "rejected") {
     setBusy(next);
@@ -96,9 +98,9 @@ export function ApplicationCard({
         return;
       }
       setStatus(next);
-      if (next === "approved" && body.tempPassword) {
+      if (next === "approved") {
         setAccountCreated(true);
-        setTempPassword(body.tempPassword);
+        setTempPassword(body.tempPassword || null);
         setEmailSent(typeof body.emailSent === "boolean" ? body.emailSent : null);
       }
       router.refresh();
@@ -256,12 +258,21 @@ export function ApplicationCard({
           {status === "approved" && (
             <div className="flex flex-col gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-lg bg-teal-50 px-3 py-1.5 text-xs font-medium text-teal-700">
-                <KeyRound className="h-3.5 w-3.5" />
-                {accountCreated
-                  ? `Account created: ${application.email}`
-                  : "No account yet"}
+                {isWizardAccount ? (
+                  <>
+                    <Mail className="h-3.5 w-3.5" />
+                    Magic-link account — provider signs in with email
+                  </>
+                ) : (
+                  <>
+                    <KeyRound className="h-3.5 w-3.5" />
+                    {accountCreated
+                      ? `Account created: ${application.email}`
+                      : "No account yet"}
+                  </>
+                )}
               </span>
-              {accountCreated && (
+              {accountCreated && !isWizardAccount && (
                 <button
                   type="button"
                   onClick={regenerateTempPassword}

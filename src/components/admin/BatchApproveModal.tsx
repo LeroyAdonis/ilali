@@ -62,31 +62,39 @@ export function BatchApproveModal({
                   <p className="break-all text-xs font-semibold uppercase tracking-wide text-teal-700">
                     {a.email}
                   </p>
-                  <p className="mt-1 break-all font-mono text-base font-semibold tracking-wide text-ink">
-                    {a.tempPassword}
-                  </p>
+                  {a.tempPassword ? (
+                    <p className="mt-1 break-all font-mono text-base font-semibold tracking-wide text-ink">
+                      {a.tempPassword}
+                    </p>
+                  ) : (
+                    <p className="mt-1 text-sm font-medium text-teal-700">
+                      Magic-link account — provider signs in via email, no password needed
+                    </p>
+                  )}
                   {a.emailSent ? (
                     <p className="mt-1.5 text-xs font-medium text-teal-700">
                       📧 Welcome email sent to {a.email}
                     </p>
-                  ) : (
+                  ) : a.tempPassword ? (
                     <p className="mt-1.5 text-xs text-ink-faint">
                       Email sending not configured — copy the password manually.
                     </p>
-                  )}
+                  ) : null}
                 </div>
-                <button
-                  type="button"
-                  onClick={() => copyPassword(a.email, a.tempPassword)}
-                  className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-ink-soft ring-1 ring-ink/10 transition-colors hover:bg-paper-warm hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ilali-600 active:bg-paper disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {copiedEmail === a.email ? (
-                    <Check className="h-3.5 w-3.5 text-teal-600" />
-                  ) : (
-                    <Copy className="h-3.5 w-3.5" />
-                  )}
-                  {copiedEmail === a.email ? "Copied" : "Copy"}
-                </button>
+                {a.tempPassword && (
+                  <button
+                    type="button"
+                    onClick={() => copyPassword(a.email, a.tempPassword)}
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-ink-soft ring-1 ring-ink/10 transition-colors hover:bg-paper-warm hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ilali-600 active:bg-paper disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {copiedEmail === a.email ? (
+                      <Check className="h-3.5 w-3.5 text-teal-600" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
+                    {copiedEmail === a.email ? "Copied" : "Copy"}
+                  </button>
+                )}
               </div>
             </li>
           ))}

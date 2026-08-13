@@ -154,9 +154,20 @@ async function createProviderAccount(application: typeof providerApplications.$i
     password: passwordHash,
   });
 
-  // 4. Link or create the providers row.
-  //    provider_applications has no providerId column, so match the provider
-  //    row by its data: same name + location, or same (normalized) phone.
+  return { tempPassword, userId };
+}
+
+/**
+ * Link or create the providers row for an approved application. Shared by the
+ * admin/bulk path (newly created user) and the Phase 4 wizard path (user who
+ * already signed in via magic link). provider_applications has no providerId
+ * column, so match the provider row by its data: same name + location, or same
+ * (normalized) phone.
+ */
+async function linkOrCreateProvidersRow(
+  application: typeof providerApplications.$inferSelect,
+  userId: string
+): Promise<string> {
   const name = application.name?.trim().toLowerCase();
   const location = application.location?.trim().toLowerCase();
   const phone = application.phone?.replace(/\s+/g, "") || "";
@@ -185,81 +196,105 @@ async function createProviderAccount(application: typeof providerApplications.$i
       .update(providers)
       .set({ userId })
       .where(eq(providers.id, existing.id));
-  } else {
-    await db.insert(providers).values({
-      id: crypto.randomUUID(),
-      name: application.name,
-      slug: await uniqueSlug(application.name),
-      category: await resolveCategoryId(application.activityType),
-      description: application.description || "",
-      providerName: application.name,
-      location: application.location || "",
-      ageMin: application.ageMin ?? 0,
-      ageMax: application.ageMax ?? 18,
-      // Applications store price in Rands (form label); providers store cents.
-      priceValue:
-        application.priceValue != null ? Math.round(application.priceValue * 100) : 0,
-      imageUrl: application.imageUrl || null,
-      phone: application.phone || null,
-      userId,
-    });
+    return existing.id;
   }
 
-  return { tempPassword, userId };
+  const providerId = crypto.randomUUID();
+  await db.insert(providers).values({
+    id: providerId,
+    name: application.name,
+    slug: await uniqueSlug(application.name),
+    category: await resolveCategoryId(application.activityType),
+    description: application.description || "",
+    providerName: application.name,
+    location: application.location || "",
+    ageMin: application.ageMin ?? 0,
+    ageMax: application.ageMax ?? 18,
+    // Applications store price in Rands (form label); providers store cents.
+    priceValue:
+      application.priceValue != null ? Math.round(application.priceValue * 100) : 0,
+    imageUrl: application.imageUrl || null,
+    phone: application.phone || null,
+    userId,
+  });
+  return providerId;
 }
 
 /**
- * Approve one application end-to-end (WS-1 + WS-2).
+ * Approve one application end-to-end (WS-1 + WS-2 + Phase 4 wizard path).
  * Throws ApproveError on failure — the application's status is only updated
  * once the account actually exists and the email has been attempted.
+ *
+ * Two paths:
+ *  - `application.userId` set (Phase 4 wizard): the provider already signed in
+ *    via magic link — NO temp password, NO account creation. We flip their role
+ *    to 'provider', link/create the providers row, and the "You're live! 🎉"
+ *    provider-status notification IS the celebration email (FR-8).
+ *  - No userId (admin/bulk/poster): legacy temp-password account creation
+ *    (WS-1) — kept as the bulk-import fallback.
  */
 export async function approveApplication(
   application: typeof providerApplications.$inferSelect
 ): Promise<ApproveResult> {
   const email = application.email.toLowerCase().trim();
 
-  // Do the account creation FIRST so the application is only marked approved
-  // once the account actually exists.
-  const [existingUser] = await db
-    .select({ id: users.id })
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1);
-
-  if (existingUser) {
-    throw new ApproveError(EMAIL_EXISTS_ERROR, 409);
-  }
-
-  let tempPassword: string;
   let providerUserId: string;
-  try {
-    const result = await createProviderAccount(application);
-    tempPassword = result.tempPassword;
-    providerUserId = result.userId;
-  } catch (e) {
-    console.error("Auto-create provider account failed:", e);
-    throw new ApproveError(
-      "Account creation failed — application not approved. Check the server logs and try again.",
-      500
-    );
+  let tempPassword = "";
+  let emailSent = false;
+
+  if (application.userId) {
+    // ── Phase 4 wizard path: account already exists (magic link). ──
+    // FR-5 one account two doors — the parent-role account becomes a provider.
+    providerUserId = application.userId;
+    await db
+      .update(users)
+      .set({ role: "provider" })
+      .where(eq(users.id, providerUserId));
+  } else {
+    // ── Legacy admin/bulk path: create the account with a temp password. ──
+    // Do the account creation FIRST so the application is only marked approved
+    // once the account actually exists.
+    const [existingUser] = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    if (existingUser) {
+      throw new ApproveError(EMAIL_EXISTS_ERROR, 409);
+    }
+
+    try {
+      const result = await createProviderAccount(application);
+      tempPassword = result.tempPassword;
+      providerUserId = result.userId;
+    } catch (e) {
+      console.error("Auto-create provider account failed:", e);
+      throw new ApproveError(
+        "Account creation failed — application not approved. Check the server logs and try again.",
+        500
+      );
+    }
+
+    // WS-2: fire-and-forget the welcome email (temp password + login
+    // instructions). Email is OPTIONAL and NON-BLOCKING — if RESEND_API_KEY
+    // is unset or Resend rejects the send, the approval still succeeds and
+    // the admin copies the temp password manually, exactly as before.
+    try {
+      const mailResult = await sendProviderWelcomeEmail({
+        to: application.email,
+        providerName: application.name || application.email,
+        tempPassword,
+      });
+      emailSent = "sent" in mailResult ? mailResult.sent : false;
+    } catch (e) {
+      console.warn("[mail] Welcome email failed — approval proceeds:", e);
+      emailSent = false;
+    }
   }
 
-  // WS-2: fire-and-forget the welcome email (temp password + login
-  // instructions). Email is OPTIONAL and NON-BLOCKING — if RESEND_API_KEY
-  // is unset or Resend rejects the send, the approval still succeeds and
-  // the admin copies the temp password manually, exactly as before.
-  let emailSent = false;
-  try {
-    const mailResult = await sendProviderWelcomeEmail({
-      to: application.email,
-      providerName: application.name || application.email,
-      tempPassword,
-    });
-    emailSent = "sent" in mailResult ? mailResult.sent : false;
-  } catch (e) {
-    console.warn("[mail] Welcome email failed — approval proceeds:", e);
-    emailSent = false;
-  }
+  // Link or create the providers row (shared by both paths).
+  await linkOrCreateProvidersRow(application, providerUserId);
 
   await db
     .update(providerApplications)
@@ -270,7 +305,8 @@ export async function approveApplication(
   // Live) the moment the listing goes live. Non-blocking by design — the
   // sendNotification service never throws, so the approval can never fail
   // because of email/WhatsApp problems. Fired here (the shared helper) so the
-  // single-approve route AND batch-approve both notify.
+  // single-approve route AND batch-approve both notify. For wizard providers
+  // this email ("You're live! 🎉") is their activation email (FR-9).
   try {
     await sendNotification(
       providerUserId,

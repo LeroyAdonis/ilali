@@ -38,12 +38,11 @@ export default function ProviderLayout({
       router.replace("/auth/signin");
       return;
     }
-    if (!isPending && session) {
-      const user = session.user as { role?: string };
-      if (user.role !== "provider") {
-        router.replace("/auth/signin");
-      }
-    }
+    // Note: NO role check here. A wizard user's role flips to 'provider' in
+    // the DB on submit, but the Better Auth session cookie still carries the
+    // old 'parent' claim until the next sign-in — gating on it would bounce
+    // a just-submitted provider off their own status tracker. The dashboard
+    // page + /api/provider handle pre-live vs live themselves.
   }, [session, isPending, router]);
 
   if (isPending) {

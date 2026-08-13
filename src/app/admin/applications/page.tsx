@@ -37,10 +37,13 @@ export default async function ApplicationsPage({
     .from(providerApplications)
     .orderBy(desc(providerApplications.createdAt));
 
+  // Wizard autosave rows stay out of the admin desk until submitted.
+  const reviewed = all.filter((a) => a.status !== "draft");
+
   // Source filter (WS-4: bulk-import chip) applies first, then status tab.
   const sourceFiltered = activeSource
-    ? all.filter((a) => a.onboardSource === activeSource)
-    : all;
+    ? reviewed.filter((a) => a.onboardSource === activeSource)
+    : reviewed;
 
   const applications = activeStatus
     ? sourceFiltered.filter((a) => a.status === activeStatus)

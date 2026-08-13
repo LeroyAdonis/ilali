@@ -28,6 +28,11 @@ Items explicitly excluded from shipped specs. Revisit when the trigger condition
 | 22 | On-the-fly AI image generation / personalized banners | If we ever need dynamic per-user imagery | Large | proposed |
 | 23 | Video banners / animated heroes | Post-MVP brand push | Medium | proposed |
 | 24 | Full image CDN swap (imgix/Cloudinary) | When user-upload-heavy flows need on-the-fly transforms | Medium | proposed |
+| 25 | Social login (Google/Apple) | When conversion data shows email-first magic link underperforms | Small | proposed |
+| 26 | Paystack online booking + waiting lists | WS-6 spec + Paystack business verification done (George) | Large | proposed |
+| 27 | Billing/subscription infrastructure (provider plans) | When FR-12 monetization decision is made (painless-journeys spec) | Large | proposed |
+| 28 | WhatsApp notification delivery for parent/provider journey triggers | When WhatsApp Business API infra is live (WHATSAPP_AUTO_SEND flag) | Medium | proposed |
+| 29 | Parent "become a provider" in-account switch | Post-launch, when a parent requests it | Small | proposed |
 | 25 | Dark-mode / alternate theme image variants | If dark mode is specced | Small | proposed |
 | 26 | Batch poster import (queue multiple posters at once) | When poster intake exceeds ~10/week and single-poster flow is proven | Medium | proposed |
 | 27 | Auto WhatsApp sending via Business API | When George supplies dedicated SIM + Meta Business verification | Medium | proposed |

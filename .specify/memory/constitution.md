@@ -38,4 +38,8 @@ MVP ships within 4 weeks of account setup being completed. No perfectionism — 
 - Every spec references this constitution and must pass its gates
 - "Should" = recommendation. "MUST" = non-negotiable
 - If a principle conflicts with a user request, flag the conflict — don't silently violate the constitution
+
+## Amendments
+
+- **2026-08-13 (Leroy):** Principle 1 amended — "progressive verification with clearly visible badges; nothing unlabelled." Providers appear instantly as Listed (grey badge); Verified (docs) and Trusted (vouches + reviews) are opt-in upgrades. Rationale: instant supply with transparent trust tiers (painless-journeys spec FR-10).
 - This constitution applies to ALL features, not just the MVP

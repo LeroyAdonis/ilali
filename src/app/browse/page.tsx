@@ -10,6 +10,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { getProviders, getCategories } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
+import { matchPriceBucket } from "@/lib/filtering";
 import type { Provider } from "@/lib/types";
 import type { categories as categoriesSchema } from "@/lib/db/schema";
 
@@ -70,20 +71,8 @@ function filterProviders(
 
   const price = typeof params.price === "string" ? params.price : "";
   if (price) {
-    const priceMap: Record<string, [number, number]> = {
-      free: [0, 0],
-      "under-100": [0, 99],
-      "100-250": [100, 250],
-      "250-500": [251, 500],
-      "over-500": [501, 99999],
-    };
-    const range = priceMap[price];
-    if (range) {
-      const [min, max] = range;
-      filtered = filtered.filter(
-        (p) => p.priceValue >= min && p.priceValue <= max
-      );
-    }
+    // Bucket bounds are in cents to match providers' stored priceValue.
+    filtered = filtered.filter((p) => matchPriceBucket(p.priceValue, price));
   }
 
   const distance = typeof params.distance === "string" ? params.distance : "";

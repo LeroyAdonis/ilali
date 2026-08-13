@@ -42,9 +42,9 @@ interface AIChatPanelProps {
 function LoadingDots() {
   return (
     <span className="inline-flex items-center gap-0.5 text-ink-faint" aria-label="AI is thinking">
-      <span className="animate-bounce [animation-delay:0ms]">●</span>
-      <span className="animate-bounce [animation-delay:150ms]">●</span>
-      <span className="animate-bounce [animation-delay:300ms]">●</span>
+      <span className="animate-dot-rise [animation-delay:0ms]">●</span>
+      <span className="animate-dot-rise [animation-delay:150ms]">●</span>
+      <span className="animate-dot-rise [animation-delay:300ms]">●</span>
     </span>
   );
 }

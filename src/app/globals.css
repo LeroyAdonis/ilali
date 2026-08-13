@@ -144,10 +144,24 @@ body {
   animation: slide-up 0.3s ease-out forwards;
 }
 
+@keyframes dot-rise {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px);
+  }
+}
+.animate-dot-rise {
+  animation: dot-rise 1.2s ease-out infinite;
+}
+
 /* Respect user motion preference */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in-up,
-  .animate-slide-up {
+  .animate-slide-up,
+  .animate-dot-rise {
     animation: none;
   }
   *,

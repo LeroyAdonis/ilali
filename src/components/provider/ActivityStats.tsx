@@ -14,11 +14,11 @@ const STAT_CARDS = [
   { key: "reviews", icon: "⭐", label: "Reviews" },
 ] as const;
 
-const ACCENT_BORDERS = [
-  "border-l-teal",
-  "border-l-gold",
-  "border-l-purple",
-  "border-l-orange",
+const ACCENT_TINTS = [
+  "bg-teal/10",
+  "bg-gold/10",
+  "bg-purple/10",
+  "bg-orange/10",
 ] as const;
 
 export default function ActivityStats({
@@ -39,10 +39,13 @@ export default function ActivityStats({
       {STAT_CARDS.map((card, i) => (
         <div
           key={card.key}
-          className={`rounded-xl border border-ink/10 bg-white p-4 shadow-sm border-l-4 ${ACCENT_BORDERS[i]}`}
+          className="rounded-xl border border-ink/10 bg-white p-4 shadow-sm"
         >
           <div className="flex items-center gap-2">
-            <span className="text-xl" aria-hidden="true">
+            <span
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl ${ACCENT_TINTS[i]}`}
+              aria-hidden="true"
+            >
               {card.icon}
             </span>
             <span className="font-display text-2xl font-bold text-ink">

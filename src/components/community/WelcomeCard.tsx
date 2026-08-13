@@ -40,7 +40,7 @@ export default function WelcomeCard({
   if (dismissed) return null;
 
   return (
-    <div className="relative rounded-xl border-t-2 border-amber-400 bg-paper-warm p-6">
+    <div className="relative rounded-xl bg-amber-50/60 p-6">
       <button
         onClick={handleDismiss}
         className="absolute right-4 top-4 rounded-full p-1 text-ink-faint hover:text-ink-soft hover:bg-white/50 transition-colors"

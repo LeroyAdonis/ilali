@@ -14,7 +14,7 @@ const CONTRIBUTION_OPTIONS = [
     label: "Venue help",
     desc: "Set up, clean up, fix something",
     points: 25,
-    accent: "border-l-teal-500",
+    accent: "bg-teal-500/10",
   },
   {
     type: "event-support" as const,
@@ -22,7 +22,7 @@ const CONTRIBUTION_OPTIONS = [
     label: "Event support",
     desc: "Help at tournament, assist coach, bring snacks",
     points: 30,
-    accent: "border-l-gold",
+    accent: "bg-gold/10",
   },
   {
     type: "community-building" as const,
@@ -30,7 +30,7 @@ const CONTRIBUTION_OPTIONS = [
     label: "Community",
     desc: "Welcome new member, organise social",
     points: 20,
-    accent: "border-l-purple",
+    accent: "bg-purple/10",
   },
   {
     type: "knowledge-sharing" as const,
@@ -38,7 +38,7 @@ const CONTRIBUTION_OPTIONS = [
     label: "Knowledge",
     desc: "Share a skill, mentor, help with admin",
     points: 50,
-    accent: "border-l-orange",
+    accent: "bg-orange/10",
   },
   {
     type: "outreach" as const,
@@ -46,7 +46,7 @@ const CONTRIBUTION_OPTIONS = [
     label: "Outreach",
     desc: "Get sponsor, bring in provider, distribute flyers",
     points: 50,
-    accent: "border-l-rose-400",
+    accent: "bg-rose-400/10",
   },
 ] as const;
 
@@ -184,9 +184,12 @@ export default function ContributionPicker({
                 setError(null);
               }}
               disabled={submitting}
-              className={`flex items-start gap-3 rounded-xl border border-ink/10 bg-paper-warm p-3 text-left transition-colors hover:bg-white hover:shadow-sm disabled:opacity-50 ${opt.accent} border-l-4`}
+              className="flex items-start gap-3 rounded-xl border border-ink/10 bg-paper-warm p-3 text-left transition-colors hover:bg-white hover:shadow-sm disabled:opacity-50"
             >
-              <span className="text-xl shrink-0" aria-hidden="true">
+              <span
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl ${opt.accent}`}
+                aria-hidden="true"
+              >
                 {opt.emoji}
               </span>
               <div className="min-w-0 flex-1">

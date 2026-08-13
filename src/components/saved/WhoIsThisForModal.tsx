@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Loader2, CheckCircle2, X } from "lucide-react";
+import { CHILD_AGE_MIN, CHILD_AGE_MAX } from "@/lib/validations";
 
 interface WhoIsThisForModalProps {
   onClose: () => void;
@@ -32,8 +33,8 @@ export default function WhoIsThisForModal({ onClose }: WhoIsThisForModalProps) {
       setError("Please tell us their name");
       return;
     }
-    if (!Number.isFinite(parsedAge) || parsedAge < 1 || parsedAge > 18) {
-      setError("Age must be between 1 and 18");
+    if (!Number.isFinite(parsedAge) || parsedAge < CHILD_AGE_MIN || parsedAge > CHILD_AGE_MAX) {
+      setError(`Age must be between ${CHILD_AGE_MIN} and ${CHILD_AGE_MAX}`);
       return;
     }
 

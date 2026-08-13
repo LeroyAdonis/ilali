@@ -7,6 +7,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useMemo,
 } from "react";
 import { CheckCircle2, Info } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
@@ -48,6 +49,7 @@ export default function SavedProvider({ children }: { children: React.ReactNode 
 
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const [pendingIntent, setPendingIntent] = useState<IntentPayload | null>(null);
+  const [contactReady, setContactReady] = useState<string | null>(null);
   const [showWhoFor, setShowWhoFor] = useState(false);
   const [toast, setToast] = useState<ToastState | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -63,18 +65,26 @@ export default function SavedProvider({ children }: { children: React.ReactNode 
   const refreshSaved = useCallback(async () => {
     try {
       const res = await fetch("/api/saved", { cache: "no-store" });
-      if (!res.ok) return;
+      if (!res.ok) {
+        console.warn(`[saved] refresh failed: ${res.status}`);
+        return;
+      }
       const data = await res.json();
-      const ids = (data.saved ?? []).map((s: { provider: { id: string } }) => s.provider.id);
+      const ids: string[] = Array.isArray(data.ids)
+        ? data.ids
+        : (data.saved ?? []).map((s: { provider: { id: string } }) => s.provider.id);
       setSavedIds(new Set(ids));
-    } catch {
+    } catch (e) {
       // keep whatever we have; next save/unsave reconciles
+      console.warn("[saved] refresh error:", e);
     }
   }, []);
 
   useEffect(() => {
     if (isPending) return;
-    if (user) Promise.resolve().then(() => refreshSaved());
+    // Skip the mount refresh when an intent is waiting to resolve — its POST
+    // is the fresher source of truth, and a race could wipe a just-saved heart.
+    if (user && !getIntent()) Promise.resolve().then(() => refreshSaved());
   }, [isPending, user, refreshSaved]);
 
   const performSave = useCallback(
@@ -113,20 +123,23 @@ export default function SavedProvider({ children }: { children: React.ReactNode 
               ? `We'll let you know when booking opens for ${intent.providerName}.`
               : `Saved ${intent.providerName}.`
           );
+          clearIntent();
         } else if (intent.action === "contact") {
+          // window.open outside a user gesture gets popup-blocked — surface a
+          // real link the parent can tap instead (P2 cleanup).
           const phone = intent.phone ?? process.env.NEXT_PUBLIC_WHATSAPP_CONTACT_NUMBER ?? "";
-          window.open(
-            buildWhatsAppUrl(phone, intent.providerName, process.env.NEXT_PUBLIC_WHATSAPP_CONTACT_NUMBER),
-            "_blank",
-            "noopener"
+          setContactReady(
+            buildWhatsAppUrl(phone, intent.providerName, process.env.NEXT_PUBLIC_WHATSAPP_CONTACT_NUMBER)
           );
-          showToast(`Opening WhatsApp to chat about ${intent.providerName}…`, "info");
+          clearIntent();
         }
-      } catch {
-        showToast("Couldn't finish that just yet — try again?", "info");
+      } catch (e) {
+        // Keep the intent cookie so the action isn't lost — it re-resolves on
+        // the next mount. Never clear intent on failure.
+        console.warn("[saved] intent resolution failed:", e);
+        resumedRef.current = false;
+        showToast("Couldn't finish that just yet — we'll pick it up on your next visit.", "info");
         return;
-      } finally {
-        clearIntent();
       }
 
       // Post-signup, not at signup: if the parent has no children yet, ask
@@ -162,7 +175,8 @@ export default function SavedProvider({ children }: { children: React.ReactNode 
           showToast("Couldn't save just yet — please try again.", "info")
         );
       } else {
-        setIntent({ action: "save", providerId, providerName });
+        // Cookie is written only after the magic link actually sends
+        // (onLinkSent) — an abandoned modal must not leave orphaned intent.
         setPendingIntent({ action: "save", providerId, providerName, createdAt: Date.now() });
       }
     },
@@ -176,7 +190,6 @@ export default function SavedProvider({ children }: { children: React.ReactNode 
           showToast("Couldn't set that up — please try again.", "info")
         );
       } else {
-        setIntent({ action: "notify", providerId, providerName, notifyWhenOpen: true });
         setPendingIntent({
           action: "notify",
           providerId,
@@ -198,7 +211,6 @@ export default function SavedProvider({ children }: { children: React.ReactNode 
           "noopener"
         );
       } else {
-        setIntent({ action: "contact", providerId, providerName, phone });
         setPendingIntent({
           action: "contact",
           providerId,
@@ -228,10 +240,13 @@ export default function SavedProvider({ children }: { children: React.ReactNode 
 
   const isSaved = useCallback((providerId: string) => savedIds.has(providerId), [savedIds]);
 
+  const contextValue = useMemo(
+    () => ({ savedIds, isSaved, requestSave, requestNotify, requestContact, toggleSave }),
+    [savedIds, isSaved, requestSave, requestNotify, requestContact, toggleSave]
+  );
+
   return (
-    <SavedContext.Provider
-      value={{ savedIds, isSaved, requestSave, requestNotify, requestContact, toggleSave }}
-    >
+    <SavedContext.Provider value={contextValue}>
       {children}
 
       {pendingIntent && (
@@ -240,10 +255,51 @@ export default function SavedProvider({ children }: { children: React.ReactNode 
           providerName={pendingIntent.providerName}
           notifyWhenOpen={pendingIntent.notifyWhenOpen}
           onClose={() => setPendingIntent(null)}
+          onLinkSent={() => setIntent(pendingIntent)}
         />
       )}
 
       {showWhoFor && <WhoIsThisForModal onClose={() => setShowWhoFor(false)} />}
+
+      {contactReady && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-ink/40 px-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Open WhatsApp"
+          onClick={() => setContactReady(null)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl border border-ink/10 bg-white p-6 shadow-xl sm:p-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-5 text-center">
+              <h2 className="font-display text-xl font-bold text-ink sm:text-2xl">
+                Open WhatsApp
+              </h2>
+              <p className="mt-2 text-sm text-ink-faint">
+                Tap below to chat — we&apos;ve pre-filled a message for you.
+              </p>
+            </div>
+            <a
+              href={contactReady}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:shadow-md"
+              style={{ backgroundColor: "#25D366" }}
+            >
+              Chat on WhatsApp
+            </a>
+            <button
+              type="button"
+              onClick={() => setContactReady(null)}
+              className="mt-3 w-full rounded-full border border-ink/10 bg-white px-6 py-3 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper-warm"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       {toast && (
         <div

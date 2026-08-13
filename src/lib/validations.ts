@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export const CHILD_AGE_MIN = 1;
+export const CHILD_AGE_MAX = 18;
+
 // ── Provider Application Schema ──
 export const providerApplicationSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100),

@@ -49,7 +49,7 @@ export async function GET(request: Request) {
       .where(eq(savedActivities.parentId, user.id))
       .orderBy(savedActivities.createdAt);
 
-    return NextResponse.json({ saved: rows });
+    return NextResponse.json({ saved: rows, ids: rows.map((r) => r.provider.id) });
   } catch (error) {
     console.error("[saved] GET error:", error);
     return NextResponse.json({ error: "Failed to load saved activities" }, { status: 500 });
@@ -79,6 +79,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "providerId is required and must be a valid UUID" }, { status: 400 });
     }
 
+    const hasNotifyFlag = b.notifyWhenOpen !== undefined;
     const notifyWhenOpen = b.notifyWhenOpen === true;
 
     const [provider] = await db
@@ -91,17 +92,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Provider not found" }, { status: 404 });
     }
 
-    await db
-      .insert(savedActivities)
-      .values({
-        parentId: user.id,
-        providerId: provider.id,
-        notifyWhenOpen,
-      })
-      .onConflictDoUpdate({
+    const insert = db.insert(savedActivities).values({
+      parentId: user.id,
+      providerId: provider.id,
+      notifyWhenOpen,
+    });
+
+    // A plain save must NOT clobber an existing "notify me" intent; only
+    // touch notifyWhenOpen when the request explicitly carries it.
+    if (hasNotifyFlag) {
+      await insert.onConflictDoUpdate({
         target: [savedActivities.parentId, savedActivities.providerId],
         set: { notifyWhenOpen },
       });
+    } else {
+      await insert.onConflictDoNothing({
+        target: [savedActivities.parentId, savedActivities.providerId],
+      });
+    }
 
     return NextResponse.json({ saved: true });
   } catch (error) {

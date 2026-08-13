@@ -8,12 +8,12 @@ import { childProfiles, notificationPreferences } from "@/lib/db/schema";
 interface ChildInput {
   name: string;
   age: number;
-  interests: string[];
-  suburb: string | null;
-  availability: {
+  interests?: string[];
+  suburb?: string | null;
+  availability?: {
     days: string[];
     timeSlots: string[];
-  };
+  } | null;
 }
 
 interface NotificationPrefs {

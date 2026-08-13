@@ -14,6 +14,7 @@ const { getSessionMock, dbMock, makeChain } = vi.hoisted(() => {
       "limit",
       "values",
       "onConflictDoUpdate",
+      "onConflictDoNothing",
     ]) {
       chain[m] = vi.fn(() => chain);
     }

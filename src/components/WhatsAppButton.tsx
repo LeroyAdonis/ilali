@@ -6,6 +6,8 @@ interface WhatsAppButtonProps {
   phone: string; // +27XXXXXXXXX
   activityName: string;
   className?: string;
+  /** Optional interception — e.g. ContactButton preventDefaults for guests. */
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
 /** Pure helper — builds the wa.me deep link. `override` (e.g. a business-wide
@@ -26,6 +28,7 @@ export default function WhatsAppButton({
   phone,
   activityName,
   className = "",
+  onClick,
 }: WhatsAppButtonProps) {
   const waUrl = buildWhatsAppUrl(
     phone,
@@ -38,6 +41,7 @@ export default function WhatsAppButton({
       href={waUrl}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={onClick}
       aria-label={`Contact provider for ${activityName} on WhatsApp`}
       className={`inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-colors shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 ${className}`}
       style={{ backgroundColor: "#25D366" }}

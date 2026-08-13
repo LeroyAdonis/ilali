@@ -59,17 +59,21 @@ export default async function SavedPage() {
   }
 
   // ── Signed in: list saved activities with provider details ──
-  const [rows, categoryRows] = await Promise.all([
-    db
-      .select()
-      .from(savedActivities)
-      .innerJoin(providers, eq(savedActivities.providerId, providers.id))
-      .where(eq(savedActivities.parentId, session.user.id))
-      .orderBy(savedActivities.createdAt),
-    db.select({ id: categories.id, name: categories.name }).from(categories),
-  ]);
+  const rows = await db
+    .select()
+    .from(savedActivities)
+    .innerJoin(providers, eq(savedActivities.providerId, providers.id))
+    .where(eq(savedActivities.parentId, session.user.id))
+    .orderBy(savedActivities.createdAt);
 
-  const savedProviders = rows.map((row) => mapProvider(row.providers, categoryRows));
+  // Categories only needed when there's something to map (empty list skips the query).
+  let savedProviders: ReturnType<typeof mapProvider>[] = [];
+  if (rows.length > 0) {
+    const categoryRows = await db
+      .select({ id: categories.id, name: categories.name })
+      .from(categories);
+    savedProviders = rows.map((row) => mapProvider(row.providers, categoryRows));
+  }
 
   return (
     <PageShell>

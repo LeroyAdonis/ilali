@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2, MailCheck, X, Heart, MessageCircle, Bell } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { EMAIL_RE } from "@/lib/validations";
 import type { IntentAction } from "@/lib/intent-cookie";
 
 interface IntentCaptureModalProps {
@@ -10,6 +11,9 @@ interface IntentCaptureModalProps {
   providerName: string;
   notifyWhenOpen?: boolean;
   onClose: () => void;
+  /** Called after the magic link was actually sent — the provider writes the
+   *  intent cookie then, so abandoned modals never leave orphaned intent. */
+  onLinkSent: () => void;
 }
 
 const ACTION_META: Record<
@@ -39,13 +43,12 @@ const ACTION_META: Record<
   },
 };
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 export default function IntentCaptureModal({
   action,
   providerName,
   notifyWhenOpen,
   onClose,
+  onLinkSent,
 }: IntentCaptureModalProps) {
   const meta = ACTION_META[action];
   const Icon = meta.icon;
@@ -80,6 +83,7 @@ export default function IntentCaptureModal({
       if (result.error) {
         setError(result.error.message ?? "Could not send the link. Please try again.");
       } else {
+        onLinkSent();
         setSent(true);
       }
     } catch {

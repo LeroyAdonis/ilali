@@ -6,6 +6,7 @@ import {
   getProviderVouchCounts,
 } from "@/lib/data-source";
 import { resolveProviderCoords } from "@/lib/map/suburbs";
+import { spreadCoLocatedProviders } from "@/lib/map/spread";
 
 export const dynamic = "force-dynamic";
 
@@ -70,6 +71,14 @@ export async function GET(request: NextRequest) {
       verifiedTier,
       suburb: p.location,
     };
+  });
+
+  const spread = spreadCoLocatedProviders(
+    data.map((d) => ({ lat: d.lat, lng: d.lng, name: d.name }))
+  );
+  data.forEach((d, i) => {
+    d.lat = spread[i].lat;
+    d.lng = spread[i].lng;
   });
 
   const filtered = verifiedOnly

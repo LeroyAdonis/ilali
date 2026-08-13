@@ -20,13 +20,6 @@ export interface MapProvider {
   suburb: string;
 }
 
-export interface DensityRow {
-  suburb: string;
-  lat: number;
-  lng: number;
-  count: number;
-}
-
 export interface MapCategory {
   id: string;
   slug: string;
@@ -55,10 +48,8 @@ export default function ProviderMap({ categories }: ProviderMapProps) {
   const mapRef = useRef<LeafletMap | null>(null);
   const leafletRef = useRef<LeafletModule | null>(null);
   const pinsLayerRef = useRef<LayerGroup | null>(null);
-  const densityLayerRef = useRef<LayerGroup | null>(null);
 
   const [providers, setProviders] = useState<MapProvider[]>([]);
-  const [density, setDensity] = useState<DensityRow[]>([]);
   const [category, setCategory] = useState("all");
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [status, setStatus] = useState<"loading" | "ready" | "error">(
@@ -95,7 +86,6 @@ export default function ProviderMap({ categories }: ProviderMapProps) {
       }).addTo(map);
 
       pinsLayerRef.current = L.layerGroup().addTo(map);
-      densityLayerRef.current = L.layerGroup().addTo(map);
     })();
 
     return () => {
@@ -108,24 +98,19 @@ export default function ProviderMap({ categories }: ProviderMapProps) {
     };
   }, []);
 
-  // ── Fetch provider + density data from the API routes ──
+  // ── Fetch provider data from the API route ──
   useEffect(() => {
     let cancelled = false;
 
     (async () => {
       try {
-        const [providersRes, densityRes] = await Promise.all([
-          fetch("/api/map/providers"),
-          fetch("/api/map/density"),
-        ]);
-        if (!providersRes.ok || !densityRes.ok) {
+        const providersRes = await fetch("/api/map/providers");
+        if (!providersRes.ok) {
           throw new Error("map data fetch failed");
         }
         const providersJson = await providersRes.json();
-        const densityJson = await densityRes.json();
         if (cancelled) return;
         setProviders(providersJson.data ?? []);
-        setDensity(densityJson.data ?? []);
         setStatus("ready");
       } catch {
         if (!cancelled) setStatus("error");
@@ -184,36 +169,6 @@ export default function ProviderMap({ categories }: ProviderMapProps) {
       );
     }
   }, [providers, category, verifiedOnly, visibleProviders]);
-
-  // ── Render density circles (blue, sized by count) ──
-  useEffect(() => {
-    const L = leafletRef.current;
-    const layer = densityLayerRef.current;
-    if (!L || !layer) return;
-
-    layer.clearLayers();
-
-    for (const row of density) {
-      // Radius scales with the square root of the parent count (metres).
-      const radius = Math.max(6000, Math.sqrt(row.count) * 6000);
-      L.circle([row.lat, row.lng], {
-        radius,
-        color: "#3b82f6",
-        weight: 1,
-        fillColor: "#3b82f6",
-        fillOpacity: 0.22,
-      })
-        .addTo(layer)
-        .bindPopup(
-          `<div style="font-family: Inter, ui-sans-serif, system-ui, sans-serif;">
-            <strong>${escapeHtml(row.suburb)}</strong><br/>
-            <span style="color: #475569;">${row.count} parent${
-            row.count === 1 ? "" : "s"
-          } nearby</span>
-          </div>`
-        );
-    }
-  }, [density]);
 
   const shown = visibleProviders();
 
@@ -289,18 +244,8 @@ export default function ProviderMap({ categories }: ProviderMapProps) {
             <span className="inline-block h-3 w-3 rounded-full border-2 border-slate-500 bg-paper-warm" />
             Listed
           </div>
-          <div className="mt-1.5 flex items-center gap-2 text-ink-soft">
-            <span className="inline-block h-3 w-3 rounded-full border border-blue-500 bg-blue-400/30" />
-            Parents nearby
-          </div>
         </div>
       </div>
-
-      <p className="mt-3 text-xs text-ink-faint">
-        Density circles show the number of ILALI parents per suburb —
-        anonymised at suburb level. Coordinates for pins fall back to suburb
-        lookups, so positions are approximate.
-      </p>
     </div>
   );
 }

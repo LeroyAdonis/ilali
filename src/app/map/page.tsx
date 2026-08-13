@@ -7,7 +7,7 @@ import { getCategories } from "@/lib/data-source";
 export const metadata: Metadata = {
   title: "Map",
   description:
-    "Explore verified and listed activity clubs across Cape Town on the ILALI map, with anonymised parent density by suburb.",
+    "Explore verified and listed activity clubs across Cape Town on the ILALI map.",
 };
 
 export default async function MapPage() {
@@ -22,9 +22,7 @@ export default async function MapPage() {
             Find clubs near you
           </h1>
           <p className="mt-1 text-sm text-ink-faint">
-            Green pins are verified providers, grey pins are listed, and blue
-            circles show how many ILALI parents are nearby — by suburb, never
-            individuals.
+            Green pins are verified providers, grey pins are listed.
           </p>
         </div>
 

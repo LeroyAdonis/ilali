@@ -91,9 +91,10 @@ export const HERO_IMAGES: Record<string, ImageEntry> = {
     crop: "faces",
   },
   contact: {
-    src: "https://images.unsplash.com/photo-1637878257903-7f08eab9a7f2",
+    src: "/images/hero/hero-contact-desktop.webp",
+    mobileSrc: "/images/hero/hero-contact-mobile.webp",
     alt: "Kids sitting together in a field",
-    crop: "entropy",
+    local: true,
   },
   locations: {
     src: "https://images.unsplash.com/photo-1511448962213-2f9bc14ed197",
@@ -101,9 +102,10 @@ export const HERO_IMAGES: Record<string, ImageEntry> = {
     crop: "entropy",
   },
   "for-providers": {
-    src: "https://images.unsplash.com/photo-1607417308151-cd5c149775b0",
+    src: "/images/hero/hero-for-providers-desktop.webp",
+    mobileSrc: "/images/hero/hero-for-providers-mobile.webp",
     alt: "Coach with kids on a soccer field",
-    crop: "faces",
+    local: true,
   },
   "provider-resources": {
     src: "https://images.unsplash.com/photo-1680024439029-d7d4b7f4cba1",

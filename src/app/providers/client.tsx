@@ -47,7 +47,7 @@ export default function ProvidersPageClient({ providers, categories }: Providers
           <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
             Find Activity Providers
           </h1>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-ilali-100 sm:text-lg">
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink-soft sm:text-lg">
             Browse our curated list of trusted, background-checked activity
             providers in your community.
           </p>

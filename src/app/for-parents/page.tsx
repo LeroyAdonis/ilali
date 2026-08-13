@@ -189,7 +189,7 @@ export default function ForParentsPage() {
             <h2 className="font-display text-2xl font-bold text-ink sm:text-3xl">
               Ready to find the right activity for your kid?
             </h2>
-            <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-ilali-100">
+            <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-ink-soft">
               Browse activities near you and book with confidence.
             </p>
             <Link

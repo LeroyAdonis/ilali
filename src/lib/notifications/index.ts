@@ -26,6 +26,7 @@ import {
 } from "@/lib/db/schema";
 import { and, eq, gte, or } from "drizzle-orm";
 import { sendEmail } from "@/lib/mail/index";
+import type { NotificationStatus } from "@/lib/applications";
 import {
   renderNotificationEmail,
   type NotificationPayload,
@@ -445,4 +446,32 @@ export async function sendFirstBooking(params: {
     date: params.date,
     link: params.link,
   });
+}
+
+/**
+ * provider-status trigger (wizard submit → approval → rejection). Builds the
+ * canonical payload once so call sites stop hand-rolling it. Non-throwing like
+ * sendNotification — callers can `void` it.
+ */
+export function sendProviderStatusNotification(
+  userId: string,
+  status: NotificationStatus,
+  application: {
+    name?: string | null;
+    email?: string | null;
+    activityType?: string | null;
+  },
+  opts: { email?: string | null } = {}
+): Promise<SendNotificationResult> {
+  return sendNotification(
+    userId,
+    "provider-status",
+    {
+      status,
+      providerName: application.name || application.email || "",
+      activityName: application.activityType || "",
+      link: `${process.env.NEXT_PUBLIC_APP_URL || "https://ilali.vercel.app"}/provider`,
+    },
+    opts.email ? { email: opts.email } : {}
+  );
 }

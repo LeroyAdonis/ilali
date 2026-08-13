@@ -85,7 +85,8 @@ export default function ProviderDashboardPage() {
     if (!sessionLoading && session) {
       fetchData();
     }
-  }, [sessionLoading, session, fetchData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionLoading, session?.user?.id, fetchData]);
 
   const handleWizardSave = useCallback(
     async (fields: Record<string, unknown>) => {

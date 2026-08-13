@@ -1,6 +1,6 @@
 import { db } from "@/lib/db/index";
 import { providerApplications, users } from "@/lib/db/schema";
-import { desc, inArray } from "drizzle-orm";
+import { desc, inArray, ne } from "drizzle-orm";
 import Link from "next/link";
 import { Download } from "lucide-react";
 import { ApplicationsList } from "./ApplicationsList";
@@ -32,13 +32,13 @@ export default async function ApplicationsPage({
       ? params.source
       : null;
 
-  const all = await db
+  // Wizard autosave rows stay out of the admin desk until submitted — filter
+  // in SQL so accumulating drafts never ship to every desk load.
+  const reviewed = await db
     .select()
     .from(providerApplications)
+    .where(ne(providerApplications.status, "draft"))
     .orderBy(desc(providerApplications.createdAt));
-
-  // Wizard autosave rows stay out of the admin desk until submitted.
-  const reviewed = all.filter((a) => a.status !== "draft");
 
   // Source filter (WS-4: bulk-import chip) applies first, then status tab.
   const sourceFiltered = activeSource
@@ -59,7 +59,7 @@ export default async function ApplicationsPage({
 
   // Which application emails already have a user account — drives the
   // "Account created: [email]" state on approved applications.
-  const emails = all
+  const emails = reviewed
     .map((a) => a.email?.toLowerCase().trim())
     .filter((e): e is string => Boolean(e));
   const accountUsers = emails.length

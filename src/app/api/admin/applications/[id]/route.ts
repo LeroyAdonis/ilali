@@ -9,7 +9,7 @@ import {
   approveApplication,
   generateTempPassword,
 } from "@/lib/admin/approveApplication";
-import { sendNotification } from "@/lib/notifications";
+import { sendProviderStatusNotification } from "@/lib/notifications";
 
 /**
  * Admin application lifecycle:
@@ -98,33 +98,30 @@ export const POST = withAdmin(
       }
     }
 
-    const [updated] = await db
-      .update(providerApplications)
-      .set({ status: newStatus })
-      .where(eq(providerApplications.id, id))
-      .returning();
+    let updated = application;
+    if (newStatus !== "approved") {
+      // approveApplication already sets status → "approved"; only contacted/
+      // rejected transitions need a write here (one less UPDATE per approval).
+      [updated] = await db
+        .update(providerApplications)
+        .set({ status: newStatus })
+        .where(eq(providerApplications.id, id))
+        .returning();
+    }
 
     // Painless Journeys (Scenario 6): self-onboarded providers stay in the
     // loop. The approval "live" notification fires inside approveApplication;
     // here we cover the other two transitions — into review (contacted) and
-    // rejection. Email is never blocking — sendNotification degrades to
-    // skipped and the transition still succeeds.
+    // rejection. Fire-and-forget: email latency must never block the response.
     if (application.userId && newStatus !== "approved") {
-      try {
-        await sendNotification(
-          application.userId,
-          "provider-status",
-          {
-            status: newStatus === "contacted" ? "reviewing" : "rejected",
-            providerName: application.name || application.email,
-            activityName: application.activityType || "",
-            link: `${process.env.NEXT_PUBLIC_APP_URL || "https://ilali.vercel.app"}/provider`,
-          },
-          { email: application.email ?? undefined }
-        );
-      } catch (e) {
+      void sendProviderStatusNotification(
+        application.userId,
+        newStatus === "contacted" ? "reviewing" : "rejected",
+        application,
+        { email: application.email ?? undefined }
+      ).catch((e) => {
         console.warn("[admin] provider-status notification failed — transition proceeds:", e);
-      }
+      });
     }
 
     return NextResponse.json({

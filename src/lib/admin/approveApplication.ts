@@ -25,7 +25,7 @@ import {
 import { eq, ilike } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { sendProviderWelcomeEmail, appUrl } from "@/lib/mail";
-import { sendNotification } from "@/lib/notifications";
+import { sendProviderStatusNotification } from "@/lib/notifications";
 
 export const EMAIL_EXISTS_ERROR = "A user with this email already exists";
 
@@ -76,13 +76,19 @@ function slugify(text: string): string {
 
 async function uniqueSlug(base: string): Promise<string> {
   const root = slugify(base) || "provider";
-  const taken = new Set(
-    (await db.select({ slug: providers.slug }).from(providers)).map((p) => p.slug)
-  );
-  if (!taken.has(root)) return root;
+  // Probe candidates with targeted lookups instead of loading every slug.
+  const taken = async (slug: string) => {
+    const [row] = await db
+      .select({ slug: providers.slug })
+      .from(providers)
+      .where(eq(providers.slug, slug))
+      .limit(1);
+    return Boolean(row);
+  };
+  if (!(await taken(root))) return root;
   for (let i = 2; i < 1000; i++) {
     const candidate = `${root}-${i}`;
-    if (!taken.has(candidate)) return candidate;
+    if (!(await taken(candidate))) return candidate;
   }
   return `${root}-${crypto.randomUUID().slice(0, 8)}`;
 }
@@ -302,28 +308,16 @@ export async function approveApplication(
     .where(eq(providerApplications.id, application.id));
 
   // Painless Journeys FR-6: fire the provider-status notification (status →
-  // Live) the moment the listing goes live. Non-blocking by design — the
-  // sendNotification service never throws, so the approval can never fail
-  // because of email/WhatsApp problems. Fired here (the shared helper) so the
+  // Live) the moment the listing goes live. Fire-and-forget + belt-and-braces:
+  // email latency must never block the approval response, and a regression
+  // here must never break the admin flow. Fired here (the shared helper) so the
   // single-approve route AND batch-approve both notify. For wizard providers
   // this email ("You're live! 🎉") is their activation email (FR-9).
-  try {
-    await sendNotification(
-      providerUserId,
-      "provider-status",
-      {
-        status: "live",
-        providerName: application.name || application.email,
-        activityName: application.activityType || "",
-        link: `${appUrl()}/provider`,
-      },
-      { email: application.email } // known — skip the user lookup
-    );
-  } catch (e) {
-    // Belt-and-braces — sendNotification is contractually non-throwing, but a
-    // regression here must never break the admin approval flow.
+  void sendProviderStatusNotification(providerUserId, "live", application, {
+    email: application.email,
+  }).catch((e) => {
     console.warn("[approve] provider-status notification failed — approval proceeds:", e);
-  }
+  });
 
   return { tempPassword, emailSent };
 }

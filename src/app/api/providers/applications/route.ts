@@ -4,13 +4,11 @@ import { db } from "@/lib/db/index";
 import { providerApplications, users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import {
-  wizardOfferStepSchema,
-  wizardDetailsStepSchema,
-  wizardPhotosStepSchema,
-  wizardSubmitSchema,
+  WIZARD_COLUMN_MAP,
+  WIZARD_STEP_SCHEMAS,
   wizardToApplicationRow,
 } from "@/lib/validations";
-import { sendNotification } from "@/lib/notifications";
+import { sendProviderStatusNotification } from "@/lib/notifications";
 
 /**
  * Provider self-onboarding wizard (Painless Journeys Phase 4, T024/T025).
@@ -25,29 +23,6 @@ import { sendNotification } from "@/lib/notifications";
  * is the self-serve path. Applications created here carry userId + onboardSource
  * 'wizard' so the admin approval flow knows to skip temp-password creation.
  */
-
-// Map the wizard form keys to providerApplications columns so partial step
-// saves land on the right columns.
-const WIZARD_COLUMN_MAP: Record<string, keyof typeof providerApplications.$inferInsert> = {
-  name: "name",
-  category: "activityType",
-  ageMin: "ageMin",
-  ageMax: "ageMax",
-  priceValue: "priceValue",
-  priceLabel: "priceLabel",
-  location: "location",
-  schedule: "schedule",
-  phone: "phone",
-  description: "description",
-  imageUrl: "imageUrl",
-};
-
-const STEP_SCHEMAS = [
-  wizardOfferStepSchema,
-  wizardDetailsStepSchema,
-  wizardPhotosStepSchema,
-  wizardSubmitSchema,
-];
 
 async function requireUser(request: NextRequest) {
   const session = await auth.api.getSession({ headers: request.headers });
@@ -96,7 +71,7 @@ export async function POST(request: NextRequest) {
   const fields = body.fields ?? {};
 
   // Validate against this step's schema (the full submit schema on step 4).
-  const schema = STEP_SCHEMAS[step - 1];
+  const schema = WIZARD_STEP_SCHEMAS[step - 1];
   const parsed = schema.safeParse(submitted ? { ...fields, email: user!.email } : fields);
   if (!parsed.success) {
     const first = parsed.error.issues[0];
@@ -158,21 +133,12 @@ export async function POST(request: NextRequest) {
     await db.update(users).set({ role: "provider" }).where(eq(users.id, user!.id));
 
     // Scenario 6: Submitted → Reviewing → Live, the provider stays in the loop.
-    try {
-      await sendNotification(
-        user!.id,
-        "provider-status",
-        {
-          status: "submitted",
-          providerName: application.name || application.email,
-          activityName: application.activityType || "",
-          link: `${process.env.NEXT_PUBLIC_APP_URL || "https://ilali.vercel.app"}/provider`,
-        },
-        { email: user!.email }
-      );
-    } catch (e) {
+    // Fire-and-forget: email latency must never block the submit response.
+    void sendProviderStatusNotification(user!.id, "submitted", application, {
+      email: user!.email,
+    }).catch((e) => {
       console.warn("[applications] provider-status notification failed — submit proceeds:", e);
-    }
+    });
   }
 
   return NextResponse.json({ application });

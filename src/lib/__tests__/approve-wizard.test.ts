@@ -43,6 +43,8 @@ const sendNotificationMock = vi.fn((..._args: unknown[]) =>
 );
 vi.mock("@/lib/notifications", () => ({
   sendNotification: (...args: unknown[]) => sendNotificationMock(...args),
+  // Phase 4 cleanup: provider-status now routes through the typed helper.
+  sendProviderStatusNotification: (...args: unknown[]) => sendNotificationMock(...args),
 }));
 
 import { approveApplication, ApproveError } from "@/lib/admin/approveApplication";
@@ -189,10 +191,10 @@ describe("approveApplication — wizard path (userId set, magic-link account)", 
 
     expect(sendNotificationMock).toHaveBeenCalledTimes(1);
     expect(sendNotificationMock.mock.calls[0][0]).toBe("user-1");
-    expect(sendNotificationMock.mock.calls[0][1]).toBe("provider-status");
+    // sendProviderStatusNotification(userId, status, application, opts)
+    expect(sendNotificationMock.mock.calls[0][1]).toBe("live");
     expect(sendNotificationMock.mock.calls[0][2]).toMatchObject({
-      status: "live",
-      providerName: "Creative Arts Workshop",
+      name: "Creative Arts Workshop",
     });
   });
 

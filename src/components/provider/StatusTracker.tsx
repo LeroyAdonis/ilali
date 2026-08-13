@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Check, Clock, PartyPopper, X } from "lucide-react";
+import { statusToStep, type StatusStep } from "@/lib/applications";
 
 /**
  * Painless Journeys T028 — provider onboarding status tracker.
@@ -24,18 +25,8 @@ const STEPS = [
 type StepKey = (typeof STEPS)[number]["key"];
 
 function stepIndexFor(status: string): StepKey {
-  switch (status) {
-    case "draft":
-      return "draft";
-    case "pending":
-      return "submitted";
-    case "contacted":
-      return "reviewing";
-    case "approved":
-      return "live";
-    default:
-      return "draft";
-  }
+  // Shared vocabulary lives in src/lib/applications.ts (statusToStep).
+  return statusToStep(status) as StepKey;
 }
 
 export default function StatusTracker({

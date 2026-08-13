@@ -43,6 +43,8 @@ const sendNotificationMock = vi.fn((..._args: unknown[]) =>
 );
 vi.mock("@/lib/notifications", () => ({
   sendNotification: (...args: unknown[]) => sendNotificationMock(...args),
+  // Phase 4 cleanup: provider-status now routes through the typed helper.
+  sendProviderStatusNotification: (...args: unknown[]) => sendNotificationMock(...args),
 }));
 
 import { NextRequest } from "next/server";
@@ -211,10 +213,10 @@ describe("POST /api/providers/applications", () => {
 
     expect(sendNotificationMock).toHaveBeenCalledTimes(1);
     expect(sendNotificationMock.mock.calls[0][0]).toBe("user-1");
-    expect(sendNotificationMock.mock.calls[0][1]).toBe("provider-status");
+    // sendProviderStatusNotification(userId, status, application, opts)
+    expect(sendNotificationMock.mock.calls[0][1]).toBe("submitted");
     expect(sendNotificationMock.mock.calls[0][2]).toMatchObject({
-      status: "submitted",
-      providerName: "Creative Arts Workshop",
+      name: "Creative Arts Workshop",
     });
   });
 

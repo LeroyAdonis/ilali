@@ -16,9 +16,7 @@ import {
 } from "lucide-react";
 import { useSession, authClient } from "@/lib/auth-client";
 import {
-  wizardOfferStepSchema,
-  wizardDetailsStepSchema,
-  wizardPhotosStepSchema,
+  WIZARD_STEP_SCHEMAS,
   wizardSubmitSchema,
 } from "@/lib/validations";
 import { formatPhone } from "@/lib/utils";
@@ -153,17 +151,10 @@ function stepPayload(step: number, fields: WizardFields): Record<string, unknown
   }
 }
 
-const STEP_SCHEMAS = [
-  wizardOfferStepSchema,
-  wizardDetailsStepSchema,
-  wizardPhotosStepSchema,
-  wizardSubmitSchema,
-];
-
 export default function ProviderSignupForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { data: session, isPending: sessionLoading } = useSession();
+  const { data: session, isPending: sessionLoading, refetch: sessionRefetch } = useSession();
 
   const [step, setStep] = useState(0);
   const [fields, setFields] = useState<WizardFields>(EMPTY_FIELDS);
@@ -201,19 +192,29 @@ export default function ProviderSignupForm() {
     return updates;
   }, [searchParams]);
 
-  // Resume the saved draft once signed in.
+  // Resume the saved draft once signed in. Runs at most once — a later session
+  // refetch (tab focus) must never wipe in-progress typing with the last saved
+  // draft. Failures are surfaced (not swallowed) so a transient error can be
+  // retried instead of silently upserting over the real draft.
+  const draftRestoredRef = useRef(false);
+  const [restoreTick, setRestoreTick] = useState(0);
+  const [draftError, setDraftError] = useState("");
   useEffect(() => {
-    if (sessionLoading || !session) return;
+    if (sessionLoading || !session || draftRestoredRef.current) return;
     let cancelled = false;
     (async () => {
       try {
         const res = await fetch("/api/providers/applications");
-        if (!res.ok) return;
+        if (!res.ok) {
+          if (!cancelled) setDraftError("Couldn't load your saved draft — you can keep going or retry.");
+          return;
+        }
         const body = (await res.json()) as {
           application?: (Record<string, unknown> & { status?: string }) | null;
         };
         if (cancelled) return;
         const app = body.application;
+        draftRestoredRef.current = true;
         if (!app) {
           if (Object.keys(urlPrefill).length > 0) {
             setFields((prev) => ({ ...prev, ...urlPrefill }));
@@ -252,14 +253,14 @@ export default function ProviderSignupForm() {
         }));
         setDraftLoaded(true);
       } catch {
-        setDraftLoaded(true);
+        if (!cancelled) setDraftError("Couldn't load your saved draft — you can keep going or retry.");
       }
     })();
     return () => {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionLoading, session]);
+  }, [sessionLoading, session?.user?.id, restoreTick]);
 
   function updateField(key: keyof WizardFields, value: string) {
     setFields((prev) => ({ ...prev, [key]: value }));
@@ -310,7 +311,7 @@ export default function ProviderSignupForm() {
     setFieldErrors({});
     try {
       const payload = stepPayload(step + 1, fields);
-      const schema = submit ? wizardSubmitSchema : STEP_SCHEMAS[step];
+      const schema = submit ? wizardSubmitSchema : WIZARD_STEP_SCHEMAS[step];
       const parsed = submit
         ? schema.safeParse({ ...payload, email: session?.user?.email ?? "" })
         : schema.safeParse(payload);
@@ -341,6 +342,9 @@ export default function ProviderSignupForm() {
       }
       setSavedAt(new Date());
       if (submit) {
+        // The DB role flips to 'provider' on submit — pull the fresh role into
+        // the client atom so nav + gates reflect it without a page reload.
+        void sessionRefetch();
         setFinalState("submitted");
         return;
       }
@@ -536,6 +540,25 @@ export default function ProviderSignupForm() {
   return (
     <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
+        {draftError && (
+          <div
+            role="alert"
+            className="mb-4 flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+          >
+            <span>{draftError}</span>
+            <button
+              type="button"
+              onClick={() => {
+                draftRestoredRef.current = false;
+                setDraftError("");
+                setRestoreTick((t) => t + 1);
+              }}
+              className="shrink-0 font-semibold text-amber-900 underline underline-offset-2 hover:text-amber-950"
+            >
+              Retry
+            </button>
+          </div>
+        )}
         <div className="text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-ilali-50 px-3 py-1 text-xs font-semibold text-ilali-700">
             <Sparkles className="h-3.5 w-3.5" />

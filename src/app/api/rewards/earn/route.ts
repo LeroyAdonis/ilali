@@ -27,9 +27,12 @@ async function computeBalance(userId: string): Promise<number> {
 
 /**
  * POST /api/rewards/earn
- * Auth required. Body: { action, referenceId?, userId? }
+ * Auth required. Body: { action, referenceId?, userId?, points? }
  *  - action: one of REWARD_ACTIONS (server-authoritative point values —
  *    any `amount` in the body is IGNORED to prevent point farming).
+ *  - points: optional override used by internal server-to-server callers
+ *    that carry type-specific point values (e.g. community contribution
+ *    types). When present it must be a non-negative integer ≤ 1000.
  *  - referenceId: optional dedupe key. When present, an identical
  *    (user, action, referenceId) grant is a 200 no-op, not a double award.
  *  - userId: optional override used by internal server-to-server callers
@@ -75,7 +78,24 @@ export async function POST(request: Request) {
       );
     }
     const action = b.action;
-    const points = getPointsForAction(action)!;
+    let points = getPointsForAction(action)!;
+
+    // Optional server-to-server points override (type-specific values,
+    // e.g. community contribution types). Ignored unless it validates.
+    if (b.points !== undefined && b.points !== null) {
+      if (
+        typeof b.points !== "number" ||
+        !Number.isInteger(b.points) ||
+        b.points < 0 ||
+        b.points > 1000
+      ) {
+        return NextResponse.json(
+          { error: "points must be an integer between 0 and 1000" },
+          { status: 400 }
+        );
+      }
+      points = b.points;
+    }
 
     // 2. Resolve the earning user (server-to-server override, else session)
     const targetUserId =

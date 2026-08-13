@@ -16,6 +16,7 @@ export const REWARD_ACTIONS = {
   welcome: 10, // Welcome bonus for joining Ubuntu Rewards
   "club-invite": 50, // Bonus for inviting someone to a club
   attendance: 30, // Attend a club event
+  community: 25, // Community contribution (type-specific points passed as override)
 } as const;
 
 export type RewardAction = keyof typeof REWARD_ACTIONS;

@@ -33,6 +33,7 @@ const ACTION_META: Record<
   welcome: { label: "Welcome Bonus", description: "Join Ubuntu Rewards", icon: "🎉" },
   "club-invite": { label: "Club Invite", description: "Invite someone to a club", icon: "📨" },
   attendance: { label: "Event Attendance", description: "Attend a club event", icon: "📅" },
+  community: { label: "Community Contribution", description: "Help your child's club community", icon: "💚" },
 };
 
 const REDEMPTION_META: Record<

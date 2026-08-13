@@ -19,6 +19,7 @@ describe("REWARD_ACTIONS — points map (spec §3.1)", () => {
       welcome: 10,
       attendance: 30,
       "club-invite": 50,
+      community: 25,
     });
   });
 
@@ -29,6 +30,7 @@ describe("REWARD_ACTIONS — points map (spec §3.1)", () => {
     expect(getPointsForAction("review")).toBe(25);
     expect(getPointsForAction("welcome")).toBe(10);
     expect(getPointsForAction("attendance")).toBe(30);
+    expect(getPointsForAction("community")).toBe(25);
   });
 
   it("getPointsForAction returns null for unknown actions", () => {

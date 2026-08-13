@@ -201,7 +201,7 @@ async function awardContributionPoints(
   request: NextRequest,
   referenceId: string,
   userId: string,
-  _points: number
+  points: number
 ): Promise<void> {
   try {
     await fetch(`${selfBaseUrl(request)}/api/rewards/earn`, {
@@ -214,6 +214,7 @@ async function awardContributionPoints(
         action: "community",
         referenceId,
         userId,
+        points,
       }),
     });
   } catch {

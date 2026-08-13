@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MapPin, Star, CheckCircle, Sparkles } from "lucide-react";
 import ResponsiveImage from "@/components/ResponsiveImage";
+import SaveButton from "@/components/saved/SaveButton";
 import type { Provider } from "@/lib/types";
 
 const ACCENT_COLORS = {
@@ -50,10 +51,7 @@ export default function ProviderCard({
     (provider as Provider & { trusted?: boolean }).trusted ?? false;
 
   return (
-    <Link
-      href={`/clubs/${slug}`}
-      className="group flex flex-col rounded-xl border border-ink/10 bg-white shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden"
-    >
+    <div className="group relative flex flex-col rounded-xl border border-ink/10 bg-white shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden">
       {/* Accent bar — 5px color-wheel strip */}
       <div className={`h-[5px] w-full flex-shrink-0 ${ACCENT_COLORS[accentColor]}`} />
 
@@ -103,10 +101,17 @@ export default function ProviderCard({
         </span>
 
         {/* Age range badge */}
-        <span className="absolute top-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-ink-soft shadow-sm backdrop-blur-sm">
+        <span className="absolute bottom-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-ink-soft shadow-sm backdrop-blur-sm">
           {ageRange}
         </span>
       </div>
+
+      {/* Save button — sits above the card-link overlay */}
+      <SaveButton
+        providerId={provider.id}
+        providerName={name}
+        className="absolute top-3 right-3 z-10"
+      />
 
       {/* Content */}
       <div className="p-4">
@@ -186,6 +191,13 @@ export default function ProviderCard({
           </span>
         </div>
       </div>
-    </Link>
+
+      {/* Whole-card link overlay — keeps the save button independently clickable */}
+      <Link
+        href={`/clubs/${slug}`}
+        aria-label={`View details for ${name}`}
+        className="absolute inset-0 z-[1]"
+      />
+    </div>
   );
 }

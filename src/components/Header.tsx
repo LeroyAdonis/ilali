@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, Menu, X, LogOut, User } from "lucide-react";
+import { Search, Menu, X, LogOut, User, Heart } from "lucide-react";
 import { navLinks } from "@/lib/constants";
 import { useSession, signOut } from "@/lib/auth-client";
 
@@ -90,6 +90,13 @@ export default function Header({
         {/* Desktop Search + Auth */}
         <div className="hidden md:flex items-center gap-3">
           {rightSlot}
+          <Link
+            href="/saved"
+            aria-label="Saved activities"
+            className="inline-flex items-center justify-center rounded-lg p-2 text-ink-soft hover:text-ilali-600 hover:bg-ilali-50 transition-colors"
+          >
+            <Heart className="h-5 w-5" />
+          </Link>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-soft/50" />
             <input
@@ -167,6 +174,14 @@ export default function Header({
                 📋 Provider Portal
               </Link>
             )}
+            <Link
+              href="/saved"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-1.5 text-sm font-medium text-ink-soft hover:text-ilali-600 transition-colors"
+            >
+              <Heart className="h-4 w-4" aria-hidden="true" />
+              Saved
+            </Link>
           </nav>
           <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-soft/50" />

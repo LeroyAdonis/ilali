@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import {
   CalendarDays,
   ChevronRight,
+  Heart,
   Home,
   MapPin,
   MessageCircle,
@@ -20,7 +21,9 @@ import InviteBanner from "@/components/community/InviteBanner";
 import ComingSoon from "@/components/ComingSoon";
 import ProviderCard from "@/components/ProviderCard";
 import ReviewSection from "@/components/ReviewSection";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import ContactButton from "@/components/saved/ContactButton";
+import NotifyButton from "@/components/saved/NotifyButton";
+import SaveButton from "@/components/saved/SaveButton";
 import VerificationBadge, {
   getVerificationTier,
 } from "@/components/verification/VerificationBadge";
@@ -270,14 +273,45 @@ export default async function ClubHomePage({
               club on WhatsApp.
             </p>
             <div className="mt-3">
-              <WhatsAppButton
+              <ContactButton
+                providerId={provider.id}
+                providerName={provider.name}
                 phone={provider.phone}
-                activityName={provider.name}
                 className="w-full"
               />
             </div>
           </section>
         )}
+
+        {/* Save & follow — intent capture at the moment of interest */}
+        <section
+          aria-labelledby="club-save"
+          className="rounded-xl border border-ink/10 bg-white p-5 shadow-sm"
+        >
+          <h2
+            id="club-save"
+            className="font-display flex items-center gap-2 text-sm font-bold text-ink"
+          >
+            <Heart className="h-4 w-4 text-ilali-500" aria-hidden="true" />
+            Save &amp; follow
+          </h2>
+          <p className="mt-2 text-xs leading-relaxed text-ink-soft">
+            Keep this club in your saved list, or get a heads-up the moment
+            booking opens. No account needed to get started.
+          </p>
+          <div className="mt-4 grid gap-2">
+            <SaveButton
+              providerId={provider.id}
+              providerName={provider.name}
+              className="w-full"
+            />
+            <NotifyButton
+              providerId={provider.id}
+              providerName={provider.name}
+              className="w-full"
+            />
+          </div>
+        </section>
 
         {/* Booking status — online booking arrives with WS-6 Paystack */}
         <section aria-labelledby="club-booking">

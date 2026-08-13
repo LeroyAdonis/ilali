@@ -188,8 +188,8 @@ export async function POST(request: Request) {
           parentId: userId,
           name: child.name.trim(),
           age: child.age,
-          interests: child.interests.length > 0 ? child.interests : null,
-          availability: child.availability,
+          interests: child.interests && child.interests.length > 0 ? child.interests : null,
+          availability: child.availability ?? null,
           suburb: child.suburb || null,
         });
       }

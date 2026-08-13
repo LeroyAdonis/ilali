@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import SavedProvider from "@/components/saved/SavedProvider";
 
 export const metadata: Metadata = {
   title: {
@@ -56,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full scroll-smooth">
       <body className="min-h-full flex flex-col bg-paper text-ink antialiased">
-        {children}
+        <SavedProvider>{children}</SavedProvider>
       </body>
     </html>
   );

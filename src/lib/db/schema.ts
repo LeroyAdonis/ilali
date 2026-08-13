@@ -9,6 +9,7 @@ import {
   jsonb,
   unique,
   uniqueIndex,
+  serial,
 } from "drizzle-orm/pg-core";
 
 // ── Categories (managed, not user-creatable) ──
@@ -467,3 +468,25 @@ export const matchIntentCache = pgTable("match_intent_cache", {
   mode: text("mode").notNull(), // deterministic | ai
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+// ── Saved Activities (Painless Journeys Phase 2) ──
+// A parent ↔ provider "save" that replaces local-only saves. Fired at a
+// moment of intent (Save / Contact / Notify me when booking opens) — for
+// guests the row is written after they complete the magic link. Unique per
+// (parent, provider); notifyWhenOpen records "notify me" intent (the actual
+// notification SEND lands in Phase 3).
+export const savedActivities = pgTable(
+  "saved_activities",
+  {
+    id: serial("id").primaryKey(),
+    parentId: text("parent_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    providerId: uuid("provider_id")
+      .notNull()
+      .references(() => providers.id, { onDelete: "cascade" }),
+    notifyWhenOpen: boolean("notify_when_open").default(false),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (t) => [unique().on(t.parentId, t.providerId)],
+);

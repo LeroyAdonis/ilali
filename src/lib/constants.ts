@@ -131,7 +131,7 @@ export const navLinks = [
   { label: "Map", href: "/map" },
   { label: "Categories", href: "/categories" },
   { label: "Community", href: "/clubs" },
-  { label: "Rewards", href: "/rewards" },
+  { label: "Rewards", href: "/ubuntu-rewards" },
   { label: "How It Works", href: "/how-it-works" },
   { label: "For Parents", href: "/for-parents" },
   { label: "For Providers", href: "/for-providers" },

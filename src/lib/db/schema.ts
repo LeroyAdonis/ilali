@@ -9,6 +9,7 @@ import {
   jsonb,
   unique,
   uniqueIndex,
+  index,
   serial,
 } from "drizzle-orm/pg-core";
 
@@ -282,19 +283,31 @@ export const notificationPreferences = pgTable("notification_preferences", {
 // `payload` carries the context the template renders (providerName, childName,
 // date, link...). Sent via the channel abstraction (email today, WhatsApp
 // behind WHATSAPP_NOTIFY_ENABLED) in src/lib/notifications.
-export const notificationEvents = pgTable("notification_events", {
-  id: serial("id").primaryKey(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  type: text("type").notNull(), // saved|booking-confirmed|reminder-24h|review-nudge|digest-weekly|digest-monthly|provider-status|first-booking
-  channel: text("channel").default("email"),
-  payload: jsonb("payload").$type<Record<string, unknown>>(),
-  status: text("status").default("pending"), // pending|sent|failed|skipped
-  scheduledFor: timestamp("scheduled_for"),
-  sentAt: timestamp("sent_at"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+export const notificationEvents = pgTable(
+  "notification_events",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type").notNull(), // saved|booking-confirmed|reminder-24h|review-nudge|digest-weekly|digest-monthly|provider-status|first-booking
+    channel: text("channel").default("email"),
+    payload: jsonb("payload").$type<Record<string, unknown>>(),
+    status: text("status").default("pending"), // pending|sent|failed|skipped
+    scheduledFor: timestamp("scheduled_for"),
+    sentAt: timestamp("sent_at"),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (t) => ({
+    // Every send runs a dedupe + recent-sent lookup on (userId, type) within a
+    // window — an index keeps those as range scans instead of full-table scans.
+    userTypeCreatedIdx: index("notification_events_user_type_created_idx").on(
+      t.userId,
+      t.type,
+      t.createdAt
+    ),
+  })
+);
 
 // ── Community Layer: Club Events ──
 export const clubEvents = pgTable("club_events", {

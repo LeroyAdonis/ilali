@@ -272,12 +272,17 @@ export async function approveApplication(
   // because of email/WhatsApp problems. Fired here (the shared helper) so the
   // single-approve route AND batch-approve both notify.
   try {
-    await sendNotification(providerUserId, "provider-status", {
-      status: "live",
-      providerName: application.name || application.email,
-      activityName: application.activityType || "",
-      link: `${appUrl()}/provider`,
-    });
+    await sendNotification(
+      providerUserId,
+      "provider-status",
+      {
+        status: "live",
+        providerName: application.name || application.email,
+        activityName: application.activityType || "",
+        link: `${appUrl()}/provider`,
+      },
+      { email: application.email } // known — skip the user lookup
+    );
   } catch (e) {
     // Belt-and-braces — sendNotification is contractually non-throwing, but a
     // regression here must never break the admin approval flow.

@@ -1,3 +1,5 @@
+import { appUrl } from "@/lib/mail";
+
 /**
  * ILALI notification templates — Painless Journeys Phase 3 (FR-6).
  *
@@ -251,7 +253,7 @@ function providerStatusTemplate(payload: NotificationPayload): RenderedEmail {
 ${
   isLive
     ? `Share your link with parents and start filling those spots!
-  ${link || appUrlFallback()}`
+  ${link || appUrl()}`
     : isRejected
       ? `Not the news we hoped to share — reply to this email and we'll help you get unstuck.`
       : `We'll take it from here.${link ? ` Follow along here: ${link}` : ""}`
@@ -268,7 +270,7 @@ The ILALI Team`;
           ? "Not the news we hoped to share — reply to this email and we'll help you get unstuck."
           : "We'll take it from here.",
     ])}
-  ${isLive ? ctaButton("Go to your dashboard", link || appUrlFallback()) : ctaButton("Follow along", link)}`
+  ${isLive ? ctaButton("Go to your dashboard", link || appUrl()) : ctaButton("Follow along", link)}`
   );
 
   return { subject, text, html };
@@ -405,10 +407,4 @@ export function renderNotificationEmail(
 ): RenderedEmail | null {
   const render = TEMPLATES[type as NotificationType];
   return render ? render(payload) : null;
-}
-
-// ── Small shared URL fallback (kept local — mirrors mail/index appUrl) ──
-
-function appUrlFallback(): string {
-  return (process.env.NEXT_PUBLIC_APP_URL || "https://ilali.vercel.app").replace(/\/+$/, "");
 }

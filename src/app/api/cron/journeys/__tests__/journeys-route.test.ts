@@ -98,8 +98,11 @@ describe("GET /api/cron/journeys — auth guard", () => {
     expect(res.status).toBe(200);
     const data = await jsonOf(res);
     expect(data.ok).toBe(true);
-    const jobs = data.jobs as Record<string, { total: number }>;
-    expect(jobs["reminders-24h"]).toBeDefined();
-    expect(jobs["reminders-24h"].total).toBe(0);
+    const jobs = data.jobs as Record<
+      string,
+      { ok: boolean; batch?: { total: number } }
+    >;
+    expect(jobs["reminders-24h"]?.ok).toBe(true);
+    expect(jobs["reminders-24h"]?.batch?.total).toBe(0);
   });
 });

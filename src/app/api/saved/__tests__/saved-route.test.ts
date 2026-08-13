@@ -42,7 +42,9 @@ vi.mock("@/lib/db/index", () => ({ db: dbMock }));
 
 // The notify-me trigger dispatches through the notification service — a no-op
 // mock keeps this route test focused on the save semantics it owns.
-vi.mock("@/lib/notifications", () => ({ sendNotification: vi.fn() }));
+vi.mock("@/lib/notifications", () => ({
+  sendNotification: vi.fn(() => Promise.resolve({ status: "sent", eventId: 1 })),
+}));
 
 import { GET, POST, DELETE } from "@/app/api/saved/route";
 

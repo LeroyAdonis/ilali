@@ -44,6 +44,8 @@ export interface SendNotificationOptions {
   channel?: string;
   /** Dedupe window in ms for identical events. Default: 24h. */
   dedupeWindowMs?: number;
+  /** Known recipient email — skips the user lookup when the caller has it. */
+  email?: string;
 }
 
 /** Default dedupe window — the same trigger within 24h is a duplicate. */
@@ -217,7 +219,7 @@ export async function sendNotification(
     }
 
     // 2. We need a real user with an email to send to.
-    const email = await findUserEmail(userId);
+    const email = opts.email ?? (await findUserEmail(userId));
     if (!email) {
       console.warn(`[notifications] no user/email for ${userId} — skipping ${type}`);
       try {

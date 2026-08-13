@@ -119,10 +119,13 @@ export async function POST(request: Request) {
     // can never fail the save itself.
     if (hasNotifyFlag && notifyWhenOpen) {
       const activityName = provider.name;
-      await sendNotification(user.id, "saved", {
+      // Don't block the save POST on email round-trips — fire and log.
+      void sendNotification(user.id, "saved", {
         providerName: activityName,
         activityName,
         link: `${appUrl()}/activity/${provider.slug}`,
+      }).then((r) => {
+        if (r.status === "failed") console.warn(`[saved] notify-me send failed: ${r.reason}`);
       });
     }
 

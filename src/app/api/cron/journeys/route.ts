@@ -16,6 +16,7 @@ import {
   type NotificationBatchResult,
 } from "@/lib/notifications";
 import { appUrl } from "@/lib/mail";
+import { formatEventTime } from "@/lib/club-format";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -32,10 +33,6 @@ function addDays(date: Date, days: number): Date {
 
 function startOfDay(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
-function formatTime(date: Date): string {
-  return date.toLocaleTimeString("en-ZA", { hour: "numeric", minute: "2-digit" });
 }
 
 function formatDate(date: Date): string {
@@ -110,18 +107,16 @@ async function runReminders24h(): Promise<NotificationBatchResult> {
     const link = provider ? `${appUrl()}/clubs/${provider.slug}` : `${appUrl()}/clubs`;
     for (const membership of memberships) {
       if (membership.providerId !== event.providerId) continue;
-      // Idempotency: an already-sent reminder for this parent (any event,
-      // last 48h) means this run is a duplicate — never double-send.
-      if (await hasSentRecently(membership.parentId, "reminder-24h", 48 * 60 * 60 * 1000)) {
-        continue;
-      }
+      // No parent-wide guard here: sendNotification's payload-aware dedupe
+      // (payload includes eventId) prevents same-event double-sends, while a
+      // parent with back-to-back events must get a reminder for EACH one.
       items.push({
         userId: membership.parentId,
         payload: {
           activityName: event.title,
           providerName: provider?.name,
           date: formatDate(event.startTime),
-          time: formatTime(event.startTime),
+          time: formatEventTime(event.startTime),
           location: event.location ?? undefined,
           eventId: event.id,
           link,
@@ -250,6 +245,31 @@ async function runDigestMonthly(): Promise<NotificationBatchResult> {
 
 // ── Handler ──
 
+interface JobDef {
+  name: string;
+  run: () => Promise<NotificationBatchResult>;
+  /** Gate for the daily pass. UTC-based — the cron fires at 06:00 UTC. */
+  runsOn: (date: Date) => boolean;
+}
+
+const JOBS: Record<string, JobDef> = {
+  "reminders-24h": { name: "reminders-24h", run: runReminders24h, runsOn: () => true },
+  "digest-weekly": { name: "digest-weekly", run: runDigestWeekly, runsOn: (d) => d.getUTCDay() === 1 },
+  "digest-monthly": { name: "digest-monthly", run: runDigestMonthly, runsOn: (d) => d.getUTCDate() === 1 },
+};
+
+/** Run one job, isolated: a failure is reported, never thrown up. */
+async function runJobSafely(
+  job: JobDef
+): Promise<{ ok: true; batch: NotificationBatchResult } | { ok: false; error: string }> {
+  try {
+    return { ok: true, batch: await job.run() };
+  } catch (e) {
+    console.error(`[cron/journeys] ${job.name} failed:`, e);
+    return { ok: false, error: e instanceof Error ? e.message : String(e) };
+  }
+}
+
 /**
  * GET /api/cron/journeys?job=reminders-24h|digest-weekly|digest-monthly
  * Guarded by CRON_SECRET (query param `cronSecret` or `Authorization: Bearer`).
@@ -263,34 +283,24 @@ export async function GET(request: Request) {
 
   const job = new URL(request.url).searchParams.get("job");
 
-  try {
-    if (job === "reminders-24h") {
-      return NextResponse.json({ ok: true, job, batch: await runReminders24h() });
-    }
-    if (job === "digest-weekly") {
-      return NextResponse.json({ ok: true, job, batch: await runDigestWeekly() });
-    }
-    if (job === "digest-monthly") {
-      return NextResponse.json({ ok: true, job, batch: await runDigestMonthly() });
-    }
-    if (job) {
+  if (job) {
+    const def = JOBS[job];
+    if (!def) {
       return NextResponse.json({ error: `Unknown job "${job}"` }, { status: 400 });
     }
-
-    const jobs: Record<string, NotificationBatchResult> = {
-      "reminders-24h": await runReminders24h(),
-    };
-    const today = new Date();
-    if (today.getDay() === 1) {
-      jobs["digest-weekly"] = await runDigestWeekly();
-    }
-    if (today.getDate() === 1) {
-      jobs["digest-monthly"] = await runDigestMonthly();
-    }
-
-    return NextResponse.json({ ok: true, jobs });
-  } catch (e) {
-    console.error("[cron/journeys] job failed:", e);
-    return NextResponse.json({ error: "Cron job failed" }, { status: 500 });
+    const result = await runJobSafely(def);
+    return NextResponse.json(
+      result.ok ? { ok: true, job, batch: result.batch } : { ok: false, job, error: result.error },
+      { status: result.ok ? 200 : 500 }
+    );
   }
+
+  // Daily pass: every job whose gate says "today", isolated so one failure
+  // never starves the day's other jobs.
+  const today = new Date();
+  const dueJobs = Object.values(JOBS).filter((j) => j.runsOn(today));
+  const results = await Promise.all(dueJobs.map((j) => runJobSafely(j)));
+  const jobs = Object.fromEntries(dueJobs.map((j, i) => [j.name, results[i]]));
+  const anyFailed = results.some((r) => !r.ok);
+  return NextResponse.json({ ok: !anyFailed, jobs }, { status: anyFailed ? 500 : 200 });
 }

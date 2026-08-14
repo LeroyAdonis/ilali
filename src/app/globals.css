@@ -157,6 +157,56 @@ body {
   animation: dot-rise 1.2s ease-out infinite;
 }
 
+/* ── IlaliSpinner — "the dot goes out to fetch" ────────────────────────
+   The i-dot orbits the top of the letter (center 24,17 · r=7 in a 48-unit
+   viewBox), passing through its home position once per revolution so the
+   logo completes itself each cycle. Smile + star stay anchored. Brand
+   tokens only: teal-deep tile, paper white, warm-400 star. */
+.ilali-spinner {
+  --sp-tile: var(--color-teal-deep);
+  --sp-fg: var(--color-paper);
+  --sp-star: var(--color-warm-400);
+  --sp-smile: color-mix(in srgb, var(--color-paper) 40%, transparent);
+  --sp-label: var(--color-ink-soft);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.ilali-spinner--inverse {
+  --sp-tile: var(--color-paper);
+  --sp-fg: var(--color-teal-deep);
+  --sp-star: var(--color-gold-deep);
+  --sp-smile: color-mix(in srgb, var(--color-teal-deep) 35%, transparent);
+  --sp-label: var(--color-paper);
+}
+.ilali-spinner__mark {
+  display: block;
+}
+.ilali-spinner__orbit {
+  transform-box: view-box;
+  transform-origin: 24px 17px;
+  animation: ilali-orbit 1.4s linear infinite;
+}
+@keyframes ilali-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.ilali-spinner__label {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.8125rem; /* 13px */
+  line-height: 1.3;
+  color: var(--sp-label);
+  text-align: center;
+}
+/* lg label reads a touch larger */
+.ilali-spinner--lg .ilali-spinner__label {
+  font-size: 0.9375rem; /* 15px */
+}
+
 /* Respect user motion preference */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in-up,
@@ -170,5 +220,22 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  /* Spinner stays a functional loader: the dot stops orbiting (no spatial
+     motion) and pulses in place to keep signalling activity. */
+  .ilali-spinner__orbit {
+    animation: none;
+  }
+  .ilali-spinner__dot {
+    animation: ilali-dot-pulse 1.8s ease-in-out infinite !important;
+  }
+}
+@keyframes ilali-dot-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
   }
 }

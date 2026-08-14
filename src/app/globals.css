@@ -157,16 +157,18 @@ body {
   animation: dot-rise 1.2s ease-out infinite;
 }
 
-/* ── IlaliSpinner — "the dot goes out to fetch" ────────────────────────
-   The i-dot orbits the top of the letter (center 24,17 · r=7 in a 48-unit
-   viewBox), passing through its home position once per revolution so the
-   logo completes itself each cycle. Smile + star stay anchored. Brand
-   tokens only: teal-deep tile, paper white, warm-400 star. */
+/* ── IlaliSpinner — 3-dots loader, ILALI design system ────────────────
+   Adapted from 21st.dev/@theutkarshmail (3-dots-loader): three brand dots
+   merge at the centre, fly apart into a triangle, spin as one, then merge
+   back — "a process coming together". All distances scale with --sp-size
+   (dot diameter = 0.35 × size; spread radii 0.09/0.45 etc. from the 200px
+   original). Brand tokens only: teal-deep + gold + purple (default),
+   paper + gold + teal (inverse). */
 .ilali-spinner {
-  --sp-tile: var(--color-teal-deep);
-  --sp-fg: var(--color-paper);
-  --sp-star: var(--color-warm-400);
-  --sp-smile: color-mix(in srgb, var(--color-paper) 40%, transparent);
+  --sp-size: 56px;
+  --sp-dot-1: var(--color-teal-deep);
+  --sp-dot-2: var(--color-gold);
+  --sp-dot-3: var(--color-purple);
   --sp-label: var(--color-ink-soft);
   display: inline-flex;
   flex-direction: column;
@@ -174,24 +176,81 @@ body {
   gap: 8px;
 }
 .ilali-spinner--inverse {
-  --sp-tile: var(--color-paper);
-  --sp-fg: var(--color-teal-deep);
-  --sp-star: var(--color-gold-deep);
-  --sp-smile: color-mix(in srgb, var(--color-teal-deep) 35%, transparent);
+  --sp-dot-1: var(--color-teal);
+  --sp-dot-2: var(--color-gold);
+  --sp-dot-3: var(--color-paper);
   --sp-label: var(--color-paper);
 }
-.ilali-spinner__mark {
-  display: block;
+.ilali-spinner__dots {
+  position: relative;
+  width: var(--sp-size);
+  height: var(--sp-size);
+  animation: ilali-rotate-move 2s ease-in-out infinite;
 }
-.ilali-spinner__orbit {
-  transform-box: view-box;
-  transform-origin: 24px 17px;
-  animation: ilali-orbit 1.4s linear infinite;
+.ilali-spinner__dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  width: calc(var(--sp-size) * 0.35);
+  height: calc(var(--sp-size) * 0.35);
+  border-radius: 50%;
+  background-color: var(--color-ink);
 }
-@keyframes ilali-orbit {
-  to {
-    transform: rotate(360deg);
-  }
+.ilali-spinner__dot--1 {
+  background-color: var(--sp-dot-1);
+  animation:
+    ilali-dot-1-move 2s infinite,
+    ilali-index 6s -2s infinite;
+}
+.ilali-spinner__dot--2 {
+  background-color: var(--sp-dot-2);
+  animation:
+    ilali-dot-2-move 2s infinite,
+    ilali-index 6s -4s infinite;
+}
+.ilali-spinner__dot--3 {
+  background-color: var(--sp-dot-3);
+  animation:
+    ilali-dot-3-move 2s infinite,
+    ilali-index 6s infinite;
+}
+@keyframes ilali-dot-3-move {
+  20% { transform: scale(1); }
+  45% { transform: translateY(calc(var(--sp-size) * -0.09)) scale(0.45); }
+  60%, 80% { transform: translateY(calc(var(--sp-size) * -0.45)) scale(0.45); }
+  to { transform: translateY(0) scale(1); }
+}
+@keyframes ilali-dot-2-move {
+  20% { transform: scale(1); }
+  45% { transform: translate(calc(var(--sp-size) * -0.08), calc(var(--sp-size) * 0.06)) scale(0.45); }
+  60%, 80% { transform: translate(calc(var(--sp-size) * -0.4), calc(var(--sp-size) * 0.3)) scale(0.45); }
+  to { transform: translate(0, 0) scale(1); }
+}
+@keyframes ilali-dot-1-move {
+  20% { transform: scale(1); }
+  45% { transform: translate(calc(var(--sp-size) * 0.08), calc(var(--sp-size) * 0.06)) scale(0.45); }
+  60%, 80% { transform: translate(calc(var(--sp-size) * 0.4), calc(var(--sp-size) * 0.3)) scale(0.45); }
+  to { transform: translate(0, 0) scale(1); }
+}
+@keyframes ilali-rotate-move {
+  55% { transform: rotate(0); }
+  80% { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes ilali-index {
+  0%, to { z-index: 3; }
+  33.3% { z-index: 2; }
+  66.6% { z-index: 1; }
+}
+/* Gooey filter def is hidden off-canvas */
+.ilali-spinner__goo {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 .ilali-spinner__label {
   margin: 0;
@@ -221,9 +280,9 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  /* Spinner stays a functional loader: the dot stops orbiting (no spatial
-     motion) and pulses in place to keep signalling activity. */
-  .ilali-spinner__orbit {
+  /* Spinner stays a functional loader: dots stop flying/rotating (no spatial
+     motion) and pulse in place to keep signalling activity. */
+  .ilali-spinner__dots {
     animation: none;
   }
   .ilali-spinner__dot {

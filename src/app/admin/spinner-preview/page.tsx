@@ -12,8 +12,9 @@ export default function SpinnerPreviewPage() {
         IlaliSpinner preview
       </h1>
       <p className="mt-1 text-sm text-ink-faint">
-        “The dot goes out to fetch” — the i-dot orbits the letter and completes
-        the logo once per revolution. Use for any background process.
+        3-dots loader in the ILALI design system — three brand dots merge at
+        the centre, fly apart into a triangle, spin as one, then merge back:
+        a process coming together.
       </p>
 
       {/* Sizes × labels */}

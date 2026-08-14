@@ -167,38 +167,47 @@ export async function extractPosterWithGemini(
   }
 
   try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: GEMINI_MODEL,
-          messages: [
-            { role: "system", content: systemPrompt },
-            {
-              role: "user",
-              content: [
-                { type: "text", text: userMessage },
-                { type: "image_url", ...imageContent },
-              ],
-            },
-          ],
-          temperature: 0.1,
-          max_tokens: 1500,
-          response_format: { type: "json_object" },
-        }),
-        signal: AbortSignal.timeout(TIMEOUT_MS),
+    // Free-tier Gemini 503/429s are transient overload — retry up to 3x with
+    // backoff before falling through to the OpenRouter vision pool.
+    const MAX_ATTEMPTS = 3;
+    let res: Response | null = null;
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: GEMINI_MODEL,
+            messages: [
+              { role: "system", content: systemPrompt },
+              {
+                role: "user",
+                content: [
+                  { type: "text", text: userMessage },
+                  { type: "image_url", ...imageContent },
+                ],
+              },
+            ],
+            temperature: 0.1,
+            max_tokens: 1500,
+            response_format: { type: "json_object" },
+          }),
+          signal: AbortSignal.timeout(TIMEOUT_MS),
+        }
+      );
+      if (res.ok) break;
+      console.warn(`[extract-poster:gemini] HTTP ${res.status} (attempt ${attempt}/${MAX_ATTEMPTS})`);
+      if ((res.status === 503 || res.status === 429) && attempt < MAX_ATTEMPTS) {
+        await new Promise((r) => setTimeout(r, attempt * 1200)); // 1.2s, 2.4s backoff
+        continue;
       }
-    );
-
-    if (!res.ok) {
-      console.warn(`[extract-poster:gemini] HTTP ${res.status}`);
       return null;
     }
+    if (!res || !res.ok) return null;
 
     const data = await res.json();
     const content: string | null = data?.choices?.[0]?.message?.content ?? null;

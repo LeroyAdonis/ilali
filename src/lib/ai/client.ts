@@ -39,7 +39,21 @@ export const OPENROUTER_MODEL_POOL = [
 ] as const;
 
 /** OpenRouter free vision model — used for poster extraction fallback. */
-export const OPENROUTER_VISION_MODEL = "nvidia/nemotron-nano-12b-v2-vl:free";
+export const OPENROUTER_VISION_MODEL = "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free";
+
+/**
+ * Free vision models for poster extraction fallback (tested 2026-08-14 with a
+ * real poster: all returned HTTP 200 with clean JSON):
+ *   - nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free — primary vision fallback (fast, clean JSON)
+ *   - nvidia/nemotron-nano-12b-v2-vl:free — secondary (worked on the same poster but is flakier:
+ *     "broken data stream" on some images, occasionally times out)
+ * google/gemma-4-31b-it:free + gemma-4-26b-a4b-it:free are vision-capable but were
+ * 429 rate-limited on the test day — kept out of the pool until they stabilise.
+ */
+export const OPENROUTER_VISION_POOL = [
+  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+  "nvidia/nemotron-nano-12b-v2-vl:free",
+] as const;
 
 interface ChatOptions {
   systemPrompt: string;
@@ -235,13 +249,23 @@ export async function chat(opts: ChatOptions): Promise<string | null> {
   // vision degrades gracefully to manual form rather than hanging.
   if (imageUrl) {
     if (!cfg.openRouterKey) return null;
-    const visionModel = model ?? OPENROUTER_VISION_MODEL;
-    const result = await attemptOpenRouter(cfg, visionModel, {
-      ...rest,
-      imageUrl,
-      timeoutMs: Math.min(timeoutMs, 20000),
-    });
-    return result;
+    const pool = model
+      ? [model, ...OPENROUTER_VISION_POOL.filter((m) => m !== model)]
+      : [...OPENROUTER_VISION_POOL];
+    let lastResult: string | null = null;
+    for (const visionModel of pool) {
+      const result = await attemptOpenRouter(cfg, visionModel, {
+        ...rest,
+        imageUrl,
+        timeoutMs: Math.min(timeoutMs, 20000),
+      });
+      if (result !== null) return result;
+      lastResult = result;
+      if (visionModel !== pool[pool.length - 1]) {
+        console.warn(`[ai] vision ${visionModel} failed — rotating to next vision model`);
+      }
+    }
+    return lastResult;
   }
 
   // ── Text path: OpenCode primary ──

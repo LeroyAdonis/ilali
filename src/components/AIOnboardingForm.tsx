@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sparkles, MapPin, Tag, Clock, Banknote, ArrowRight } from "lucide-react";
 import type { ProviderExtract } from "@/lib/ai/extract-provider";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 export default function AIOnboardingForm() {
   const [description, setDescription] = useState("");
@@ -101,7 +102,7 @@ export default function AIOnboardingForm() {
             >
               {loading ? (
                 <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  <IlaliSpinner size="xs" variant="inverse" />
                   Analysing…
                 </>
               ) : (

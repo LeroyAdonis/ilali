@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import ChildForm, { type ChildInput, emptyChild } from "@/components/parent/ChildForm";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 // ── Types ──
 
@@ -165,7 +166,7 @@ export default function ChildFormModal({
           <div className="px-5 py-5">
             {fetching ? (
               <div className="flex items-center justify-center py-10">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-ilali-600 border-t-transparent" />
+                <IlaliSpinner size="sm" />
               </div>
             ) : error && !fetching ? (
               <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 border border-red-200">
@@ -195,7 +196,7 @@ export default function ChildFormModal({
           <div className="px-6 py-6 max-h-[70vh] overflow-y-auto">
             {fetching ? (
               <div className="flex items-center justify-center py-10">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-ilali-600 border-t-transparent" />
+                <IlaliSpinner size="sm" />
               </div>
             ) : error && !fetching ? (
               <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 border border-red-200">

@@ -10,6 +10,7 @@ import {
   LogIn,
 } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 // ── Types ──
 
@@ -228,10 +229,7 @@ export default function ClubChat({ clubSlug, clubName }: ClubChatProps) {
       >
         {loading ? (
           <div className="flex h-full items-center justify-center">
-            <RefreshCw
-              className="h-5 w-5 animate-spin text-ilali-500"
-              aria-label="Loading messages"
-            />
+            <IlaliSpinner size="xs" />
           </div>
         ) : error ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
@@ -348,7 +346,7 @@ export default function ClubChat({ clubSlug, clubName }: ClubChatProps) {
                 aria-label="Send message"
               >
                 {sending ? (
-                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <IlaliSpinner size="xs" variant="inverse" />
                 ) : (
                   <Send className="h-4 w-4" />
                 )}

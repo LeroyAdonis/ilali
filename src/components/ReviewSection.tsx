@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import ReviewForm from "./ReviewForm";
 import ReviewList from "./ReviewList";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 interface ReviewSectionProps {
   providerId?: string;
@@ -41,7 +42,7 @@ export default function ReviewSection({ providerId, venueId }: ReviewSectionProp
 
       {loading ? (
         <div className="rounded-xl border border-ink/10 bg-paper-warm p-8 text-center">
-          <div className="mx-auto h-5 w-5 animate-spin rounded-full border-2 border-ilali-500 border-t-transparent" />
+          <IlaliSpinner size="xs" />
         </div>
       ) : (
         <ReviewList reviews={reviews as Array<{ id: string; userId: string | null; rating: number; content: string | null; createdAt: Date | string }>} />

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { Users, Sprout } from "lucide-react";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 interface ClubMember {
   id: string;
@@ -79,7 +80,7 @@ export default function ProviderClubPage() {
     return (
       <div className="mx-auto max-w-2xl px-4 py-12">
         <div className="flex items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-ink/10 border-t-teal" />
+          <IlaliSpinner size="sm" />
         </div>
       </div>
     );

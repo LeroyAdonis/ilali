@@ -10,9 +10,9 @@ import {
   CheckCircle2,
   LogIn,
   Plus,
-  RefreshCw,
 } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 // ── Types ──
 
@@ -378,7 +378,7 @@ export default function RideRequest({ providerId, events }: RideRequestProps) {
             className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-ilali-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-ilali-700 disabled:opacity-60"
           >
             {submitting ? (
-              <RefreshCw className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+              <IlaliSpinner size="xs" variant="inverse" />
             ) : (
               <Car className="h-3.5 w-3.5" aria-hidden="true" />
             )}
@@ -391,10 +391,7 @@ export default function RideRequest({ providerId, events }: RideRequestProps) {
       <div className="mt-3">
         {loading ? (
           <div className="flex items-center justify-center py-6">
-            <RefreshCw
-              className="h-5 w-5 animate-spin text-ilali-500"
-              aria-label="Loading ride requests"
-            />
+            <IlaliSpinner size="xs" />
           </div>
         ) : error ? (
           <p className="rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-600">
@@ -497,10 +494,7 @@ export default function RideRequest({ providerId, events }: RideRequestProps) {
                           className="inline-flex items-center gap-1.5 rounded-lg bg-ilali-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-ilali-700 disabled:opacity-60"
                         >
                           {busyId === ride.id ? (
-                            <RefreshCw
-                              className="h-3.5 w-3.5 animate-spin"
-                              aria-hidden="true"
-                            />
+                            <IlaliSpinner size="xs" />
                           ) : (
                             <Car className="h-3.5 w-3.5" aria-hidden="true" />
                           )}
@@ -524,10 +518,7 @@ export default function RideRequest({ providerId, events }: RideRequestProps) {
                           className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-emerald-700 disabled:opacity-60"
                         >
                           {busyId === ride.id ? (
-                            <RefreshCw
-                              className="h-3.5 w-3.5 animate-spin"
-                              aria-hidden="true"
-                            />
+                            <IlaliSpinner size="xs" />
                           ) : (
                             <Check className="h-3.5 w-3.5" aria-hidden="true" />
                           )}

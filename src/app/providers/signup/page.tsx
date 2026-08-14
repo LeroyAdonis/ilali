@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProviderSignupForm from "./form";
 import { pricing } from "@/lib/pricing";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 export function generateMetadata() {
   return { title: "Provider Sign Up — ILALI" };
@@ -105,7 +106,7 @@ export default function ProviderSignupPage() {
         </section>
 
         {/* Form */}
-        <Suspense fallback={<div className="py-20 text-center"><div className="mx-auto h-6 w-6 animate-spin rounded-full border-2 border-ilali-500 border-t-transparent" /></div>}>
+        <Suspense fallback={<div className="py-20 text-center"><IlaliSpinner size="sm" /></div>}>
           <ProviderSignupForm />
         </Suspense>
       </main>

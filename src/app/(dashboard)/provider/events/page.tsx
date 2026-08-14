@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Calendar, MapPin, Edit3, Trash2, Plus, ChevronDown, ChevronUp } from "lucide-react";
 import EventForm from "@/components/provider/EventForm";
 import type { EventData } from "@/components/provider/EventForm";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 interface Event {
   id: string;
@@ -131,7 +132,7 @@ export default function ProviderEventsPage() {
     return (
       <div className="mx-auto max-w-2xl px-4 py-12">
         <div className="flex items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-ink/10 border-t-teal" />
+          <IlaliSpinner size="sm" />
         </div>
       </div>
     );

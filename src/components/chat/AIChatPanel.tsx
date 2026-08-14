@@ -12,6 +12,7 @@ import ProviderCard from "@/components/ProviderCard";
 import Link from "next/link";
 import { useSession } from "@/lib/auth-client";
 import type { Provider } from "@/lib/types";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 // ── Types ──
 
@@ -374,7 +375,7 @@ export default function AIChatPanel({
             aria-label="Send message"
           >
             {loading ? (
-              <RefreshCw className="h-4 w-4 animate-spin" />
+              <IlaliSpinner size="xs" variant="inverse" />
             ) : (
               <Send className="h-4 w-4" />
             )}

@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogIn, Check, RefreshCw } from "lucide-react";
+import { LogIn, Check } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 interface JoinClubButtonProps {
   clubSlug: string;
@@ -84,10 +85,7 @@ export default function JoinClubButton({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-3">
-        <RefreshCw
-          className="h-5 w-5 animate-spin text-ink-faint"
-          aria-hidden="true"
-        />
+        <IlaliSpinner size="xs" />
       </div>
     );
   }
@@ -102,10 +100,7 @@ export default function JoinClubButton({
       >
         {joining ? (
           <>
-            <RefreshCw
-              className="h-4 w-4 animate-spin"
-              aria-hidden="true"
-            />
+            <IlaliSpinner size="xs" variant="inverse" />
             Joining...
           </>
         ) : (
@@ -135,10 +130,7 @@ export default function JoinClubButton({
       >
         {joining ? (
           <>
-            <RefreshCw
-              className="h-4 w-4 animate-spin"
-              aria-hidden="true"
-            />
+            <IlaliSpinner size="xs" variant="inverse" />
             Rejoining...
           </>
         ) : (
@@ -163,10 +155,7 @@ export default function JoinClubButton({
       >
         {joining ? (
           <>
-            <RefreshCw
-              className="h-4 w-4 animate-spin"
-              aria-hidden="true"
-            />
+            <IlaliSpinner size="xs" variant="inverse" />
             Joining...
           </>
         ) : (

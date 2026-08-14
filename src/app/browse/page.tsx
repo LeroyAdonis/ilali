@@ -13,6 +13,7 @@ import { mapProvider } from "@/lib/db/mappers";
 import { matchPriceBucket } from "@/lib/filtering";
 import type { Provider } from "@/lib/types";
 import type { categories as categoriesSchema } from "@/lib/db/schema";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 type DbCategory = typeof categoriesSchema.$inferSelect;
 
@@ -452,7 +453,7 @@ export default async function BrowsePage({ searchParams }: Props) {
         <Suspense
           fallback={
             <div className="flex items-center justify-center py-20">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-ilali-500 border-t-transparent" />
+              <IlaliSpinner size="sm" />
             </div>
           }
         >

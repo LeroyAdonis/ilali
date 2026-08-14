@@ -5,6 +5,7 @@ import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { Star, MessageCircle, Edit3, Trash2 } from "lucide-react";
 import ReviewReplyForm from "@/components/provider/ReviewReplyForm";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 interface Review {
   id: string;
@@ -119,7 +120,7 @@ export default function ProviderReviewsPage() {
     return (
       <div className="mx-auto max-w-2xl px-4 py-12">
         <div className="flex items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-ink/10 border-t-teal" />
+          <IlaliSpinner size="sm" />
         </div>
       </div>
     );

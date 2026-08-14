@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Bell, Star, Car, Users, X } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 // ── Types ──
 
@@ -199,7 +200,7 @@ export default function NotificationBell({
               </h4>
               {rewardsLoading ? (
                 <div className="flex items-center gap-2 py-3 text-sm text-ink-faint">
-                  <span className="h-3 w-3 animate-spin rounded-full border-2 border-ink/20 border-t-teal" />
+                  <IlaliSpinner size="xs" />
                   Loading rewards...
                 </div>
               ) : rewardsError ? (

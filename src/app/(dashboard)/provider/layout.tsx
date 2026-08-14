@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { useSession, signOut } from "@/lib/auth-client";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 const NAV_ITEMS = [
   { href: "/provider", label: "Dashboard", icon: LayoutDashboard },
@@ -48,7 +49,7 @@ export default function ProviderLayout({
   if (isPending) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-paper-warm">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-ilali-200 border-t-ilali-600" />
+        <IlaliSpinner size="sm" />
       </div>
     );
   }

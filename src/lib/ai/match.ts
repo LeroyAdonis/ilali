@@ -68,6 +68,7 @@ Rules:
     maxTokens: 300,
     timeoutMs: TIMEOUT_MS,
     json: true,
+    purpose: "match",
   });
 
   if (!content) return null;

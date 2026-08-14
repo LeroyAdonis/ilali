@@ -17,6 +17,7 @@
  */
 import type { PosterExtract } from "./extract-poster";
 import { chat } from "./client";
+import { logAiCallAsync } from "./audit";
 
 const GEMINI_MODEL = "gemini-flash-latest";
 const TIMEOUT_MS = 25000;
@@ -39,9 +40,14 @@ export async function chatGeminiText(opts: {
   timeoutMs?: number;
   /** When true, unparseable JSON output triggers one retry (free-tier truncation). */
   json?: boolean;
+  /** Audit-log purpose tag. Defaults to "chat". */
+  purpose?: string;
 }): Promise<string | null> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
+
+  const purpose = opts.purpose ?? "chat";
+  const started = Date.now();
 
   const call = async (): Promise<string | null> => {
     const res = await fetch(
@@ -76,23 +82,65 @@ export async function chatGeminiText(opts: {
 
   try {
     let content = await call();
-    if (!content) return null;
+    if (!content) {
+      logAiCallAsync({
+        purpose,
+        provider: "gemini",
+        model: GEMINI_MODEL,
+        status: "failed",
+        latencyMs: Date.now() - started,
+        error: "empty response",
+      });
+      return null;
+    }
 
     // Free-tier Gemini occasionally truncates JSON mid-object. Retry once.
     if (opts.json) {
       const cleaned = content.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
       try {
         JSON.parse(cleaned);
+        logAiCallAsync({
+          purpose,
+          provider: "gemini",
+          model: GEMINI_MODEL,
+          status: "success",
+          latencyMs: Date.now() - started,
+        });
         return content;
       } catch {
         console.warn("[gemini:chat] truncated JSON — retrying once");
         content = await call();
-        if (!content) return null;
+        if (!content) {
+          logAiCallAsync({
+            purpose,
+            provider: "gemini",
+            model: GEMINI_MODEL,
+            status: "failed",
+            latencyMs: Date.now() - started,
+            error: "empty retry response",
+          });
+          return null;
+        }
       }
     }
+    logAiCallAsync({
+      purpose,
+      provider: "gemini",
+      model: GEMINI_MODEL,
+      status: "success",
+      latencyMs: Date.now() - started,
+    });
     return content;
   } catch (err) {
     console.warn("[gemini:chat] failed:", err instanceof Error ? err.message : err);
+    logAiCallAsync({
+      purpose,
+      provider: "gemini",
+      model: GEMINI_MODEL,
+      status: "failed",
+      latencyMs: Date.now() - started,
+      error: err instanceof Error ? err.message : "unknown error",
+    });
     return null;
   }
 }
@@ -112,6 +160,8 @@ export async function chatWithFallback(opts: {
   timeoutMs?: number;
   /** When true, chat() output that fails JSON.parse also triggers Gemini fallback. */
   json?: boolean;
+  /** Audit-log purpose tag. Defaults to "chat". */
+  purpose?: string;
 }): Promise<string | null> {
   const primaryResult = await chat({
     systemPrompt: opts.systemPrompt,
@@ -119,6 +169,7 @@ export async function chatWithFallback(opts: {
     temperature: opts.temperature ?? 0.1,
     maxTokens: opts.maxTokens ?? 800,
     timeoutMs: opts.timeoutMs ?? 15000,
+    purpose: opts.purpose,
   });
 
   // chat() succeeded: either plain text, or valid JSON (when json mode requested).
@@ -138,7 +189,7 @@ export async function chatWithFallback(opts: {
   }
 
   if (!isGeminiConfigured()) return null;
-  const geminiResult = await chatGeminiText({ ...opts });
+  const geminiResult = await chatGeminiText({ ...opts, purpose: opts.purpose });
   if (geminiResult) {
     console.log("[chatWithFallback] OpenCode/OpenRouter unavailable — Gemini succeeded");
   }
@@ -152,9 +203,11 @@ export async function chatWithFallback(opts: {
 export async function extractPosterWithGemini(
   imageUrl: string,
   systemPrompt: string,
-  userMessage: string
+  userMessage: string,
+  purpose = "extract-poster"
 ): Promise<PosterExtract | null> {
   const apiKey = process.env.GEMINI_API_KEY;
+  const started = Date.now();
   if (!apiKey) return null;
 
   // The image is a base64 data URL (our upload route stores it that way) or a remote URL.
@@ -222,7 +275,15 @@ export async function extractPosterWithGemini(
     // 2026-08-08: "Unterminated string in JSON at position 114"). Retry once;
     // a second attempt with the same prompt almost always completes.
     try {
-      return JSON.parse(cleaned) as PosterExtract;
+      const parsed = JSON.parse(cleaned) as PosterExtract;
+      logAiCallAsync({
+        purpose,
+        provider: "gemini",
+        model: GEMINI_MODEL,
+        status: "success",
+        latencyMs: Date.now() - started,
+      });
+      return parsed;
     } catch (parseErr) {
       console.warn(
         "[extract-poster:gemini] parse failed (retrying once):",
@@ -259,17 +320,41 @@ export async function extractPosterWithGemini(
           .replace(/```json\s*/g, "")
           .replace(/```\s*/g, "")
           .trim();
-        return JSON.parse(retryCleaned) as PosterExtract;
+        const retryParsed = JSON.parse(retryCleaned) as PosterExtract;
+        logAiCallAsync({
+          purpose,
+          provider: "gemini",
+          model: GEMINI_MODEL,
+          status: "success",
+          latencyMs: Date.now() - started,
+        });
+        return retryParsed;
       } catch (retryErr) {
         console.warn(
           "[extract-poster:gemini] retry failed:",
           retryErr instanceof Error ? retryErr.message : retryErr
         );
+        logAiCallAsync({
+          purpose,
+          provider: "gemini",
+          model: GEMINI_MODEL,
+          status: "failed",
+          latencyMs: Date.now() - started,
+          error: retryErr instanceof Error ? retryErr.message : "parse retry failed",
+        });
         return null;
       }
     }
   } catch (err) {
     console.warn("[extract-poster:gemini] failed:", err instanceof Error ? err.message : err);
+    logAiCallAsync({
+      purpose,
+      provider: "gemini",
+      model: GEMINI_MODEL,
+      status: "failed",
+      latencyMs: Date.now() - started,
+      error: err instanceof Error ? err.message : "unknown error",
+    });
     return null;
   }
 }

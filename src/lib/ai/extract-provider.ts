@@ -76,6 +76,7 @@ Rules:
     maxTokens: 400,
     timeoutMs: TIMEOUT_MS,
     json: true,
+    purpose: "extract-provider",
   });
 
   if (!content) return null;

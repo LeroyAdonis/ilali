@@ -7,6 +7,13 @@ import {
   getAIConfig,
 } from "../ai/client";
 
+// Audit logging is an external side effect (DB insert through the neon HTTP
+// driver, which itself uses global fetch) — mock it so it never pollutes the
+// mocked fetch call counts these tests assert on.
+vi.mock("../ai/audit", () => ({
+  logAiCallAsync: vi.fn(),
+}));
+
 const MOCK_OC_PASS = "oc-test-password-123";
 const MOCK_OR_KEY = "sk-or-v1-test-key-123";
 

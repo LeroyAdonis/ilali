@@ -127,14 +127,14 @@ Rules:
   // volume (~tens/day), and Gemini's per-key free tier is far more reliable
   // than NIM's shared pool (which 429s/times out regularly). NIM stays as the
   // fallback so we don't pay Gemini quota when NIM happens to be healthy.
-  const geminiResult = await extractPosterWithGemini(imageUrl, systemPrompt, userMessage);
+  const geminiResult = await extractPosterWithGemini(imageUrl, systemPrompt, userMessage, "extract-poster");
   if (geminiResult) {
     // Normalise FIRST (phone +27, tag filter, logoBox clamp), then run the
     // dedicated logo pass if the main extraction missed the logo.
     return await ensureLogo(normaliseExtract(geminiResult), imageUrl);
   }
 
-  let content = await chat({
+  const content = await chat({
     systemPrompt,
     userMessage,
     imageUrl,
@@ -143,6 +143,7 @@ Rules:
     maxTokens: 800,
     timeoutMs: TIMEOUT_MS,
     responseFormat: "json",
+    purpose: "extract-poster",
   });
 
   if (!content) return null;
@@ -191,7 +192,8 @@ All values are PERCENTAGES (0-100) of the poster's width/height, where x,y is th
   const geminiLogo = await extractPosterWithGemini(
     imageUrl,
     logoSystemPrompt,
-    "Locate the logo on this poster. Return ONLY JSON."
+    "Locate the logo on this poster. Return ONLY JSON.",
+    "extract-poster-logo"
   );
   if (geminiLogo?.logoBox) {
     return { ...result, logoBox: geminiLogo.logoBox };
@@ -206,6 +208,7 @@ All values are PERCENTAGES (0-100) of the poster's width/height, where x,y is th
     maxTokens: 200,
     timeoutMs: TIMEOUT_MS,
     responseFormat: "json",
+    purpose: "extract-poster-logo",
   });
   if (!logoContent) return result;
 
@@ -273,7 +276,7 @@ export function normaliseExtract(result: PosterExtract): PosterExtract {
 
 /** Normalise SA phone numbers to international +27 format. */
 export function cleanPhone(input: string): string {
-  let digits = input.replace(/[^\d+]/g, "");
+  const digits = input.replace(/[^\d+]/g, "");
   if (digits.startsWith("+")) return digits;
   if (digits.startsWith("00")) return "+" + digits.slice(2);
   if (digits.startsWith("0")) return "+27" + digits.slice(1);

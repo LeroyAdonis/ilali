@@ -277,6 +277,7 @@ Rules:
     maxTokens: 1200,
     timeoutMs: 25000,
     responseFormat: "json",
+    purpose: "chat-match",
   });
 
   if (!content) return null;

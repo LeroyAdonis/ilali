@@ -133,6 +133,7 @@ Rules:
     maxTokens: 800,
     timeoutMs: TIMEOUT_MS,
     json: true,
+    purpose: "enrich",
   });
 
   let content = geminiContent;
@@ -145,6 +146,7 @@ Rules:
       maxTokens: 800,
       timeoutMs: TIMEOUT_MS,
       responseFormat: "json",
+      purpose: "enrich",
     });
   }
 

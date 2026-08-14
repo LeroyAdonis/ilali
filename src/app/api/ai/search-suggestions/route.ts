@@ -41,6 +41,7 @@ Rules:
     temperature: 0.3,
     maxTokens: 250,
     timeoutMs: 25000,
+    purpose: "search-suggestions",
   });
 
   if (!content) {

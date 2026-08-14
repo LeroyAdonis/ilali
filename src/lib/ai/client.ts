@@ -13,7 +13,12 @@
  * Timeout budget: OpenCode is a free shared zen tier — 12-23s typical. Each
  * attempt gets `timeoutMs` from the caller; callers that need speed should pass
  * a budget that leaves room for the OpenRouter/Gemini fallback to still fire.
+ *
+ * Audit (2026-08-14, "model-visible means logged"): every attempt is logged to
+ * ai_call_logs via logAiCallAsync — which tier served, model, latency, tokens
+ * (OpenRouter), and outcome. Fire-and-forget; never blocks or fails the call.
  */
+import { logAiCallAsync } from "./audit";
 
 const OPENCODE_DEFAULT_URL = "http://127.0.0.1:4055";
 const OPENROUTER_BASE = "https://openrouter.ai/api/v1/chat/completions";
@@ -67,6 +72,8 @@ interface ChatOptions {
   timeoutMs?: number;
   /** Enforce a JSON object response (OpenRouter/OpenAI response_format). */
   responseFormat?: "json";
+  /** Audit-log purpose tag (extract-poster, match, enrich, ...). Defaults to "chat". */
+  purpose?: string;
 }
 
 interface AIConfig {
@@ -95,6 +102,8 @@ async function chatOpenCode(
   cfg: AIConfig,
   opts: Omit<ChatOptions, "model"> & { timeoutMs: number }
 ): Promise<string | null> {
+  const started = Date.now();
+  const purpose = opts.purpose ?? "chat";
   if (!cfg.opencodePassword) {
     console.warn("[ai] OPENCODE_SERVER_PASSWORD not set — OpenCode tier disabled");
     return null;
@@ -115,6 +124,14 @@ async function chatOpenCode(
     });
     if (!createRes.ok) {
       console.warn(`[ai] opencode /session HTTP ${createRes.status}`);
+      logAiCallAsync({
+        purpose,
+        provider: "opencode",
+        model: OPENCODE_MODEL.modelID,
+        status: "failed",
+        latencyMs: Date.now() - started,
+        error: `session HTTP ${createRes.status}`,
+      });
       return null;
     }
     const session = (await createRes.json()) as { id: string };
@@ -148,6 +165,14 @@ async function chatOpenCode(
     });
     if (!msgRes.ok) {
       console.warn(`[ai] opencode /message HTTP ${msgRes.status}`);
+      logAiCallAsync({
+        purpose,
+        provider: "opencode",
+        model: OPENCODE_MODEL.modelID,
+        status: "failed",
+        latencyMs: Date.now() - started,
+        error: `message HTTP ${msgRes.status}`,
+      });
       return null;
     }
     const data = (await msgRes.json()) as { parts?: Array<{ type?: string; text?: string }> };
@@ -159,6 +184,15 @@ async function chatOpenCode(
       .map((p) => p.text)
       .join("\n")
       .trim();
+
+    logAiCallAsync({
+      purpose,
+      provider: "opencode",
+      model: OPENCODE_MODEL.modelID,
+      status: text ? "success" : "failed",
+      latencyMs: Date.now() - started,
+      error: text ? null : "empty response",
+    });
     return text || null;
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") {
@@ -166,6 +200,14 @@ async function chatOpenCode(
     } else {
       console.warn("[ai] opencode failed:", err instanceof Error ? err.message : err);
     }
+    logAiCallAsync({
+      purpose,
+      provider: "opencode",
+      model: OPENCODE_MODEL.modelID,
+      status: "failed",
+      latencyMs: Date.now() - started,
+      error: err instanceof Error ? err.message : "unknown error",
+    });
     return null;
   }
 }
@@ -178,6 +220,8 @@ async function attemptOpenRouter(
   opts: Omit<ChatOptions, "model"> & { timeoutMs: number }
 ): Promise<string | null> {
   if (!cfg.openRouterKey) return null;
+  const started = Date.now();
+  const purpose = opts.purpose ?? "chat";
 
   try {
     const response = await fetch(OPENROUTER_BASE, {
@@ -211,18 +255,47 @@ async function attemptOpenRouter(
 
     if (!response.ok) {
       console.warn(`[ai] openrouter ${model} returned ${response.status}`);
+      logAiCallAsync({
+        purpose,
+        provider: "openrouter",
+        model,
+        status: "failed",
+        latencyMs: Date.now() - started,
+        error: `HTTP ${response.status}`,
+      });
       return null;
     }
     const data = (await response.json()) as {
       choices?: Array<{ message?: { content?: string | null } }>;
+      usage?: { prompt_tokens?: number; completion_tokens?: number };
     };
-    return data.choices?.[0]?.message?.content ?? null;
+    const content = data.choices?.[0]?.message?.content ?? null;
+
+    logAiCallAsync({
+      purpose,
+      provider: "openrouter",
+      model,
+      status: content ? "success" : "failed",
+      latencyMs: Date.now() - started,
+      tokensIn: data.usage?.prompt_tokens ?? null,
+      tokensOut: data.usage?.completion_tokens ?? null,
+      error: content ? null : "empty response",
+    });
+    return content;
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") {
       console.warn(`[ai] openrouter ${model} timed out`);
     } else {
       console.warn("[ai] openrouter failed:", err instanceof Error ? err.message : err);
     }
+    logAiCallAsync({
+      purpose,
+      provider: "openrouter",
+      model,
+      status: "failed",
+      latencyMs: Date.now() - started,
+      error: err instanceof Error ? err.message : "unknown error",
+    });
     return null;
   }
 }

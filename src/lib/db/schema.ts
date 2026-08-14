@@ -544,3 +544,24 @@ export const savedActivities = pgTable(
   },
   (t) => [unique().on(t.parentId, t.providerId)],
 );
+
+// ── AI Call Audit Log (2026-08-14) ──
+// "Model-visible means logged" (borrowed from DeepSeek Harness): every AI
+// call through the shared client records which tier served, the model, the
+// latency, and the outcome — so a poster-extraction incident is one SQL
+// query instead of guesswork. Fire-and-forget writes (never block AI
+// latency); no prompt bodies stored (privacy — poster text can contain kid
+// data), just purpose + provider + outcome.
+export const aiCallLogs = pgTable("ai_call_logs", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  purpose: text("purpose").notNull(), // extract-poster | extract-provider | match | enrich | chat-match | ...
+  provider: text("provider").notNull(), // opencode | openrouter | gemini | none
+  model: text("model"), // model id when known
+  status: text("status").notNull(), // success | failed
+  latencyMs: integer("latency_ms"),
+  tokensIn: integer("tokens_in"),
+  tokensOut: integer("tokens_out"),
+  error: text("error"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+

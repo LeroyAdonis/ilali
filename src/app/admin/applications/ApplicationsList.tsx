@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Building2, CheckSquare, Loader2, Square } from "lucide-react";
+import { Building2, CheckSquare, Loader2, Square, Trash2 } from "lucide-react";
 import { ApplicationCard, type Application } from "./ApplicationCard";
 import { BatchApproveModal } from "@/components/admin/BatchApproveModal";
 import type { BatchApproveResult } from "@/lib/import/types";
@@ -24,6 +24,7 @@ export function ApplicationsList({
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<BatchApproveResult | null>(null);
 
@@ -76,6 +77,37 @@ export function ApplicationsList({
       setError("Batch approve failed. Please try again.");
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function deleteSelected() {
+    if (selectedIds.length === 0) return;
+    if (
+      !window.confirm(
+        `Delete ${selectedIds.length} selected application${selectedIds.length === 1 ? "" : "s"}? This cannot be undone.`
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/applications/batch-delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: selectedIds }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(body.error || "Delete failed. Please try again.");
+        return;
+      }
+      setSelected(new Set());
+      router.refresh();
+    } catch {
+      setError("Delete failed. Please try again.");
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -137,15 +169,27 @@ export function ApplicationsList({
                   <button
                     type="button"
                     onClick={() => setSelected(new Set())}
-                    disabled={busy}
+                    disabled={busy || deleting}
                     className="inline-flex min-h-[44px] items-center rounded-lg border border-ink/10 px-4 py-2 text-sm font-medium text-ink-soft transition-colors hover:bg-paper-warm hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ilali-600 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     Clear
                   </button>
                   <button
                     type="button"
+                    onClick={deleteSelected}
+                    disabled={busy || deleting}
+                    className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 active:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {deleting && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {!deleting && <Trash2 className="h-4 w-4" />}
+                    {deleting
+                      ? "Deleting…"
+                      : `Delete selected (${selectedIds.length})`}
+                  </button>
+                  <button
+                    type="button"
                     onClick={approveSelected}
-                    disabled={busy}
+                    disabled={busy || deleting}
                     className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ilali-600 active:bg-teal-900 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {busy && <Loader2 className="h-4 w-4 animate-spin" />}

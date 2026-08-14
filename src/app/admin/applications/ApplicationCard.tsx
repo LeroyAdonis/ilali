@@ -12,6 +12,7 @@ import {
   Pencil,
   Phone,
   RefreshCw,
+  Trash2,
   XCircle,
 } from "lucide-react";
 import { AdminStatusBadge } from "@/components/admin";
@@ -49,7 +50,7 @@ export type Application = {
   createdAt: Date | string | null;
 };
 
-type BusyAction = "contacted" | "approved" | "rejected" | "regenerate" | null;
+type BusyAction = "contacted" | "approved" | "rejected" | "regenerate" | "delete" | null;
 
 const BTN_BASE =
   "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50";
@@ -140,6 +141,30 @@ export function ApplicationCard({
       setTimeout(() => setCopied(false), 2000);
     } catch {
       setError("Could not copy automatically — select the password and copy manually.");
+    }
+  }
+
+  async function deleteApplication() {
+    if (!window.confirm(`Delete application "${application.name}"? This cannot be undone.`)) {
+      return;
+    }
+    setBusy("delete");
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/applications/${application.id}`, {
+        method: "DELETE",
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(body.error || "Could not delete the application.");
+        return;
+      }
+      // Row is gone — refresh the server list so the card disappears.
+      router.refresh();
+    } catch {
+      setError("Could not delete the application.");
+    } finally {
+      setBusy(null);
     }
   }
 
@@ -289,6 +314,16 @@ export function ApplicationCard({
               )}
             </div>
           )}
+          {/* Delete — available for every status (test-data cleanup). */}
+          <button
+            type="button"
+            onClick={deleteApplication}
+            disabled={busy !== null}
+            className={`${BTN_BASE} border border-red-200 bg-white text-red-600 hover:bg-red-50`}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            {busy === "delete" ? "Deleting…" : "Delete"}
+          </button>
         </div>
       </div>
 

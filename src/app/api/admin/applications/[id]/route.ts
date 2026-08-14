@@ -333,3 +333,30 @@ export const PATCH = withAdmin(
     return NextResponse.json({ tempPassword });
   }
 );
+
+/**
+ * DELETE /api/admin/applications/[id]
+ * Permanently removes a provider application row (test data cleanup etc.).
+ * Deliberately scoped: deletes ONLY the application row. If the application
+ * was approved and a user account / providers row was created, those are left
+ * untouched — a delete here must never silently nuke a live provider account.
+ */
+export const DELETE = withAdmin(
+  async (_request: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+    const { id } = await params;
+
+    const [application] = await db
+      .select()
+      .from(providerApplications)
+      .where(eq(providerApplications.id, id));
+
+    if (!application) {
+      return NextResponse.json({ error: "Application not found" }, { status: 404 });
+    }
+
+    await db.delete(providerApplications).where(eq(providerApplications.id, id));
+
+    return NextResponse.json({ ok: true, id });
+  }
+);
+

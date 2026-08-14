@@ -6,12 +6,20 @@ import Link from "next/link";
 import { Loader2, CheckCircle2, MailCheck, KeyRound } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
+function getValidatedCallbackUrl(value: string | null): string | null {
+  if (!value) return null;
+  if (!value.startsWith("/") || value.startsWith("//")) return null;
+  if (value.slice(1).split(/[/?#]/)[0].includes(":")) return null;
+  return value;
+}
+
 function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const resetSuccess = searchParams.get("reset") === "success";
+  const callbackUrl = getValidatedCallbackUrl(searchParams.get("callbackUrl"));
   const [mode, setMode] = useState<"magic" | "password">(
-    resetSuccess ? "password" : "magic"
+    resetSuccess ? "password" : callbackUrl?.startsWith("/admin") ? "password" : "magic"
   );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +45,7 @@ function SignInForm() {
     try {
       const result = await authClient.signIn.magicLink({
         email: email.trim(),
-        callbackURL: "/home",
+        callbackURL: callbackUrl ?? "/home",
       });
 
       if (result.error) {
@@ -77,16 +85,18 @@ function SignInForm() {
         const role = user?.role;
 
         if (role === "provider") {
-          // Check if password reset is required
+          // Check if password reset is required — ALWAYS route to set-password
+          // first, regardless of callbackUrl (they can't do anything until
+          // they've chosen a password).
           if (user?.passwordResetRequired) {
             router.push("/auth/create-password");
           } else {
-            router.push("/provider");
+            router.push(callbackUrl ?? "/provider");
           }
         } else if (role === "admin") {
-          router.push("/admin");
+          router.push(callbackUrl ?? "/admin");
         } else {
-          router.push("/home");
+          router.push(callbackUrl ?? "/home");
         }
         router.refresh();
       }

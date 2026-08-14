@@ -492,7 +492,12 @@ export const posterImports = pgTable("poster_imports", {
   status: text("status").notNull().default("extracting"), // extracting → needs_review → saved → contacted
   contactedAt: timestamp("contacted_at"),
   outreachMethod: text("outreach_method"), // wa-me | email-draft | whatsapp-api | null
-  applicationId: uuid("application_id").references(() => providerApplications.id),
+  // applicationId links the poster upload to the application created from it.
+  // onDelete "set null" — deleting an application (admin test-data cleanup) must
+  // NOT fail on this FK: the poster import audit row survives, just unlinked.
+  applicationId: uuid("application_id").references(() => providerApplications.id, {
+    onDelete: "set null",
+  }),
   createdBy: text("created_by").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
 });

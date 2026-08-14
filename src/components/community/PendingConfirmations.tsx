@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useSession } from "@/lib/auth-client";
-import { Loader2, ClipboardCheck, X } from "lucide-react";
+import { ClipboardCheck, X } from "lucide-react";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 // ── Types matching API response ──
 
@@ -253,7 +254,7 @@ export default function PendingConfirmations({
           Pending confirmations
         </h2>
         <div className="mt-4 flex items-center justify-center py-8 text-ink-faint">
-          <Loader2 className="h-5 w-5 animate-spin" />
+          <IlaliSpinner size="xs" />
         </div>
       </section>
     );
@@ -407,7 +408,7 @@ export default function PendingConfirmations({
               {/* Busy indicator */}
               {isBusy && (
                 <div className="flex shrink-0 items-center pt-0.5">
-                  <Loader2 className="h-4 w-4 animate-spin text-ink-faint" />
+                  <IlaliSpinner size="xs" />
                 </div>
               )}
             </li>

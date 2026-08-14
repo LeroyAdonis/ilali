@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, Plus, Trash2, ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, ArrowRight, Check } from "lucide-react";
 import ChildForm, {
   type ChildInput,
   emptyChild,
 } from "@/components/parent/ChildForm";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 // ── Types ──
 
@@ -442,7 +443,7 @@ export default function OnboardingPage() {
                   className="inline-flex items-center gap-2 rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-ilali-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <IlaliSpinner size="xs" variant="inverse" />
                   ) : (
                     <Check className="h-4 w-4" />
                   )}

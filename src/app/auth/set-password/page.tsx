@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { PASSWORD_MIN_LENGTH } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 export default function SetPasswordPage() {
   const router = useRouter();
@@ -68,7 +69,7 @@ export default function SetPasswordPage() {
   if (checking) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-paper-warm">
-        <Loader2 className="h-8 w-8 animate-spin text-ilali-600" />
+        <IlaliSpinner size="md" />
       </div>
     );
   }
@@ -195,7 +196,7 @@ export default function SetPasswordPage() {
               className="flex w-full items-center justify-center rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-ilali-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <IlaliSpinner size="xs" variant="inverse" />
               ) : (
                 "Set password"
               )}

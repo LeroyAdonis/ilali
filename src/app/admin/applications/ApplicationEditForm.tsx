@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Loader2, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import type { Application } from "./ApplicationCard";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 /**
  * Inline draft editor for pending/contacted applications.
@@ -380,7 +381,7 @@ export function ApplicationEditForm({
           className="inline-flex items-center gap-1.5 rounded-lg bg-ilali-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-ilali-700 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
           {saving ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            <IlaliSpinner size="xs" />
           ) : (
             <Check className="h-3.5 w-3.5" />
           )}

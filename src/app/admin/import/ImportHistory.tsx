@@ -2,14 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  CheckCircle,
-  ChevronDown,
-  History,
-  Loader2,
-} from "lucide-react";
+import { CheckCircle, ChevronDown, History } from "lucide-react";
 import type { BatchApproveResult, ImportBatchSummary } from "@/lib/import/types";
 import { BatchApproveModal } from "@/components/admin/BatchApproveModal";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 /**
  * Import history (spec Scenario 4, T025).
@@ -82,7 +78,7 @@ export default function ImportHistory() {
   if (batches === null) {
     return (
       <div className="flex items-center justify-center rounded-xl border border-ink/10 bg-white py-16">
-        <Loader2 className="h-6 w-6 animate-spin text-ilali-600" />
+        <IlaliSpinner size="sm" />
       </div>
     );
   }
@@ -162,7 +158,7 @@ export default function ImportHistory() {
                       className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ilali-600 active:bg-teal-900 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {busyBatch === batch.id && (
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <IlaliSpinner size="xs" />
                       )}
                       {busyBatch === batch.id
                         ? "Approving…"

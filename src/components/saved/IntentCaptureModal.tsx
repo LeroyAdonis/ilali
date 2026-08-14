@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Loader2, MailCheck, X, Heart, MessageCircle, Bell } from "lucide-react";
+import { MailCheck, X, Heart, MessageCircle, Bell } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { EMAIL_RE } from "@/lib/validations";
 import type { IntentAction } from "@/lib/intent-cookie";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 interface IntentCaptureModalProps {
   action: IntentAction;
@@ -212,7 +213,7 @@ export default function IntentCaptureModal({
                 className="flex w-full items-center justify-center rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-ilali-700 disabled:opacity-50"
               >
                 {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  <IlaliSpinner size="xs" variant="inverse" />
                 ) : (
                   meta.cta
                 )}

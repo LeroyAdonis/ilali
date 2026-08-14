@@ -18,10 +18,11 @@
 
 import type { CSSProperties } from "react";
 
-type SpinnerSize = "sm" | "md" | "lg";
+type SpinnerSize = "xs" | "sm" | "md" | "lg";
 type SpinnerVariant = "default" | "inverse";
 
 const SIZE_MAP: Record<SpinnerSize, number> = {
+  xs: 24,
   sm: 40,
   md: 56,
   lg: 80,
@@ -34,7 +35,7 @@ export function IlaliSpinner({
   className,
   style,
 }: {
-  /** Tile width/height in px. Default md (56px). */
+  /** Tile width/height in px. Default md (56px). xs (24) is for inline/buttons. */
   size?: SpinnerSize;
   /** default = teal tile (light backgrounds). inverse = paper tile (dark/teal). */
   variant?: SpinnerVariant;

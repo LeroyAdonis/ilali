@@ -3,7 +3,8 @@
 import { useCallback, useState } from "react";
 import { useSession } from "@/lib/auth-client";
 import Link from "next/link";
-import { Loader2, Sparkles, X } from "lucide-react";
+import { Sparkles, X } from "lucide-react";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 // ── Contribution definitions ──
 
@@ -227,7 +228,7 @@ export default function ContributionPicker({
               className="inline-flex items-center gap-1.5 rounded-full bg-ilali-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-ilali-700 disabled:opacity-60"
             >
               {submitting ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <IlaliSpinner size="xs" variant="inverse" />
               ) : (
                 "✅ Confirm"
               )}

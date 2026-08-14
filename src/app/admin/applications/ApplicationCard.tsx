@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { AdminStatusBadge } from "@/components/admin";
 import { ApplicationEditForm } from "./ApplicationEditForm";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 type ApplicationStatus = "pending" | "contacted" | "approved" | "rejected";
 
@@ -253,9 +254,16 @@ export function ApplicationCard({
               type="button"
               onClick={() => transition("contacted")}
               disabled={busy !== null}
-              className={`${BTN_BASE} bg-blue-50 text-blue-700 hover:bg-blue-100`}
+              className={`${BTN_BASE} gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100`}
             >
-              {busy === "contacted" ? "Updating…" : "Mark Contacted"}
+              {busy === "contacted" ? (
+                <>
+                  <IlaliSpinner size="xs" />
+                  Updating…
+                </>
+              ) : (
+                "Mark Contacted"
+              )}
             </button>
           )}
           {canApprove && (
@@ -264,19 +272,37 @@ export function ApplicationCard({
                 type="button"
                 onClick={() => transition("approved")}
                 disabled={busy !== null}
-                className={`${BTN_BASE} bg-teal-50 text-teal-700 hover:bg-teal-100`}
+                className={`${BTN_BASE} gap-2 bg-teal-50 text-teal-700 hover:bg-teal-100`}
               >
-                <CheckCircle className="h-3.5 w-3.5" />
-                {busy === "approved" ? "Approving…" : "Approve"}
+                {busy === "approved" ? (
+                  <>
+                    <IlaliSpinner size="xs" />
+                    Approving…
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="h-3.5 w-3.5" />
+                    Approve
+                  </>
+                )}
               </button>
               <button
                 type="button"
                 onClick={() => transition("rejected")}
                 disabled={busy !== null}
-                className={`${BTN_BASE} bg-red-50 text-red-700 hover:bg-red-100`}
+                className={`${BTN_BASE} gap-2 bg-red-50 text-red-700 hover:bg-red-100`}
               >
-                <XCircle className="h-3.5 w-3.5" />
-                Reject
+                {busy === "rejected" ? (
+                  <>
+                    <IlaliSpinner size="xs" />
+                    Rejecting…
+                  </>
+                ) : (
+                  <>
+                    <XCircle className="h-3.5 w-3.5" />
+                    Reject
+                  </>
+                )}
               </button>
             </>
           )}
@@ -302,14 +328,21 @@ export function ApplicationCard({
                   type="button"
                   onClick={regenerateTempPassword}
                   disabled={busy !== null}
-                  className={`${BTN_BASE} bg-ilali-50 text-ilali-700 hover:bg-ilali-100`}
+                  className={`${BTN_BASE} gap-2 bg-ilali-50 text-ilali-700 hover:bg-ilali-100`}
                 >
-                  <KeyRound className="h-3.5 w-3.5" />
-                  {busy === "regenerate"
-                    ? "Generating…"
-                    : tempPassword
-                      ? "Regenerate temp password"
-                      : "Reveal temp password"}
+                  {busy === "regenerate" ? (
+                    <>
+                      <IlaliSpinner size="xs" />
+                      Generating…
+                    </>
+                  ) : (
+                    <>
+                      <KeyRound className="h-3.5 w-3.5" />
+                      {tempPassword
+                        ? "Regenerate temp password"
+                        : "Reveal temp password"}
+                    </>
+                  )}
                 </button>
               )}
             </div>
@@ -319,10 +352,19 @@ export function ApplicationCard({
             type="button"
             onClick={deleteApplication}
             disabled={busy !== null}
-            className={`${BTN_BASE} border border-red-200 bg-white text-red-600 hover:bg-red-50`}
+            className={`${BTN_BASE} gap-2 border border-red-200 bg-white text-red-600 hover:bg-red-50`}
           >
-            <Trash2 className="h-3.5 w-3.5" />
-            {busy === "delete" ? "Deleting…" : "Delete"}
+            {busy === "delete" ? (
+              <>
+                <IlaliSpinner size="xs" />
+                Deleting…
+              </>
+            ) : (
+              <>
+                <Trash2 className="h-3.5 w-3.5" />
+                Delete
+              </>
+            )}
           </button>
         </div>
       </div>

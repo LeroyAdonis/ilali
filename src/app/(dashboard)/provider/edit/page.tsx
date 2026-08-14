@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Plus, Trash2, CheckCircle2 } from "lucide-react";
+import { Plus, Trash2, CheckCircle2 } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 const DAYS = [
   "Monday",
@@ -223,7 +224,7 @@ export default function EditListingPage() {
   if (sessionLoading || loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-ilali-600" />
+        <IlaliSpinner size="md" />
       </div>
     );
   }
@@ -618,7 +619,7 @@ export default function EditListingPage() {
           >
             {saving ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin mr-2 inline" />
+                <IlaliSpinner size="xs" variant="inverse" />
                 Saving…
               </>
             ) : (

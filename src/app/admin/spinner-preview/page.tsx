@@ -22,6 +22,7 @@ export default function SpinnerPreviewPage() {
           Sizes
         </h2>
         <div className="mt-4 flex flex-wrap items-end gap-10 rounded-xl border border-ink/10 bg-white p-8">
+          <IlaliSpinner size="xs" label="Inline / buttons" />
           <IlaliSpinner size="sm" label="Syncing…" />
           <IlaliSpinner size="md" label="Approving application…" />
           <IlaliSpinner size="lg" label="Crunching the posters" />

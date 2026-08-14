@@ -10,9 +10,9 @@ import {
   X,
   MessageCircle,
   ImageIcon,
-  Loader2,
   History,
 } from "lucide-react";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 import type { PosterExtract } from "@/lib/ai/extract-poster";
 import type { EnrichmentSuggestion } from "@/lib/web/enrich";
 import { buildUploadFormData } from "@/lib/upload-compress";
@@ -492,8 +492,8 @@ export default function PosterImportPage() {
       </div>
 
       {(phase.kind === "uploading" || phase.kind === "extracting") && (
-        <div className="flex items-center justify-center gap-3 rounded-xl border border-ink/10 bg-white p-6 text-sm text-ink-soft shadow-sm">
-          <Loader2 className="h-5 w-5 animate-spin text-ilali-600" />
+        <div className="flex items-center justify-center gap-4 rounded-xl border border-ink/10 bg-white p-6 text-sm text-ink-soft shadow-sm">
+          <IlaliSpinner size="sm" />
           {phase.kind === "uploading" ? "Uploading poster…" : "AI is reading the poster…"}
         </div>
       )}
@@ -672,7 +672,7 @@ export default function PosterImportPage() {
                     className="inline-flex items-center gap-1.5 rounded-lg bg-ilali-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-ilali-700 transition-colors disabled:opacity-50"
                   >
                     {busyAction === "enrich" ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      <IlaliSpinner size="xs" variant="inverse" />
                     ) : (
                       <Globe className="h-3.5 w-3.5" />
                     )}
@@ -741,7 +741,7 @@ export default function PosterImportPage() {
                   className="inline-flex items-center gap-2 rounded-full bg-ilali-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-ilali-700 transition-colors disabled:opacity-50"
                 >
                   {busyAction === "save" ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <IlaliSpinner size="xs" variant="inverse" />
                   ) : (
                     <Check className="h-4 w-4" />
                   )}
@@ -753,7 +753,7 @@ export default function PosterImportPage() {
                   className="inline-flex items-center gap-2 rounded-full bg-green-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-green-700 transition-colors disabled:opacity-50"
                 >
                   {busyAction === "notify" ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <IlaliSpinner size="xs" variant="inverse" />
                   ) : (
                     <MessageCircle className="h-4 w-4" />
                   )}

@@ -3,13 +3,14 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, ChevronRight, Star, Calendar, MessageSquare, Sparkles } from "lucide-react";
+import { ChevronRight, Star, Calendar, MessageSquare, Sparkles } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import ProfileWizard from "@/components/provider/ProfileWizard";
 import ListingCardPreview from "@/components/provider/ListingCardPreview";
 import ActivityStats from "@/components/provider/ActivityStats";
 import StatusTracker from "@/components/provider/StatusTracker";
 import { mapProvider } from "@/lib/db/mappers";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 interface DashboardData {
   provider: Record<string, unknown> | null;
@@ -116,7 +117,7 @@ export default function ProviderDashboardPage() {
   if (sessionLoading || loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-ilali-600" />
+        <IlaliSpinner size="md" />
       </div>
     );
   }

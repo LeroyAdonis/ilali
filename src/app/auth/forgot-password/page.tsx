@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { PASSWORD_MIN_LENGTH } from "@/lib/constants";
 import { useRouter } from "next/navigation";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -193,7 +194,7 @@ export default function ForgotPasswordPage() {
                 disabled={loading}
                 className="flex w-full items-center justify-center rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-ilali-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Continue"}
+                {loading ? <IlaliSpinner size="xs" variant="inverse" /> : "Continue"}
               </button>
             </form>
 
@@ -305,7 +306,7 @@ export default function ForgotPasswordPage() {
               disabled={loading}
               className="flex w-full items-center justify-center rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-ilali-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Reset Password"}
+              {loading ? <IlaliSpinner size="xs" variant="inverse" /> : "Reset Password"}
             </button>
           </form>
 

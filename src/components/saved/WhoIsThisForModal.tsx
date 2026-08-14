@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, CheckCircle2, X } from "lucide-react";
+import { CheckCircle2, X } from "lucide-react";
 import { CHILD_AGE_MIN, CHILD_AGE_MAX } from "@/lib/validations";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 interface WhoIsThisForModalProps {
   onClose: () => void;
@@ -160,7 +161,7 @@ export default function WhoIsThisForModal({ onClose }: WhoIsThisForModalProps) {
                 className="flex w-full items-center justify-center rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-ilali-700 disabled:opacity-50"
               >
                 {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  <IlaliSpinner size="xs" variant="inverse" />
                 ) : (
                   "Save it"
                 )}

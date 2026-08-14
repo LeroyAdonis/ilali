@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { PASSWORD_MIN_LENGTH } from "@/lib/constants";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
 import { createAuthClient } from "better-auth/client";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 const authClient = createAuthClient();
 
@@ -94,7 +94,7 @@ export default function CreatePasswordPage() {
   if (checking) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-paper-warm">
-        <Loader2 className="h-8 w-8 animate-spin text-ilali-600" />
+        <IlaliSpinner size="md" />
       </div>
     );
   }
@@ -203,7 +203,7 @@ export default function CreatePasswordPage() {
               disabled={loading}
               className="flex w-full items-center justify-center rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-ilali-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Set Password & Continue"}
+              {loading ? <IlaliSpinner size="xs" variant="inverse" /> : "Set Password & Continue"}
             </button>
           </form>
         </div>

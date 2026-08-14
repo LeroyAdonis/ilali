@@ -8,7 +8,6 @@ import {
   ClipboardPaste,
   Download,
   FileSpreadsheet,
-  Loader2,
   UploadCloud,
   XCircle,
 } from "lucide-react";
@@ -19,6 +18,7 @@ import type {
   PreviewRow,
 } from "@/lib/import/types";
 import { BatchApproveModal } from "@/components/admin/BatchApproveModal";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 const TEMPLATE_HEADERS =
   "name,email,phone,activityType,location,ageMin,ageMax,priceValue,description";
@@ -329,7 +329,7 @@ export default function ImportUpload() {
             disabled={busy !== null}
             className={`${BTN_BASE} bg-ilali-600 text-white hover:bg-ilali-700 active:bg-ilali-800`}
           >
-            {busy === "preview" && <Loader2 className="h-4 w-4 animate-spin" />}
+            {busy === "preview" && <IlaliSpinner size="xs" variant="inverse" />}
             {busy === "preview" ? "Previewing…" : "Preview rows"}
           </button>
         </div>
@@ -358,7 +358,7 @@ export default function ImportUpload() {
                 className={`${BTN_BASE} mt-4 bg-teal-700 text-white hover:bg-teal-800 active:bg-teal-900`}
               >
                 {busy === "approve" && (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <IlaliSpinner size="xs" variant="inverse" />
                 )}
                 {busy === "approve"
                   ? "Approving…"
@@ -477,7 +477,7 @@ export default function ImportUpload() {
               disabled={busy !== null || preview.validRows + preview.warningRows === 0}
               className={`${BTN_BASE} bg-ilali-600 text-white hover:bg-ilali-700 active:bg-ilali-800`}
             >
-              {busy === "commit" && <Loader2 className="h-4 w-4 animate-spin" />}
+              {busy === "commit" && <IlaliSpinner size="xs" variant="inverse" />}
               {busy === "commit"
                 ? "Importing…"
                 : `Import ${preview.validRows + preview.warningRows} valid row${

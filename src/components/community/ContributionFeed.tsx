@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Heart, Loader2 } from "lucide-react";
+import { Heart } from "lucide-react";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 // ── Types matching API response ──
 
@@ -123,7 +124,7 @@ export default function ContributionFeed({ clubId }: ContributionFeedProps) {
           Recent contributions
         </h3>
         <div className="mt-4 flex items-center justify-center py-8 text-ink-faint">
-          <Loader2 className="h-5 w-5 animate-spin" />
+          <IlaliSpinner size="xs" />
         </div>
       </section>
     );

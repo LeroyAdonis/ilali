@@ -2,9 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Building2, CheckSquare, Loader2, Square, Trash2 } from "lucide-react";
+import { Building2, CheckSquare, Square, Trash2 } from "lucide-react";
 import { ApplicationCard, type Application } from "./ApplicationCard";
 import { BatchApproveModal } from "@/components/admin/BatchApproveModal";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 import type { BatchApproveResult } from "@/lib/import/types";
 
 /**
@@ -180,7 +181,7 @@ export function ApplicationsList({
                     disabled={busy || deleting}
                     className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 active:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {deleting && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {deleting && <IlaliSpinner size="xs" />}
                     {!deleting && <Trash2 className="h-4 w-4" />}
                     {deleting
                       ? "Deleting…"
@@ -192,7 +193,7 @@ export function ApplicationsList({
                     disabled={busy || deleting}
                     className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-teal-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ilali-600 active:bg-teal-900 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {busy && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {busy && <IlaliSpinner size="xs" variant="inverse" />}
                     {busy ? "Approving…" : `Approve selected (${selectedIds.length})`}
                   </button>
                 </div>

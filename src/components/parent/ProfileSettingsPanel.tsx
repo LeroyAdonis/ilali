@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Settings, X, Loader2 } from "lucide-react";
+import { Settings, X } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { SUBURB_COORDS } from "@/lib/map/suburbs";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 // Alphabetically sorted suburb names for the autocomplete
 const SUBURBS = Object.keys(SUBURB_COORDS).sort();
@@ -448,7 +449,7 @@ export default function ProfileSettingsPanel() {
             disabled={saving}
             className="w-full rounded-[10px] bg-gold px-6 py-3 text-[15px] font-semibold text-[#3A2402] transition-colors hover:bg-gold-deep disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
           >
-            {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+            {saving && <IlaliSpinner size="xs" />}
             {saving ? "Saving..." : "Save"}
           </button>
         </div>

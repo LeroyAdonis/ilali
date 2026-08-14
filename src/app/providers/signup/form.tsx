@@ -3,17 +3,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import {
-  ArrowLeft,
+import {ArrowLeft,
   ArrowRight,
   Check,
   CheckCircle,
   Eye,
-  Loader2,
   MailCheck,
   PartyPopper,
-  Sparkles,
-} from "lucide-react";
+  Sparkles } from "lucide-react";
 import { useSession, authClient } from "@/lib/auth-client";
 import {
   WIZARD_STEP_SCHEMAS,
@@ -25,6 +22,7 @@ import { categories } from "@/lib/constants";
 import ListingCardPreview from "@/components/provider/ListingCardPreview";
 import type { Provider } from "@/lib/types";
 import { EMAIL_RE } from "@/lib/validations";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 /**
  * Painless Journeys Phase 4 (T026/T027) — provider self-onboarding wizard.
@@ -361,7 +359,7 @@ export default function ProviderSignupForm() {
   if (sessionLoading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <Loader2 className="h-8 w-8 animate-spin text-ilali-600" />
+        <IlaliSpinner size="md" />
       </div>
     );
   }
@@ -442,7 +440,7 @@ export default function ProviderSignupForm() {
               className="flex w-full items-center justify-center gap-2 rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-ilali-700 disabled:opacity-50 min-h-[44px]"
             >
               {guestLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <IlaliSpinner size="xs" variant="inverse" />
               ) : (
                 <>
                   Send magic link <ArrowRight className="h-4 w-4" />
@@ -915,7 +913,7 @@ export default function ProviderSignupForm() {
             >
               {saving ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <IlaliSpinner size="xs" />
                   {step === 3 ? "Submitting…" : "Saving…"}
                 </>
               ) : step === 3 ? (

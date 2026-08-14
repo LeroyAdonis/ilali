@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Activity, Loader2, Users } from "lucide-react";
+import { Activity, Users } from "lucide-react";
+import { IlaliSpinner } from "@/components/IlaliSpinner";
 
 // ── Types ──
 
@@ -76,7 +77,7 @@ export default function ClubHealthCard({ slug }: ClubHealthCardProps) {
     return (
       <div className="rounded-xl border border-ink/10 bg-white p-4 shadow-sm">
         <div className="flex items-center justify-center py-4 text-ink-faint">
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <IlaliSpinner size="xs" />
         </div>
       </div>
     );

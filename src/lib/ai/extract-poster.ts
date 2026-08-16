@@ -60,9 +60,13 @@ const MATCH_TAGS = [
 ];
 
 // Vision models are slower than chat; bake-off showed 90b-vision ~5-15s.
+// SWITCH 2026-08-14: NIM 11b vision (meta/llama-3.2-11b-vision-instruct) is
+// 7-8s, returns clean JSON (no markdown fences), and extracts ALL fields
+// correctly. NIM nemotron-3-nano-omni-30b-a3b-reasoning is 17s+ and returns
+// all nulls on real posters. 90b-vision times out on shared pool.
 const TIMEOUT_MS = 20000;
 
-const VISION_MODEL = OPENROUTER_VISION_MODEL;
+const VISION_MODEL = "meta/llama-3.2-11b-vision-instruct";
 
 export async function extractPoster(
   imageUrl: string

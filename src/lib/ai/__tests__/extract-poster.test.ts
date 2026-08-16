@@ -5,7 +5,7 @@ const { chatMock } = vi.hoisted(() => ({ chatMock: vi.fn() }));
 
 vi.mock("@/lib/ai/client", () => ({
   chat: chatMock,
-  OPENROUTER_VISION_MODEL: "nvidia/nemotron-nano-12b-v2-vl:free",
+  OPENROUTER_VISION_MODEL: "meta/llama-3.2-11b-vision-instruct",
 }));
 
 // Mock the Gemini fallback so tests are deterministic.
@@ -114,7 +114,7 @@ describe("extractPoster — WS-7 vision extraction", () => {
     // The main extraction chat() call carries the vision model + image.
     expect(chatMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: "nvidia/nemotron-nano-12b-v2-vl:free",
+        model: "meta/llama-3.2-11b-vision-instruct",
         imageUrl: "https://example.com/poster.jpg",
         responseFormat: "json",
       })

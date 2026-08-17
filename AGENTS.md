@@ -11,7 +11,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ILALI is a children's extramural activities marketplace for Cape Town, SA.
 - URL: https://ilali.vercel.app (prod), https://preview.ilali.co (preview)
 - Stack: Next.js 16.2.7 App Router, React 19.2.4, TypeScript 5, Tailwind CSS v4, lucide-react, @fontsource/inter
-- Backend: Neon PostgreSQL + Drizzle ORM (21 tables), Better Auth
+- Backend: Neon PostgreSQL + Drizzle ORM (32 tables), Better Auth
 - AI: NVIDIA NIM `nvidia/nemotron-3-super-120b-a12b` (free, 40 RPM), fallback: DeepSeek
 - E2E: Playwright (10 smoke tests), Unit: Vitest (81 tests)
 
@@ -46,7 +46,7 @@ src/lib/data-source.ts → USE_MOCK toggle → mock or DB
 
 Set `NEXT_PUBLIC_USE_MOCK=true` in `.env` to run without a DB connection.
 
-## Database (21 tables)
+## Database (32 tables)
 
 | Table | Purpose |
 |-------|---------|
@@ -71,6 +71,17 @@ Set `NEXT_PUBLIC_USE_MOCK=true` in `.env` to run without a DB connection.
 | clubMessages | Club chat messages |
 | rewardPoints | Rewards points ledger (action-based) |
 | rewardRedemptions | Points redemption log |
+| aiCallLogs | AI call audit log (purpose, provider, model, status, latency, tokens) |
+| notificationEvents | Notification event log (sent/failed/pending per user) |
+| communityContributions | Community contribution records (venue help, event support, etc.) |
+| contributionVouches | Vouches on community contributions |
+| reviewReplies | Provider/admin replies to reviews |
+| savedActivities | Parent-saved/favorited activities |
+| importBatches | Batch import tracking (poster/CSV imports) |
+| posterImports | Poster-onboarding import records (vision extraction + enrichment) |
+| messageTemplates | Reusable message templates for outreach |
+| matchIntentCache | Cached AI match intents for fast repeat searches |
+| providerInquiries | Inquiries from potential providers |
 
 ## Key API Routes
 

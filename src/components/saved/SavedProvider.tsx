@@ -265,7 +265,14 @@ export default function SavedProvider({ children }: { children: React.ReactNode 
           providerName={pendingIntent.providerName}
           notifyWhenOpen={pendingIntent.notifyWhenOpen}
           onClose={() => setPendingIntent(null)}
-          onLinkSent={() => setIntent(pendingIntent)}
+          onLinkSent={() => {
+            setIntent(pendingIntent);
+            // Reflect the save immediately so the SaveButton flips to "Saved"
+            // without waiting for the magic-link round trip (FR-2).
+            if (pendingIntent.action === "save" || pendingIntent.action === "notify") {
+              setSavedIds((prev) => new Set(prev).add(pendingIntent.providerId));
+            }
+          }}
         />
       )}
 

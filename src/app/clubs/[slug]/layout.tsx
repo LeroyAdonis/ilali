@@ -75,7 +75,7 @@ export default async function ClubLayout({
             title-in-body-container match every other page) */}
         <InteriorHero
           eyebrow={provider.category}
-          title={provider.name}
+          title={<span className="text-teal">{provider.name}</span>}
           subtitle={`Ages ${provider.ageRange.split(" years")[0]} · ${provider.price}`}
           image={
             provider.image

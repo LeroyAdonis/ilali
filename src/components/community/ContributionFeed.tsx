@@ -212,7 +212,7 @@ export default function ContributionFeed({ clubId }: ContributionFeedProps) {
 
                 {/* Status badge */}
                 <span
-                  className={`rounded-full px-2 py-px text-[10px] font-semibold ${STATUS_STYLE[c.status] ?? "bg-gray-50 text-gray-600"}`}
+                  className={`rounded-full px-2 py-px text-[10px] font-semibold ${STATUS_STYLE[c.status] ?? "bg-ink/5 text-ink-soft"}`}
                 >
                   {c.status}
                 </span>

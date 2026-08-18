@@ -300,7 +300,7 @@ export default function UbuntuRewardsPage() {
                     Browse Activities
                   </Link>
                 </div>
-                <p className="mt-6 text-sm text-ilali-200">
+                <p className="mt-6 text-sm text-ilali-50">
                   No credit card required. Start at Bronze and climb as you go.
                 </p>
               </div>

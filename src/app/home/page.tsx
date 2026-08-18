@@ -420,7 +420,7 @@ export default async function HomePage() {
               <h2 className="text-xl font-display font-bold text-white sm:text-2xl">
                 Your child&apos;s safety is our priority
               </h2>
-              <p className="mt-2 text-sm text-ilali-100">
+              <p className="mt-2 text-sm text-ilali-50">
                 All providers are vetted and background-checked for your peace
                 of mind.
               </p>
@@ -846,7 +846,7 @@ export default async function HomePage() {
                     <h2 className="text-xl font-display font-bold text-white sm:text-2xl">
                       Your child&apos;s safety is our priority
                     </h2>
-                    <p className="mt-2 text-sm text-ilali-100">
+                    <p className="mt-2 text-sm text-ilali-50">
                       All providers are vetted and background-checked for your
                       peace of mind.
                     </p>

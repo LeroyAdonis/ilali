@@ -154,7 +154,7 @@ export default function ContributionPicker({
 
       {/* Success message */}
       {success && (
-        <div className="mt-3 flex items-start gap-2 rounded-lg bg-teal/10 p-3 text-xs font-medium text-text-teal-deep">
+        <div className="mt-3 flex items-start gap-2 rounded-lg bg-teal/10 p-3 text-xs font-medium text-teal-deep">
           <span className="mt-px shrink-0">✅</span>
           <span className="flex-1">{success}</span>
           <button

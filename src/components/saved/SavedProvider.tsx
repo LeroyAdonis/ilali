@@ -47,7 +47,17 @@ export default function SavedProvider({ children }: { children: React.ReactNode 
   const { data: session, isPending } = useSession();
   const user = session?.user;
 
-  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+  // Pre-populate saved state from pending intent cookie so the SaveButton
+  // immediately reflects "Saved" while the magic-link is being resolved.
+  const initialSavedIds = (() => {
+    const intent = getIntent();
+    if (intent && (intent.action === "save" || intent.action === "notify")) {
+      return new Set<string>([intent.providerId]);
+    }
+    return new Set<string>();
+  })();
+
+  const [savedIds, setSavedIds] = useState<Set<string>>(initialSavedIds);
   const [pendingIntent, setPendingIntent] = useState<IntentPayload | null>(null);
   const [contactReady, setContactReady] = useState<string | null>(null);
   const [showWhoFor, setShowWhoFor] = useState(false);

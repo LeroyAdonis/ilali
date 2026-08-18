@@ -142,8 +142,8 @@ export default function LandingPage() {
                   href="/home"
                   className="inline-flex items-center justify-center gap-2 rounded-[10px] bg-gold px-9 py-4 text-[15px] font-semibold text-[#3A2402] shadow-[0_4px_0_rgba(224,143,16,0.28)] transition-transform hover:bg-[#FFB84D] active:translate-y-px"
                 >
-                  Enter ILALI
-                  <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                   Browse Activities
+                   <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2.5} />
                 </Link>
                 <Link
                   href="/for-providers"

@@ -469,7 +469,14 @@ export default function EditListingPage() {
         {/* Photos */}
         <section className="rounded-xl border border-ink/10 bg-white p-5 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="font-display text-lg font-bold text-ink">Photos</h2>
+            <div>
+              <h2 className="font-display text-lg font-bold text-ink">
+                Photos <span className="text-sm font-normal text-ink-faint">(optional)</span>
+              </h2>
+              <p className="text-xs text-ink-faint">
+                Paste a link to a photo — skip if you don&apos;t have one online.
+              </p>
+            </div>
             {photos.length < 6 && (
               <button
                 type="button"

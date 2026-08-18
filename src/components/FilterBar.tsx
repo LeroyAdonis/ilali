@@ -287,6 +287,41 @@ export default function FilterBar({ categories: categoriesProp }: FilterBarProps
         })}
       </div>
 
+      {/* Age-group pills — quick tap filters mapped to ?age= param */}
+      <div className="mt-3 flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+        {[
+          { value: "0-3", label: "0–3" },
+          { value: "4-7", label: "4–7" },
+          { value: "8-12", label: "8–12" },
+          { value: "13-17", label: "13+" },
+        ].map(({ value, label }) => {
+          const isActive = searchParams.get("age") === value;
+          return (
+            <button
+              key={value}
+              type="button"
+              aria-pressed={isActive}
+              onClick={() => {
+                const params = new URLSearchParams(searchParams.toString());
+                if (isActive) {
+                  params.delete("age");
+                } else {
+                  params.set("age", value);
+                }
+                router.push(`/browse?${params.toString()}`);
+              }}
+              className={`inline-flex shrink-0 items-center rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors ${
+                isActive
+                  ? "border-ilali-500 bg-ilali-500 text-white"
+                  : "border-ink/10 bg-white text-ink-soft hover:border-ilali-300 hover:text-ilali-600"
+              }`}
+            >
+              {label}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Dropdown menu — rendered OUTSIDE the overflow container so it can't be clipped */}
       {openDropdown && openConfig && (
         <div

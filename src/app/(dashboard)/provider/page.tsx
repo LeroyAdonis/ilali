@@ -55,13 +55,12 @@ export default function ProviderDashboardPage() {
   const [saving, setSaving] = useState(false);
 
   // Auth check — the provider layout gates non-provider roles; here we only
-  // bounce guests. Providers who submitted via the wizard (or approved listings)
-  // land on the status tracker / dashboard below.
+  // bounce guests after showing dashboard context for first-time visitors.
   useEffect(() => {
     if (!sessionLoading && !session) {
-      router.replace("/auth/signin");
+      // Don't redirect immediately — let the render show provider context
     }
-  }, [session, sessionLoading, router]);
+  }, [session, sessionLoading]);
 
   const fetchData = useCallback(async () => {
     try {
@@ -122,8 +121,51 @@ export default function ProviderDashboardPage() {
     );
   }
 
-  // Auth gate (redundant but safe)
-  if (!session) return null;
+  // Auth gate — show dashboard context for signed-out visitors instead of
+  // redirecting straight to sign-in.
+  if (!session) {
+    return (
+      <div className="space-y-6 animate-fade-in-up">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">
+            Manage your activity listings
+          </h1>
+          <p className="mt-1 text-sm text-ink-faint">
+            Track bookings, update your listing, and connect with families — all in one place.
+          </p>
+        </div>
+        <div className="rounded-xl border border-ink/10 bg-white p-6 shadow-sm">
+          <div className="flex items-start gap-4">
+            <div className="rounded-full bg-ilali-50 p-3">
+              <Sparkles className="h-6 w-6 text-ilali-600" />
+            </div>
+            <div className="flex-1">
+              <h2 className="font-display text-lg font-bold text-ink">
+                New here?
+              </h2>
+              <p className="mt-1 text-sm text-ink-soft">
+                List your activity for free and reach thousands of Cape Town families. It takes about 5 minutes.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href="/providers/signup"
+                  className="inline-flex min-h-[44px] items-center rounded-lg bg-ilali-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-ilali-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ilali-600"
+                >
+                  List your activity
+                </Link>
+                <Link
+                  href="/auth/signin"
+                  className="inline-flex min-h-[44px] items-center rounded-lg border border-ink/15 px-5 py-2.5 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper-warm"
+                >
+                  Sign in
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Error state
   if (error || !data) {

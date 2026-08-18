@@ -36,7 +36,11 @@ export default function ProviderLayout({
 
   useEffect(() => {
     if (!isPending && !session) {
-      router.replace("/auth/signin");
+      // Allow /provider to render its own signed-out context;
+      // only redirect on sub-routes that require auth.
+      if (pathname !== "/provider") {
+        router.replace("/auth/signin");
+      }
       return;
     }
     // Note: NO role check here. A wizard user's role flips to 'provider' in
@@ -44,7 +48,7 @@ export default function ProviderLayout({
     // old 'parent' claim until the next sign-in — gating on it would bounce
     // a just-submitted provider off their own status tracker. The dashboard
     // page + /api/provider handle pre-live vs live themselves.
-  }, [session, isPending, router]);
+  }, [session, isPending, router, pathname]);
 
   if (isPending) {
     return (
@@ -54,7 +58,7 @@ export default function ProviderLayout({
     );
   }
 
-  if (!session) return null;
+  if (!session && pathname !== "/provider") return null;
 
   const handleSignOut = async () => {
     await signOut();

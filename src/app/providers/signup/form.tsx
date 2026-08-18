@@ -7,6 +7,8 @@ import {ArrowLeft,
   ArrowRight,
   Check,
   CheckCircle,
+  ChevronDown as ChevronDownIcon,
+  ChevronUp as ChevronUpIcon,
   Eye,
   MailCheck,
   PartyPopper,
@@ -168,6 +170,7 @@ export default function ProviderSignupForm() {
   const [guestError, setGuestError] = useState("");
   const [guestLoading, setGuestLoading] = useState(false);
   const [draftLoaded, setDraftLoaded] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null);
 
   // Prefill from AI-extraction URL params on a fresh (no-draft) start.
@@ -397,7 +400,46 @@ export default function ProviderSignupForm() {
             Drop your email and we&apos;ll send a magic link to start your
             listing. No password, no waiting.
           </p>
-          <form onSubmit={sendMagicLink} className="mt-8 space-y-4" noValidate>
+          <div className="mt-6 rounded-xl border border-ink/10 bg-white">
+            <button
+              type="button"
+              onClick={() => setPreviewOpen((v) => !v)}
+              className="flex w-full items-center justify-between px-5 py-3.5 text-left"
+            >
+              <span className="text-sm font-semibold text-ink">What you&apos;ll need</span>
+              {previewOpen ? (
+                <ChevronUpIcon className="h-4 w-4 text-ink-faint" />
+              ) : (
+                <ChevronDownIcon className="h-4 w-4 text-ink-faint" />
+              )}
+            </button>
+            {previewOpen && (
+              <div className="border-t border-ink/10 px-5 py-4">
+                <ol className="space-y-3 text-sm text-ink-soft">
+                  <li className="flex items-start gap-3">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ilali-50 text-[10px] font-bold text-ilali-700">1</span>
+                    <span>What is your activity? (name + category)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ilali-50 text-[10px] font-bold text-ilali-700">2</span>
+                    <span>Where and when? (suburb, schedule, pricing)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ilali-50 text-[10px] font-bold text-ilali-700">3</span>
+                    <span>A photo (optional) + a short description</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ilali-50 text-[10px] font-bold text-ilali-700">4</span>
+                    <span>Review and submit — done!</span>
+                  </li>
+                </ol>
+                <p className="mt-3 text-xs text-ink-faint">
+                  Takes about 5 minutes. Your draft autosaves — close any time and come back.
+                </p>
+              </div>
+            )}
+          </div>
+          <form onSubmit={sendMagicLink} className="mt-6 space-y-4" noValidate>
             {guestError && (
               <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                 {guestError}
@@ -823,6 +865,9 @@ export default function ProviderSignupForm() {
                   value={fields.imageUrl}
                   onChange={(e) => updateField("imageUrl", e.target.value)}
                 />
+                <p className="mt-1 text-xs text-ink-faint">
+                  Skip this if you don&apos;t have one — we&apos;ll use a default image.
+                </p>
                 {fieldErrors.imageUrl && (
                   <p className="mt-1 text-xs text-red-500">{fieldErrors.imageUrl}</p>
                 )}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AIOnboardingForm from "@/components/AIOnboardingForm";
@@ -177,6 +178,20 @@ export default function ForProvidersPage() {
               Fill in the form below and we&apos;ll be in touch.
             </p>
             <ProviderInquiryForm />
+            <div className="mt-8 rounded-xl border border-ink/10 bg-white p-6 text-center shadow-sm">
+              <h3 className="font-display text-lg font-bold text-ink">
+                Ready to get started?
+              </h3>
+              <p className="mt-1 text-sm text-ink-faint">
+                Our AI-powered wizard walks you through it in about 5 minutes.
+              </p>
+              <Link
+                href="/providers/signup"
+                className="mt-4 inline-flex min-h-[44px] items-center rounded-full bg-ilali-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-ilali-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ilali-600"
+              >
+                List your activity →
+              </Link>
+            </div>
           </div>
         </section>
       </main>

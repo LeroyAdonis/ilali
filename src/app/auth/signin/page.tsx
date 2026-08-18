@@ -189,8 +189,8 @@ function SignInForm() {
 
         <div className="rounded-2xl border border-ink/10 bg-white p-8 shadow-sm">
           <div className="mb-8 text-center">
-            <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">
-              Welcome back
+              <h1 className="font-display text-2xl font-bold text-ink sm:text-3xl">
+              Sign in
             </h1>
             <p className="mt-2 text-sm text-ink-faint">
               {mode === "magic"

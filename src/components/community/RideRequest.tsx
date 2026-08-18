@@ -548,8 +548,8 @@ export default function RideRequest({ providerId, events }: RideRequestProps) {
         )}
       </div>
 
-      {/* Auth prompt */}
-      {!signedIn && !sessionPending && (
+      {/* Auth prompt — render null while session is resolving to avoid hydration mismatch */}
+      {!sessionPending && !signedIn && (
         <Link
           href="/auth/signin"
           className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-ink/10 bg-white px-3 py-2 text-xs font-medium text-ink-soft transition-colors hover:bg-paper-warm"

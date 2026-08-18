@@ -90,6 +90,16 @@ export default async function ClubLayout({
           }
         />
 
+        {/* Back link — matches category page pattern */}
+        <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8">
+          <Link
+            href="/clubs"
+            className="inline-flex items-center gap-1 text-sm font-medium text-ink-faint hover:text-teal-deep transition-colors"
+          >
+            ← All Clubs
+          </Link>
+        </div>
+
         {/* Section tabs */}
         <div className="mt-6">
           <ClubTabs slug={slug} />

@@ -158,7 +158,7 @@ export default function ForVenuesPage() {
               Apply to Partner
             </h2>
             <p className="mt-2 text-center text-sm text-ink-faint">
-              Tell us about your venue and we'll be in touch.
+              Tell us about your venue and we&apos;ll be in touch.
             </p>
             <VenuePartnerForm />
           </div>

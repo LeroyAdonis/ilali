@@ -44,7 +44,7 @@ export default function VenuesPageClient({ venues }: VenuesPageClientProps) {
             Browse Venues
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-orange-100 sm:text-lg">
-            Discover the perfect spaces for children's activities — from
+            Discover the perfect spaces for children&apos;s activities — from
             studios and halls to outdoor fields and theatres.
           </p>
         </div>

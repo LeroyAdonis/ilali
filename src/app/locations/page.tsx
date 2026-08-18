@@ -44,7 +44,7 @@ export default function LocationsPage() {
               Browse by Location
             </h2>
             <p className="mt-2 text-sm text-ink-faint">
-              Choose a neighbourhood to see what's available near you
+              Choose a neighbourhood to see what&apos;s available near you
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

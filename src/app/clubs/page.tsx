@@ -114,6 +114,7 @@ export default async function ClubsPage() {
     providersWithMembers.map((p) => getClubEvents(p.id)),
   );
 
+  // eslint-disable-next-line react-hooks/purity -- server component: per-request time
   const now = Date.now();
   const clubs: ClubCard[] = providersWithMembers.map((provider, i) => ({
     provider,
@@ -141,10 +142,12 @@ export default async function ClubsPage() {
 
   // ── 7. Global Ubuntu Feed ──
   const contributions = await getCommunityContributions({ limit: 10 });
+  // eslint-disable-next-line react-hooks/purity -- server component: per-request time
   const contributionNow = Date.now();
   const hasContributions = contributions.length > 0;
 
   // ── Activity feed data ──
+  // eslint-disable-next-line react-hooks/purity -- server component: per-request time
   const nowMs = Date.now();
   const weekFromNow = nowMs + 7 * 86400000;
 

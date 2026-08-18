@@ -483,7 +483,25 @@ export default function ProfileWizard({
     progressColor = "bg-gold";
   }
 
-  // If entirely complete
+  const toggleStep = (stepId: string) => {
+    setExpandedStep((prev) => (prev === stepId ? null : stepId));
+  };
+
+  const handleStepSave = useCallback(
+    async (fields: Record<string, unknown>) => {
+      setSaving(true);
+      try {
+        await onSave(fields);
+        // Collapse the step after successful save
+        setExpandedStep(null);
+      } finally {
+        setSaving(false);
+      }
+    },
+    [onSave]
+  );
+
+  // If entirely complete — after all hooks so hook order is stable
   if (isComplete || completedCount === totalSteps) {
     return (
       <div className="rounded-xl border border-teal/30 bg-teal/5 p-6">
@@ -502,24 +520,6 @@ export default function ProfileWizard({
       </div>
     );
   }
-
-  const toggleStep = (stepId: string) => {
-    setExpandedStep((prev) => (prev === stepId ? null : stepId));
-  };
-
-  const handleStepSave = useCallback(
-    async (fields: Record<string, unknown>) => {
-      setSaving(true);
-      try {
-        await onSave(fields);
-        // Collapse the step after successful save
-        setExpandedStep(null);
-      } finally {
-        setSaving(false);
-      }
-    },
-    [onSave]
-  );
 
   const renderEditor = (step: StepDef) => {
     switch (step.id) {

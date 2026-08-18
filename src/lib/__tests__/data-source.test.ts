@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from "vitest";
 
 describe("Data Source — USE_MOCK toggle", () => {
-  let dataSource: any;
+  let dataSource: typeof import("@/lib/data-source");
 
   beforeAll(async () => {
     // Force USE_MOCK=true for testing
@@ -65,14 +65,14 @@ describe("Data Source — USE_MOCK toggle", () => {
   it("searchProviders finds by name", async () => {
     const results = await dataSource.searchProviders("Soccer");
     expect(results.length).toBeGreaterThan(0);
-    const names = results.map((r: any) => r.name.toLowerCase());
+    const names = results.map((r) => r.name.toLowerCase());
     expect(names.some((n: string) => n.includes("soccer"))).toBe(true);
   });
 
   it("searchProviders finds by location", async () => {
     const results = await dataSource.searchProviders("Sea Point");
     expect(results.length).toBeGreaterThan(0);
-    const locs = results.map((r: any) => r.location);
+    const locs = results.map((r) => r.location);
     expect(locs.some((l: string) => l.includes("Sea Point"))).toBe(true);
   });
 
@@ -96,7 +96,7 @@ describe("Data Source — USE_MOCK toggle", () => {
       const similar = await dataSource.getSimilarProviders(soccer.id, 3);
       expect(similar.length).toBeGreaterThanOrEqual(0);
       // Results should not include the source provider
-      const ids = similar.map((s: any) => s.id);
+      const ids = similar.map((s) => s.id);
       expect(ids).not.toContain(soccer.id);
     }
   });

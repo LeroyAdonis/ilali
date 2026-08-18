@@ -32,6 +32,7 @@ export default function ReviewSection({ providerId, venueId }: ReviewSectionProp
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: fetch-on-mount sets loading synchronously, data arrives async
     fetchReviews();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetParam]);

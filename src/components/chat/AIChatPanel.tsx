@@ -93,6 +93,7 @@ export default function AIChatPanel({
   }, []);
 
   // ── Send message ──
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- compiler cannot preserve this useCallback due to abortRef mutation inside; keep manual memo
   const sendMessage = useCallback(async () => {
     const trimmed = input.trim();
     if (!trimmed || loading) return;

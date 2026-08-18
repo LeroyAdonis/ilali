@@ -83,6 +83,7 @@ export default function ProviderDashboardPage() {
 
   useEffect(() => {
     if (!sessionLoading && session) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: fetch-on-mount sets loading synchronously, data arrives async
       fetchData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

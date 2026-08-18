@@ -73,8 +73,9 @@ async function main() {
   console.log("\n📋 getVenueBySlug()");
   const venue = await getVenueBySlug("dance-studio");
   check("Finds venue by slug", !!venue, venue?.name);
-  check("Has amenities array", Array.isArray((venue as any)?.amenities), String((venue as any)?.amenities?.length));
-  check("Has 4 amenities", (venue as any)?.amenities?.length === 4, JSON.stringify((venue as any)?.amenities));
+  const venueAmenities = (venue as unknown as { amenities?: unknown[] } | null)?.amenities;
+  check("Has amenities array", Array.isArray(venueAmenities), String(venueAmenities?.length));
+  check("Has 4 amenities", venueAmenities?.length === 4, JSON.stringify(venueAmenities));
 
   const venueNotFound = await getVenueBySlug("no-such-venue");
   check("Returns null for missing", venueNotFound === null);

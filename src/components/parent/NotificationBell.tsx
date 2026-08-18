@@ -110,6 +110,7 @@ export default function NotificationBell({
 
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: fetch-on-open sets loading synchronously, data arrives async
       fetchRewards();
     }
   }, [open, fetchRewards]);

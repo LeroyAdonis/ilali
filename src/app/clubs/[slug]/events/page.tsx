@@ -22,6 +22,7 @@ export default async function ClubEventsPage({
     getClubStats(dbProvider.id),
   ]);
 
+  // eslint-disable-next-line react-hooks/purity -- server component: per-request time
   const now = Date.now();
 
   // Upcoming first, then past (data-source already sorts this way) — split

@@ -97,6 +97,7 @@ export default function ClubChat({ clubSlug, clubName }: ClubChatProps) {
   }, [clubSlug]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: fetch-on-mount sets loading synchronously, data arrives async
     loadMessages();
   }, [loadMessages]);
 

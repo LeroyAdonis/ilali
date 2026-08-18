@@ -102,6 +102,7 @@ export default function RideRequest({ providerId, events }: RideRequestProps) {
   const upcomingEvents = useMemo(
     () =>
       events
+        // eslint-disable-next-line react-hooks/purity -- rolling one-hour window; recomputed when events change
         .filter((e) => new Date(e.startTime).getTime() >= Date.now() - 3600000)
         .sort(
           (a, b) =>
@@ -134,6 +135,7 @@ export default function RideRequest({ providerId, events }: RideRequestProps) {
   }, [providerId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: fetch-on-mount sets loading synchronously, data arrives async
     loadRides();
   }, [loadRides]);
 
@@ -141,6 +143,7 @@ export default function RideRequest({ providerId, events }: RideRequestProps) {
   useEffect(() => {
     if (!formOpen || !signedIn || children.length > 0 || childrenLoading) return;
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: fetch-on-mount sets loading synchronously, data arrives async
     setChildrenLoading(true);
     fetch("/api/rides/children")
       .then(async (res) => {
@@ -165,6 +168,7 @@ export default function RideRequest({ providerId, events }: RideRequestProps) {
   // Default event selection when the form opens
   useEffect(() => {
     if (formOpen && !formEventId && upcomingEvents.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: default selection derived once when the form opens
       setFormEventId(upcomingEvents[0].id);
     }
   }, [formOpen, formEventId, upcomingEvents]);

@@ -71,6 +71,7 @@ export default async function ClubHomePage({
   };
 
   // Upcoming events only (data-source returns upcoming-first, already sorted)
+  // eslint-disable-next-line react-hooks/purity -- server component: per-request time
   const now = Date.now();
   const upcomingEvents = events
     .filter((e) => e.startTime.getTime() >= now)

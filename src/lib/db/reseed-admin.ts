@@ -6,10 +6,11 @@ import "dotenv/config";
 import { neon } from "@neondatabase/serverless";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import type { PgTable } from "drizzle-orm/pg-core";
 import { db } from "./index";
 import * as allSchemas from "./schema";
 
-const schemaMap: Record<string, any> = {
+const schemaMap: Record<string, PgTable> = {
   user: allSchemas.users,
   session: allSchemas.authSessions,
   account: allSchemas.authAccounts,

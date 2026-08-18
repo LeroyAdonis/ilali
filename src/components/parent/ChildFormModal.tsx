@@ -42,6 +42,7 @@ export default function ChildFormModal({
   useEffect(() => {
     if (!isOpen || mode !== "edit" || !childId) {
       if (mode === "add") {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: reset edit prefill when switching to add mode
         setInitialData(undefined);
       }
       return;
@@ -49,6 +50,7 @@ export default function ChildFormModal({
 
     let cancelled = false;
     async function fetchChild() {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: fetch-on-open sets loading synchronously, data arrives async
       setFetching(true);
       setError("");
       try {

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
 import { Plus } from "lucide-react";
 
 interface AdminPageHeaderProps {
@@ -8,14 +7,8 @@ interface AdminPageHeaderProps {
   action?: {
     label: string;
     href: string;
-    icon?: string; // icon name as string, we resolve to Lucide
+    icon?: string; // icon name as string; only "Plus" supported currently
   };
-}
-
-function resolveIcon(name: string): LucideIcon {
-  // Only supporting Plus for now — extend as needed
-  if (name === "Plus") return Plus;
-  return Plus;
 }
 
 export function AdminPageHeader({
@@ -23,8 +16,6 @@ export function AdminPageHeader({
   description,
   action,
 }: AdminPageHeaderProps) {
-  const ActionIcon = action?.icon ? resolveIcon(action.icon) : null;
-
   return (
     <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div>
@@ -38,7 +29,7 @@ export function AdminPageHeader({
           href={action.href}
           className="inline-flex h-11 items-center gap-2 self-start rounded-lg bg-ilali-600 px-5 text-sm font-medium text-white hover:bg-ilali-700 transition-colors"
         >
-          {ActionIcon && <ActionIcon className="h-4 w-4" />}
+          {action.icon && <Plus className="h-4 w-4" />}
           {action.label}
         </Link>
       )}

@@ -57,6 +57,7 @@ export default function ProviderReviewsPage() {
 
   useEffect(() => {
     if (!isPending && session) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: fetch-on-mount sets loading synchronously, data arrives async
       fetchReviews();
     }
   }, [session, isPending, fetchReviews]);

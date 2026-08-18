@@ -42,7 +42,7 @@ export async function sendWhatsApp(
     // WhatsApp Business API path — dormant until SIM + Meta verification.
     // When configured, this becomes an API call (e.g. via @whiskeysockets/baileys
     // or the official Cloud API) with the approved template.
-    // eslint-disable-next-line no-console
+     
     console.warn("[send-whatsapp] WHATSAPP_AUTO_SEND=true but API not configured");
     return { mode: "api", status: "not-configured" };
   }

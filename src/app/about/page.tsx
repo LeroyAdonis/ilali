@@ -97,7 +97,7 @@ export default function AboutPage() {
             </h2>
             <p className="mt-4 text-base leading-relaxed text-ink-soft">
               Founded in Cape Town, ILALI was born from a simple observation:
-              parents across South Africa struggled to find and trust kids'
+              parents across South Africa struggled to find and trust kids&apos;
               activity providers. Reviews were scattered, backgrounds were
               unchecked, and booking was a manual mess.
             </p>
@@ -162,7 +162,7 @@ export default function AboutPage() {
               Our Partners
             </h2>
             <p className="mt-2 text-sm text-ink-faint">
-              Working together to enrich kids' lives
+              Working together to enrich kids&apos; lives
             </p>
           </div>
           <div className="grid gap-8 md:grid-cols-2">

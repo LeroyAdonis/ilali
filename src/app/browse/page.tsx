@@ -209,7 +209,7 @@ function ResultsSection({
                   🔍
                 </span>
                 <h3 className="mt-4 font-display text-lg font-semibold text-ink">
-                  Nothing matched "{q || nl}"
+                  Nothing matched &quot;{q || nl}&quot;
                 </h3>
                 {searchSuggestions ? (
                   <>

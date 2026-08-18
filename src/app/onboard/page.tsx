@@ -88,8 +88,8 @@ export default function OnboardPage() {
               Thanks, {name || "provider"}!
             </h1>
             <p className="mt-4 text-lg leading-relaxed text-ink-soft">
-              We'll review your activity and add you to ILALI within 48 hours.
-              Keep an eye on your inbox — we'll send a confirmation to{" "}
+              We&apos;ll review your activity and add you to ILALI within 48 hours.
+              Keep an eye on your inbox — we&apos;ll send a confirmation to{" "}
               <span className="font-semibold text-ink">{email}</span>.
             </p>
             <div className="mt-10">

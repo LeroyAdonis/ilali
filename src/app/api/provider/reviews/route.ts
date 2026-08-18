@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
 
     // Fetch all replies for these reviews
     const reviewIds = reviewRows.map((r) => r.id);
-    let replyMap = new Map<string, { id: string; content: string; updatedAt: string }>();
+    const replyMap = new Map<string, { id: string; content: string; updatedAt: string }>();
 
     if (reviewIds.length > 0) {
       const replyRows = await db

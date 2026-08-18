@@ -29,6 +29,7 @@ export default function WelcomeCard({
 
   useEffect(() => {
     const stored = localStorage.getItem(storageKey);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: hydrate dismiss state from localStorage after mount
     setDismissed(stored === "true");
   }, [storageKey]);
 

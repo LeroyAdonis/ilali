@@ -43,6 +43,7 @@ export default function JoinClubButton({
   }, [clubSlug]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: fetch-on-mount sets loading synchronously, data arrives async
     fetchMembership();
   }, [fetchMembership]);
 

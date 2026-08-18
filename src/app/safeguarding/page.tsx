@@ -194,7 +194,7 @@ export default function SafeguardingPage() {
               Reporting & Complaints
             </h2>
             <p className="mt-4 text-base leading-relaxed text-ink-soft">
-              If you have a concern about a provider, an activity, or a child's
+              If you have a concern about a provider, an activity, or a child&apos;s
               safety, please report it immediately. All reports are treated with
               the utmost seriousness and confidentiality.
             </p>

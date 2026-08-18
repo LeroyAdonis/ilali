@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
     const uniqueChildIds = [...new Set(allChildIds)];
 
     // Fetch child names
-    let childNameMap = new Map<string, string>();
+    const childNameMap = new Map<string, string>();
     if (uniqueChildIds.length > 0) {
       const childRows = await db
         .select({

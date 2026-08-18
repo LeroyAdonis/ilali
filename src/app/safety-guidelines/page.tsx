@@ -72,7 +72,7 @@ export default function SafetyGuidelinesPage() {
               specialised activities.
             </p>
             <p className="mt-4 text-base leading-relaxed text-ink-soft">
-              Before dropping off your child, please confirm the provider's
+              Before dropping off your child, please confirm the provider&apos;s
               supervision arrangements and ensure your child is comfortable
               with the environment.
             </p>

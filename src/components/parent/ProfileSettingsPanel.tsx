@@ -43,6 +43,7 @@ export default function ProfileSettingsPanel() {
   // Pre-fill from session when available
   useEffect(() => {
     if (session?.user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: prefill form fields from session once it loads
       setName(session.user.name ?? "");
       setSuburb((session.user as Record<string, unknown>).suburb as string ?? "");
     }
@@ -72,6 +73,7 @@ export default function ProfileSettingsPanel() {
 
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: fetch-on-open sets loading synchronously, data arrives async
       fetchPrefs();
     }
   }, [open, fetchPrefs]);

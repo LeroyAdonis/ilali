@@ -489,7 +489,7 @@ export default async function HomePage() {
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
               {/* ───── 3-Column Widget Row ───── */}
               <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-                <KidsCard children={signedInData.children} />
+                <KidsCard>{signedInData.children}</KidsCard>
                 <ClubCardsRow memberships={signedInData.memberships} />
                 <PointsWidget />
               </div>
@@ -553,13 +553,6 @@ export default async function HomePage() {
 
                     {/* Suggested activities */}
                     <SuggestedActivities
-                      children={signedInData.children.map((c) => ({
-                        id: c.id,
-                        name: c.name,
-                        age: c.age,
-                        interests: c.interests ?? [],
-                        suburb: c.suburb,
-                      }))}
                       providers={dbProviders.map((p) => ({
                         id: p.id,
                         name: p.name,
@@ -569,7 +562,15 @@ export default async function HomePage() {
                         location: p.location,
                       }))}
                       scheduledProviderIds={signedInData.scheduledProviderIds}
-                    />
+                    >
+                      {signedInData.children.map((c) => ({
+                        id: c.id,
+                        name: c.name,
+                        age: c.age,
+                        interests: c.interests ?? [],
+                        suburb: c.suburb,
+                      }))}
+                    </SuggestedActivities>
                   </div>
                 )}
               </div>

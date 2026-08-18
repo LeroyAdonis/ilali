@@ -112,8 +112,10 @@ export default function ProviderDashboardPage() {
     [fetchData]
   );
 
-  // Loading state
-  if (sessionLoading || loading) {
+  // Loading state — only spinner while the session resolves OR while a
+  // signed-in user's data loads. Signed-out users skip data loading entirely
+  // and get the provider-context view (FR-5).
+  if (sessionLoading || (loading && session)) {
     return (
       <div className="flex items-center justify-center py-20">
         <IlaliSpinner size="md" />

@@ -10,6 +10,30 @@ import { CATEGORY_IMAGES, HERO_IMAGES } from "@/lib/images";
 import { getProviderBySlug, getCategories } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
 
+/**
+ * Accent treatment matching the rest of the site's InteriorHero titles
+ * (e.g. /categories "Every activity, sorted"): black base with brand
+ * accents — first word teal, last word gold-deep, middle words ink.
+ */
+function accentTitle(name: string) {
+  const words = name.split(" ");
+  if (words.length === 1) return <span className="text-teal">{name}</span>;
+  return (
+    <>
+      {words.map((word, i) => {
+        const accent =
+          i === 0 ? "text-teal" : i === words.length - 1 ? "text-gold-deep" : undefined;
+        return (
+          <span key={i} className={accent}>
+            {word}
+            {i < words.length - 1 ? " " : ""}
+          </span>
+        );
+      })}
+    </>
+  );
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -75,7 +99,7 @@ export default async function ClubLayout({
             title-in-body-container match every other page) */}
         <InteriorHero
           eyebrow={provider.category}
-          title={<span className="text-teal">{provider.name}</span>}
+          title={accentTitle(provider.name)}
           subtitle={`Ages ${provider.ageRange.split(" years")[0]} · ${provider.price}`}
           image={
             provider.image

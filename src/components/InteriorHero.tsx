@@ -20,7 +20,7 @@ export default function InteriorHero({
   badge,
 }: InteriorHeroProps) {
   return (
-    <header className="relative overflow-hidden min-h-[32vh] sm:h-[42vh] flex items-center border-b border-ink/10">
+    <header className="relative overflow-hidden min-h-[32vh] sm:h-[400px] flex items-center border-b border-ink/10">
       {/* Background image — art-directed per breakpoint */}
       <div className="absolute inset-0 z-0">
         <ResponsiveImage
@@ -49,7 +49,7 @@ export default function InteriorHero({
         </span>
 
         {/* Title */}
-        <h1 className="font-display font-extrabold leading-[1.05] tracking-[-0.02em] text-ink max-w-[14ch] text-[clamp(1.6rem,6vw,3.5rem)] sm:text-[clamp(2.2rem,5vw,3.5rem)] sm:line-clamp-2">
+        <h1 className="font-display font-extrabold leading-[1.05] tracking-[-0.02em] text-ink max-w-[14ch] text-[clamp(1.6rem,6vw,3.5rem)] sm:text-[clamp(2.2rem,5vw,3.5rem)] sm:line-clamp-3">
           {title}
         </h1>
 
@@ -57,7 +57,7 @@ export default function InteriorHero({
         {badge ? <div className="mt-4">{badge}</div> : null}
 
         {/* Subtitle */}
-        <p className="mt-3 max-w-[48ch] text-base leading-relaxed text-ink-soft sm:line-clamp-2">
+        <p className="mt-3 max-w-[48ch] text-base leading-relaxed text-ink-soft sm:line-clamp-3">
           {subtitle}
         </p>
       </div>

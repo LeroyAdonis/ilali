@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import InteriorHero from "@/components/InteriorHero";
 import VerificationBadge from "@/components/verification/VerificationBadge";
 import ClubTabs from "@/components/community/ClubTabs";
-import { CATEGORY_IMAGES, HERO_IMAGES } from "@/lib/images";
+import { CATEGORY_IMAGES, CLUB_IMAGES, HERO_IMAGES } from "@/lib/images";
 import { getProviderBySlug, getCategories } from "@/lib/data-source";
 import { mapProvider } from "@/lib/db/mappers";
 
@@ -78,9 +78,10 @@ export default async function ClubLayout({
           title={provider.name}
           subtitle={`Ages ${provider.ageRange.split(" years")[0]} · ${provider.price}`}
           image={
-            provider.image
+            CLUB_IMAGES[provider.slug] ??
+            (provider.image
               ? { src: provider.image, alt: provider.name }
-              : (CATEGORY_IMAGES[provider.categorySlug] ?? HERO_IMAGES.browse)
+              : (CATEGORY_IMAGES[provider.categorySlug] ?? HERO_IMAGES.browse))
           }
           badge={
             <Suspense fallback={null}>

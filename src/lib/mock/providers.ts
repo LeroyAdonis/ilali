@@ -36,7 +36,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 47,
     priceValue: 15000, // R150 per session
     priceLabel: "per session",
-    imageUrl: "/images/providers/soccer-stars-academy.jpg",
+    imageUrl: "/images/hero/club-soccer-stars-academy-desktop.webp",
     phone: "+2771123456",
     tags: ["outdoor", "team-sport", "high-energy", "coordination"],
     featured: true,
@@ -66,7 +66,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 63,
     priceValue: 18000, // R180 per session
     priceLabel: "per session",
-    imageUrl: "/images/providers/aquakids-swimming.jpg",
+    imageUrl: "/images/hero/club-aquakids-swimming-desktop.webp",
     phone: "+2772123457",
     tags: ["indoor", "water-sport", "safety", "individual"],
     featured: true,
@@ -250,7 +250,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 41,
     priceValue: 18000, // R180 per session
     priceLabel: "per session",
-    imageUrl: "/images/providers/sciencelab-explorers.jpg",
+    imageUrl: "/images/hero/club-sciencelab-explorers-desktop.webp",
     phone: "+2778123463",
     tags: ["indoor", "STEM", "hands-on", "experiments", "critical-thinking"],
     featured: false,
@@ -312,7 +312,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 29,
     priceValue: 25000, // R250 per session
     priceLabel: "per session",
-    imageUrl: "/images/providers/piano-pathways.jpg",
+    imageUrl: "/images/hero/club-piano-pathways-desktop.webp",
     phone: "+2780123465",
     tags: ["indoor", "individual", "creative", "technique", "discipline"],
     featured: false,

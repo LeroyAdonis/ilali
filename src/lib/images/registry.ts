@@ -125,6 +125,44 @@ export const HERO_IMAGES: Record<string, ImageEntry> = {
 };
 
 /**
+ * Club (provider) hero images, keyed by provider slug — used on
+ * /clubs/[slug] detail pages. Gemini-generated 2026-08-18 (2752x1536),
+ * art-directed WebP crops: desktop 2:1, mobile 4:3.
+ */
+export const CLUB_IMAGES: Record<string, ImageEntry> = {
+  "soccer-stars-academy": {
+    src: "/images/hero/club-soccer-stars-academy-desktop.webp",
+    mobileSrc: "/images/hero/club-soccer-stars-academy-mobile.webp",
+    alt: "Diverse South African kids playing soccer on a sunny green pitch",
+    local: true,
+  },
+  "piano-pathways": {
+    src: "/images/hero/club-piano-pathways-desktop.webp",
+    mobileSrc: "/images/hero/club-piano-pathways-mobile.webp",
+    alt: "A girl playing piano in a bright music studio with her teacher",
+    local: true,
+  },
+  "codecubs-programming-club": {
+    src: "/images/hero/club-codecubs-programming-club-desktop.webp",
+    mobileSrc: "/images/hero/club-codecubs-programming-club-mobile.webp",
+    alt: "Two kids coding at laptops with a mentor in a bright coding club",
+    local: true,
+  },
+  "aquakids-swimming": {
+    src: "/images/hero/club-aquakids-swimming-desktop.webp",
+    mobileSrc: "/images/hero/club-aquakids-swimming-mobile.webp",
+    alt: "A girl in a swimming lesson floating with a floatie in a turquoise pool",
+    local: true,
+  },
+  "sciencelab-explorers": {
+    src: "/images/hero/club-sciencelab-explorers-desktop.webp",
+    mobileSrc: "/images/hero/club-sciencelab-explorers-mobile.webp",
+    alt: "Two girls doing a colorful science experiment with an instructor",
+    local: true,
+  },
+};
+
+/**
  * Category images, keyed by category slug (matches `categories` table slugs
  * and the old `/images/providers/{slug}.jpg` fallback keys).
  * Gemini-generated 2026-08-05 (2752x1536) — art-directed WebP crops:

@@ -7,7 +7,7 @@ import { HERO_IMAGES } from "@/lib/images";
 export const metadata: Metadata = {
   title: "About | ILALI",
   description:
-    "ILALI connects families with trusted kids' activities in Cape Town. Learn about our mission, story, and values.",
+    "ILALI connects Cape Town families with trusted, background-checked kids' activities. Learn about our story, mission, and values.",
 };
 
 const values = [
@@ -32,7 +32,7 @@ const values = [
   {
     title: "Trust",
     description:
-      "Real reviews, secure payments, and clear communication build trust between parents and providers.",
+      "Real reviews, transparent vetting badges, and clear communication build trust between parents and providers.",
     icon: "⭐",
   },
 ];
@@ -103,13 +103,13 @@ export default function AboutPage() {
             </p>
             <p className="mt-4 text-base leading-relaxed text-ink-soft">
               We set out to change that. Starting with local providers in Cape
-              Town, we built a platform where child safety comes first, where
+              Town, we built a place where child safety comes first, where
               every provider is vetted, and where families can discover amazing
               activities with confidence.
             </p>
             <p className="mt-4 text-base leading-relaxed text-ink-soft">
-              Today, ILALI is growing into a trusted community: connecting
-              hundreds of families with the best activities their neighbourhoods
+              Today, ILALI is growing into a trusted community — connecting
+              families with the best activities their neighbourhoods
               have to offer.
             </p>
           </div>

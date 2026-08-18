@@ -15,7 +15,7 @@ import { Users, Gift, Share2 } from "lucide-react";
 export const metadata: Metadata = {
   title: "Invite Parents | ILALI",
   description:
-    "Invite other parents to ILALI and earn 200 Ubuntu Rewards points when they sign up and book their first activity.",
+    "Invite other parents to ILALI and earn 200 Ubuntu Rewards points when they sign up and save their first activity.",
 };
 
 export const dynamic = "force-dynamic";
@@ -37,7 +37,7 @@ export default async function InvitePage() {
                 <span className="text-teal">earn</span> together
               </>
             }
-            subtitle="Invite other parents to join ILALI. When they sign up and book their first activity, you both earn Ubuntu Rewards points."
+            subtitle="Invite other parents to join ILALI. When they sign up and save their first activity, you both earn Ubuntu Rewards points."
             image={HERO_IMAGES['invite']}
           />
 
@@ -49,7 +49,7 @@ export default async function InvitePage() {
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">
                 Sign in to get your personal referral link. Share it with other
-                parents — when they join and book, you both earn{" "}
+                parents — when they join and save an activity, you both earn{" "}
                 <span className="font-semibold text-amber-600">
                   {REWARD_ACTIONS.referral} points
                 </span>
@@ -86,7 +86,7 @@ export default async function InvitePage() {
   const referralCount = ledger.filter((entry) => entry.action === "referral").length;
 
   const shareText = encodeURIComponent(
-    "Join me on ILALI — the trusted marketplace for kids' activities in Cape Town. Sign up with my link and we both earn rewards!"
+    "Join me on ILALI — the trusted way to find kids' activities in Cape Town. Sign up with my link and we both earn rewards!"
   );
   const whatsAppUrl = `https://wa.me/?text=${shareText}%20${encodeURIComponent(referralLink)}`;
   const emailUrl = `mailto:?subject=${encodeURIComponent("Join ILALI — kids' activities in Cape Town")}&body=${shareText}%0A%0A${referralLink}`;
@@ -104,7 +104,7 @@ export default async function InvitePage() {
               <span className="text-teal">earn</span> together
             </>
           }
-          subtitle="Invite other parents to join ILALI. When they sign up and book their first activity, you both earn Ubuntu Rewards points."
+          subtitle="Invite other parents to join ILALI. When they sign up and save their first activity, you both earn Ubuntu Rewards points."
           image={HERO_IMAGES['invite']}
         />
 
@@ -214,7 +214,7 @@ export default async function InvitePage() {
                       You both earn
                     </p>
                     <p className="text-xs text-ink-faint">
-                      When they book their first activity, you both earn{" "}
+                      When they save their first activity, you both earn{" "}
                       <span className="font-semibold text-amber-600">
                         {REWARD_ACTIONS.referral} Ubuntu Rewards points
                       </span>{" "}

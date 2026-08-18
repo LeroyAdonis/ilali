@@ -7,53 +7,53 @@ import { HERO_IMAGES } from "@/lib/images";
 export const metadata: Metadata = {
   title: "How It Works | ILALI",
   description:
-    "Learn how ILALI works for parents and providers. Browse, book, and attend kids' activities with confidence.",
+    "Learn how ILALI works for parents and providers. Find, compare, and get in touch with vetted kids' activities in Cape Town.",
 };
 
 const parentSteps = [
   {
     number: 1,
-    title: "Browse",
+    title: "Search",
     description:
-      "Explore vetted activities near you — from art classes to sports. Filter by age, location, category, and price to find the right fit.",
+      "Find vetted activities near you — by age, suburb, category, or price. Tell our AI what you need and get matched in seconds.",
     icon: "🔍",
   },
   {
     number: 2,
-    title: "Book & Pay",
+    title: "Compare",
     description:
-      "Once you find an activity you love, book directly through the platform. Pay online — no cash, no hassle.",
-    icon: "📅",
+      "Read reviews from real parents, check vetting badges, and compare options side by side.",
+    icon: "📋",
   },
   {
     number: 3,
-    title: "Attend",
+    title: "Get in touch",
     description:
-      "Show up and enjoy! Your kid gets to learn, play, and grow in a safe, vetted space. Leave a review afterwards to help other families.",
-    icon: "🎉",
+      "Contact the provider directly to arrange a trial or sign up. No middleman, no booking fees.",
+    icon: "✅",
   },
 ];
 
 const providerSteps = [
   {
     number: 1,
-    title: "List",
+    title: "List your activity",
     description:
-      "Create your profile and list your activities in minutes. Add photos, schedules, pricing, and age groups.",
+      "Describe your activity and our AI builds your listing for you. Add photos, schedules, pricing, and age groups — no website needed.",
     icon: "📋",
   },
   {
     number: 2,
-    title: "Manage",
+    title: "Get found",
     description:
-      "Use your dashboard to manage bookings, communicate with parents, and update availability in real time.",
-    icon: "⚙️",
+      "Parents search by age, suburb, and category. Your listing appears when they look for exactly what you offer.",
+    icon: "🔍",
   },
   {
     number: 3,
-    title: "Grow",
+    title: "Grow your community",
     description:
-      "Reach more families, get reviews, and grow your business. ILALI handles payments so you can focus on teaching.",
+      "Earn trust badges through reviews and vouches. Reach more families as your reputation grows.",
     icon: "📈",
   },
 ];
@@ -104,7 +104,7 @@ export default function HowItWorksPage() {
         <InteriorHero
           eyebrow="How it works"
           title={<>Simple for <span className="text-teal">parents</span>, powerful for <span className="text-purple">providers</span></>}
-          subtitle="Whether you're a parent looking for activities or a provider wanting to reach more families, here's how it works."
+          subtitle="Whether you're a parent looking for activities or a provider wanting to reach more families, here's how ILALI works."
           image={HERO_IMAGES['how-it-works']}
         />
 

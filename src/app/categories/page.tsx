@@ -10,7 +10,7 @@ import { categories } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Categories | ILALI",
   description:
-    "Browse children's activities by category — Arts, Sports, Music, Education, Holiday Programs, and more in Cape Town.",
+    "Browse children's activities by category in Cape Town — arts, sports, music, education, holiday programs, and more.",
 };
 
 const ACCENT_ROTATION = ["teal", "gold", "purple", "orange"] as const;
@@ -57,12 +57,10 @@ export default function CategoriesPage() {
               ★ CAN&apos;T DECIDE?
             </span>
             <h2 className="font-display mt-2 text-[clamp(1.4rem,2.5vw,1.8rem)] font-bold text-ink">
-              Let our AI find the{" "}
-              <span className="text-teal">perfect</span> match
+              Not sure where to start?
             </h2>
             <p className="mx-auto mt-2 max-w-[44ch] text-sm text-ink-faint">
-              Tell us what your child loves, and ILALI&apos;s AI concierge will
-              match them with vetted activities.
+              Tell us what your child loves, and ILALI will match them with vetted activities in your suburb.
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               <Link

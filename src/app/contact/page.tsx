@@ -8,7 +8,7 @@ import ContactForm from "./form";
 export const metadata: Metadata = {
   title: "Contact | ILALI",
   description:
-    "Get in touch with the ILALI team — whether you're a parent or a provider, we want to hear from you.",
+    "Got a question, a suggestion, or need help finding an activity? We'd love to hear from you.",
 };
 
 export default function ContactPage() {
@@ -19,7 +19,7 @@ export default function ContactPage() {
         <InteriorHero
           eyebrow="Contact"
           title={<>Get in <span className="text-teal">touch</span></>}
-          subtitle="Got a question, a suggestion, or need help? We're listening."
+          subtitle="Got a question, a suggestion, or need help? We're a small team and we read every message."
           image={HERO_IMAGES['contact']}
         />
 

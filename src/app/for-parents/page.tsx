@@ -8,7 +8,7 @@ import { HERO_IMAGES } from "@/lib/images";
 export const metadata: Metadata = {
   title: "For Parents | ILALI",
   description:
-    "A parent's guide to finding safe, vetted activities for your kids in Cape Town. How vetting works, what to expect, and how to get started.",
+    "A parent's guide to finding safe, vetted activities for your kids in Cape Town. How vetting works, what to look for, and how to get started.",
 };
 
 export default function ForParentsPage() {
@@ -19,7 +19,7 @@ export default function ForParentsPage() {
         <InteriorHero
           eyebrow="For Parents"
           title={<>A parent&apos;s guide to <span className="text-teal">ILALI</span></>}
-          subtitle="Everything you need to know about finding safe, fun activities for your kids — how vetting works, what to expect, and what happens after you book."
+          subtitle="Everything you need to know about finding safe, fun activities for your kids — how vetting works, what to look for, and how to get started."
           image={HERO_IMAGES['home']}
         />
 
@@ -126,7 +126,7 @@ export default function ForParentsPage() {
               Earn while your kids grow
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-              ILALI&apos;s Ubuntu Rewards programme means every booking does more than just keep your kid busy — it earns points, unlocks
+              ILALI&apos;s Ubuntu Rewards programme means every referral does more than just help a friend — it earns points, unlocks
               discounts, and supports kids who wouldn&apos;t otherwise have access.
             </p>
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -169,8 +169,8 @@ export default function ForParentsPage() {
                 { step: "2", text: "Set your location to see activities near you" },
                 { step: "3", text: "Browse by category, age, or use the search bar" },
                 { step: "4", text: "Read provider profiles, reviews, and check their vetting badge" },
-                { step: "5", text: "Book a session or trial — pay securely through the platform" },
-                { step: "6", text: "Leave a review afterwards to help other moms and dads" },
+                { step: "5", text: "Contact the provider directly to arrange a trial or sign up" },
+                { step: "6", text: "Leave a review afterwards to help other parents" },
               ].map((item) => (
                 <li key={item.step} className="flex items-start gap-3">
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ilali-100 text-xs font-bold text-ilali-700">
@@ -190,13 +190,13 @@ export default function ForParentsPage() {
               Ready to find the right activity for your kid?
             </h2>
             <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-ink-soft">
-              Browse activities near you and book with confidence.
+              Browse vetted activities near you. Free to search, free to save.
             </p>
             <Link
               href="/home"
               className="mt-6 inline-flex items-center rounded-full bg-white px-8 py-3 text-sm font-semibold text-ilali-700 shadow-sm hover:bg-ilali-50 transition-colors"
             >
-              Go to ILALI
+              Browse Activities
             </Link>
           </div>
         </section>

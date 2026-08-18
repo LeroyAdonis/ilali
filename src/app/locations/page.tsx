@@ -7,7 +7,7 @@ import { HERO_IMAGES } from "@/lib/images";
 export const metadata: Metadata = {
   title: "Locations | ILALI",
   description:
-    "Browse children's activities by location in Cape Town. Find trusted providers in your neighbourhood.",
+    "Browse children's activities by suburb in Cape Town. Find trusted, background-checked providers in your neighbourhood.",
 };
 
 const locations = [
@@ -33,7 +33,7 @@ export default function LocationsPage() {
         <InteriorHero
           eyebrow="Discover"
           title={<>Find <span className="text-teal">activities</span> near you</>}
-          subtitle="Select a location to discover trusted children's activities in your area."
+          subtitle="Select a neighbourhood to discover vetted children's activities near you."
           image={HERO_IMAGES['locations']}
         />
 

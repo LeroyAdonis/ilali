@@ -13,17 +13,17 @@ export default function ReferPage() {
     {
       icon: Heart,
       title: "1. Think of a provider",
-      desc: "Know a great children's activity provider who should be on ILALI? It could be a sports coach, art teacher, music instructor, or tutor.",
+      desc: "Know a kids' activity provider who deserves more families? A soccer coach, art teacher, music instructor, holiday programme — anyone running extramurals in Cape Town.",
     },
     {
       icon: Share2,
       title: "2. Send us their details",
-      desc: "Fill in the form below with their name and contact info. We'll reach out and guide them through the sign-up process.",
+      desc: "Fill in the form with their name and contact info. We&apos;ll reach out, guide them through listing, and handle the tech side.",
     },
     {
       icon: Gift,
       title: "3. Earn rewards",
-      desc: "When your referred provider signs up and lists their first activity, you earn Ubuntu Rewards points that can be redeemed for discounts and perks.",
+      desc: "When your referred provider lists their first activity, you earn Ubuntu Rewards points — redeemable for discounts and perks.",
     },
   ];
 
@@ -41,8 +41,8 @@ export default function ReferPage() {
               Refer a Provider
             </h1>
             <p className="mt-4 text-base leading-relaxed text-ink-soft sm:text-lg">
-              Help us build a safer community. Know a great children&apos;s activity provider?
-              Refer them to ILALI and earn <strong className="text-ink">Ubuntu Rewards</strong>.
+              Know a coach, tutor, or studio owner who should be on ILALI? Refer them and earn{" "}
+              <strong className="text-ink">Ubuntu Rewards</strong> when they list their first activity.
             </p>
           </div>
         </section>
@@ -78,15 +78,15 @@ export default function ReferPage() {
                 </h2>
               </div>
               <p className="text-sm leading-relaxed text-ink-soft mb-6">
-                Every time someone you refer signs up and lists their first activity, you earn
+                Every time someone you refer lists their first activity, you earn
                 Ubuntu Rewards points. Accumulate points and redeem them for:
               </p>
               <div className="grid gap-3 sm:grid-cols-3">
                 {[
-                  { label: "Discounts on bookings", emoji: "🎟️" },
+                  { label: "Activity discounts", emoji: "🎟️" },
                   { label: "Free activity sessions", emoji: "🎯" },
                   { label: "Exclusive ILALI merch", emoji: "👕" },
-                  { label: "Featured provider badge", emoji: "⭐" },
+                  { label: "Featured listing badge", emoji: "⭐" },
                   { label: "Priority support access", emoji: "💬" },
                   { label: "Community recognition", emoji: "🏆" },
                 ].map((item) => (

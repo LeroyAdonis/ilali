@@ -13,11 +13,11 @@ export const metadata = {
 const comparisons = [
   { ilali: "Targeted audience of local families", other: "Generic social media feed" },
   { ilali: "Verified provider badge builds trust", other: "No verification, hard to stand out" },
-  { ilali: "Built-in booking & payment system", other: "Manual DMs, invoices, WhatsApp" },
+  { ilali: "Direct WhatsApp contact from parents", other: "Manual DMs, emails, WhatsApp" },
   { ilali: "Ubuntu Rewards loyalty programme", other: "No recurring engagement" },
-  { ilali: "Reviews and ratings from real customers", other: "Referrals scattered across platforms" },
-  { ilali: "Marketing exposure to thousands of users", other: "Your posts get buried in algorithms" },
-  { ilali: MONTHLY_PRICING_SHORT, other: "Free — but no tools or audience" },
+  { ilali: "Reviews and ratings from real families", other: "Referrals scattered across group chats" },
+  { ilali: "AI-assisted listing from a poster", other: "Manual setup, time-consuming" },
+  { ilali: MONTHLY_PRICING_SHORT, other: "Free — but no audience or trust" },
 ];
 
 const faqs = [
@@ -31,7 +31,7 @@ const faqs = [
   },
   {
     q: "Do I need my own website?",
-    a: "Not at all. ILALI gives you a full listing page with scheduling, reviews, and messaging — everything you need.",
+      a: "Not at all. ILALI gives you a professional listing page with photos, reviews, and a trust badge — everything parents need to know you're the real deal.",
   },
   {
     q: "Can I offer free trials or promotions?",
@@ -51,7 +51,7 @@ export default function WhyListPage() {
         <InteriorHero
           eyebrow="For Providers"
           title={<>Why list your activity with <span className="text-warm-300">ILALI</span>?</>}
-          subtitle="Stop juggling social media, spreadsheets, and WhatsApp messages. One platform to manage it all — and reach families who are ready to book."
+          subtitle="Stop juggling Facebook groups, WhatsApp messages, and word-of-mouth. List your activity, earn a trust badge, and get discovered by families who are actively searching."
           image={HERO_IMAGES['provider-resources']}
         />
 
@@ -85,22 +85,22 @@ export default function WhyListPage() {
                 {
                   icon: TrendingUp,
                   title: "More visibility",
-                  desc: "Your activities appear in search results, category pages, and personalised recommendations to thousands of local families.",
+                  desc: "Your activities appear in search results, category pages, and AI recommendations for families in your suburb.",
                 },
                 {
                   icon: Shield,
                   title: "Trust & safety",
-                  desc: "Our vetting process and verified badge system help parents choose you with confidence. Safer for everyone.",
+                  desc: "Our vetting process and badge system help parents choose you with confidence. Safer for everyone.",
                 },
                 {
                   icon: Star,
-                  title: "Beautiful listings",
-                  desc: "Showcase your activities with photos, descriptions, schedules, and reviews — all in a professional, mobile-friendly format.",
+                  title: "Professional listings",
+                  desc: "Showcase your activities with photos, descriptions, schedules, and reviews — all in a clean, mobile-friendly format.",
                 },
                 {
                   icon: BarChart3,
-                  title: "Grow smarter",
-                  desc: "Track views, bookings, and earnings with built-in analytics. Know what works and double down on it.",
+                  title: "Community-powered",
+                  desc: "Grow through school partnerships, parent referrals, and community vouches — not ad spend.",
                 },
               ].map((b) => (
                 <div key={b.title} className="rounded-xl border border-ink/10 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
@@ -151,12 +151,13 @@ export default function WhyListPage() {
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
             <div className="rounded-2xl bg-ilali-50 p-8 sm:p-12">
               <p className="text-lg italic leading-relaxed text-ink-soft">
-                &ldquo;ILALI transformed how we manage our classes. Instead of juggling WhatsApp groups
-                and spreadsheets, everything is in one place. Our bookings doubled in the first month.&rdquo;
+                &ldquo;ILALI is exactly what Cape Town needs. Parents deserve to know who&apos;s looking
+                after their kids — and providers deserve a way to be found. We&apos;re proud to
+                support this.&rdquo;
               </p>
               <div className="mt-6">
-                <p className="text-sm font-bold text-ink">Sarah N.</p>
-                <p className="text-xs text-ink-faint">Art Studio Cape Town</p>
+                <p className="text-sm font-bold text-ink">ASSITEJ South Africa</p>
+                <p className="text-xs text-ink-faint">Partner, International Association of Theatre for Children</p>
               </div>
             </div>
           </div>
@@ -191,7 +192,7 @@ export default function WhyListPage() {
               Ready to grow?
             </h2>
             <p className="mt-3 text-sm text-ink-faint">
-              Join hundreds of providers on ILALI. {TRIAL_CTA_LINE}
+              Cape Town providers are already getting listed. {TRIAL_CTA_LINE}
             </p>
             <Link
               href="/providers/signup"

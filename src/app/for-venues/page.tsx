@@ -6,30 +6,30 @@ import VenuePartnerForm from "./form";
 export const metadata: Metadata = {
   title: "For Venues | ILALI",
   description:
-    "Partner with ILALI to list your venue for children's activities. Increase footfall, generate extra revenue, and reach more families.",
+    "Partner with ILALI to list your venue for children's activities. Get discovered by providers looking for safe, welcoming spaces.",
 };
 
 const benefits = [
   {
-    title: "Increase Footfall",
+    title: "Get discovered",
     description:
-      "Get your venue in front of hundreds of parents searching for activity spaces. Drive more traffic through your doors every week.",
-    icon: "🚶",
+      "Providers searching for activity spaces in your area find your venue. No more relying on word-of-mouth alone.",
+    icon: "🔍",
   },
   {
-    title: "Extra Revenue",
+    title: "Fill empty slots",
     description:
-      "Turn empty hours into income. List your available slots and earn every time a provider or parent books your space.",
-    icon: "💰",
+      "List your available hours and days. Providers looking for a home for their activities can see what you offer.",
+    icon: "📅",
   },
   {
-    title: "Easy Management",
+    title: "Build trust",
     description:
-      "Set your availability, manage bookings, and receive payments — all from a simple dashboard. No complicated systems.",
-    icon: "📋",
+      "A professional venue listing with photos, amenities, and details helps providers choose your space with confidence.",
+    icon: "🛡️",
   },
   {
-    title: "Community Impact",
+    title: "Community impact",
     description:
       "Support local children's activities by providing safe, welcoming spaces for learning, playing, and growing.",
     icon: "🤝",
@@ -49,8 +49,8 @@ const steps = [
   },
   {
     number: 3,
-    title: "List & Earn",
-    description: "Once approved, your venue goes live. Providers can book it and you start earning.",
+    title: "Get found",
+    description: "Once approved, your venue appears in provider searches. Providers reach out directly to arrange bookings.",
   },
 ];
 
@@ -66,8 +66,8 @@ export default function ForVenuesPage() {
               Partner With Us
             </h1>
             <p className="mt-3 text-base leading-relaxed text-orange-100 sm:text-lg">
-              List your venue on ILALI and connect with activity providers
-              looking for the perfect space for children's activities.
+              List your venue on ILALI so activity providers can find the perfect space for
+              children&apos;s activities in your area.
             </p>
             <a
               href="#apply"
@@ -85,7 +85,7 @@ export default function ForVenuesPage() {
               Why Partner With ILALI?
             </h2>
             <p className="mt-2 text-sm text-ink-faint">
-              Unlock the full potential of your space
+              Get your space in front of the providers who need it
             </p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

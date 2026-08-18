@@ -8,14 +8,14 @@ import AIOnboardingForm from "@/components/AIOnboardingForm";
 export const metadata: Metadata = {
   title: "Provider Resources | ILALI",
   description:
-    "Resources and guides for ILALI activity providers. Learn how to get started, manage bookings, and grow your business.",
+    "Guides and tips for ILALI activity providers. Learn how to list your activity, earn trust badges, and reach more families.",
 };
 
 const resources = [
   {
     title: "Getting Started Guide",
     description:
-      "Learn how to create your provider profile, set up your activities, and publish your first listing step by step.",
+      "Learn how to create your provider profile, list your activity, and get discovered by local families — step by step.",
     icon: "🚀",
   },
   {
@@ -25,27 +25,27 @@ const resources = [
     icon: "🛡️",
   },
   {
-    title: "Managing Bookings",
+    title: "Trust Badges",
     description:
-      "Tips for handling incoming bookings, communicating with parents, and managing your schedule efficiently.",
-    icon: "📅",
+      "Learn how the Listed, Verified, and Trusted badges work — and what you can do to earn each one.",
+    icon: "⭐",
   },
   {
     title: "Best Practices",
     description:
-      "Proven strategies to attract more families, get great reviews, and build a thriving activity business.",
+      "Proven tips to attract more families, earn great reviews, and build a thriving activity in your suburb.",
     icon: "💡",
   },
   {
-    title: "Video Tutorials",
+    title: "AI-Assisted Listing",
     description:
-      "Watch walkthrough videos covering the ILALI dashboard, booking management, and provider tools.",
-    icon: "🎬",
+      "How to use our AI wizard to build your listing from a poster, flyer, or a few sentences — no tech skills needed.",
+    icon: "✨",
   },
   {
     title: "FAQs",
     description:
-      "Find answers to frequently asked questions about listing, payments, cancellations, and more.",
+      "Find answers to frequently asked questions about listing, pricing, verification, and more.",
     icon: "❓",
   },
 ];
@@ -58,7 +58,7 @@ export default function ProviderResourcesPage() {
         <InteriorHero
           eyebrow="Resources"
           title={<><span className="text-teal">Provider</span> Resources</>}
-          subtitle="Everything you need to succeed on ILALI — from getting started to growing your activity business."
+          subtitle="Everything you need to list your activity, earn trust badges, and reach more families in Cape Town."
           image={HERO_IMAGES['provider-resources']}
         />
 
@@ -69,7 +69,7 @@ export default function ProviderResourcesPage() {
               Guides & Resources
             </h2>
             <p className="mt-2 text-sm text-ink-faint">
-              Explore our library of resources designed to help you succeed
+              Practical guides to help you get listed and get found
             </p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

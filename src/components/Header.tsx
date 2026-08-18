@@ -209,6 +209,19 @@ export default function Header({
                 {link.label}
               </Link>
             ))}
+            {/* More links not already in navLinks (parity with desktop More dropdown) */}
+            {desktopMoreLinks
+              .filter((link) => !navLinks.some((nl) => nl.href === link.href))
+              .map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="text-sm font-medium text-ink-soft hover:text-teal-deep transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
             {/* Conditional: Parent / Provider profile entries */}
             {role === "parent" && (
               <Link

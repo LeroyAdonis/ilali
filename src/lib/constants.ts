@@ -143,6 +143,9 @@ export const desktopMoreLinks = [
   { label: "For Parents", href: "/for-parents" },
   { label: "For Providers", href: "/for-providers" },
   { label: "Contact", href: "/contact" },
+  { label: "About", href: "/about" },
+  { label: "Locations", href: "/locations" },
+  { label: "Provider Resources", href: "/provider-resources" },
 ];
 
 export const stats = [

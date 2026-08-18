@@ -81,14 +81,16 @@ export const HERO_IMAGES: Record<string, ImageEntry> = {
     local: true,
   },
   about: {
-    src: "https://images.unsplash.com/photo-1533222481259-ce20eda1e20b",
-    alt: "Girl running and laughing outdoors",
-    crop: "entropy",
+    src: "/images/hero/hero-about-desktop.webp",
+    mobileSrc: "/images/hero/hero-about-mobile.webp",
+    alt: "Children running and laughing through a sunny field with mountains behind them",
+    local: true,
   },
   safety: {
-    src: "https://images.unsplash.com/photo-1771765767087-ce71e4a7916a",
-    alt: "Teacher showing a child numbers with her fingers",
-    crop: "faces",
+    src: "/images/hero/hero-safety-desktop.webp",
+    mobileSrc: "/images/hero/hero-safety-mobile.webp",
+    alt: "A warm caregiver reading with two young children in bright natural light",
+    local: true,
   },
   contact: {
     src: "/images/hero/hero-contact-desktop.webp",
@@ -97,9 +99,10 @@ export const HERO_IMAGES: Record<string, ImageEntry> = {
     local: true,
   },
   locations: {
-    src: "https://images.unsplash.com/photo-1511448962213-2f9bc14ed197",
-    alt: "Two children exploring in a forest",
-    crop: "entropy",
+    src: "/images/hero/hero-locations-desktop.webp",
+    mobileSrc: "/images/hero/hero-locations-mobile.webp",
+    alt: "Children running along a path with Table Mountain in the background",
+    local: true,
   },
   "for-providers": {
     src: "/images/hero/hero-for-providers-desktop.webp",
@@ -108,14 +111,16 @@ export const HERO_IMAGES: Record<string, ImageEntry> = {
     local: true,
   },
   "provider-resources": {
-    src: "https://images.unsplash.com/photo-1680024439029-d7d4b7f4cba1",
-    alt: "Young children playing soccer",
-    crop: "faces",
+    src: "/images/hero/hero-provider-resources-desktop.webp",
+    mobileSrc: "/images/hero/hero-provider-resources-mobile.webp",
+    alt: "Children playing soccer on a sunny field with a coach guiding them",
+    local: true,
   },
   invite: {
-    src: "https://images.unsplash.com/photo-1689032025577-b1aa0b43d357",
-    alt: "Children playing tug of war",
-    crop: "faces",
+    src: "/images/hero/hero-invite-desktop.webp",
+    mobileSrc: "/images/hero/hero-invite-mobile.webp",
+    alt: "Children running together through a sunny field, teamwork and joy",
+    local: true,
   },
 };
 

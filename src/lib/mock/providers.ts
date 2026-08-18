@@ -220,7 +220,7 @@ export const mockProviders: MockProvider[] = [
     reviewCount: 52,
     priceValue: 20000, // R200 per session
     priceLabel: "per session",
-    imageUrl: "/images/providers/codecubs-programming-club.jpg",
+    imageUrl: "/images/hero/club-codecubs-programming-club-desktop.webp",
     phone: "+2777123462",
     tags: ["indoor", "tech", "problem-solving", "creative", "STEM"],
     featured: false,

@@ -57,7 +57,7 @@ export default function ProviderResourcesPage() {
       <main className="flex-1">
         <InteriorHero
           eyebrow="Resources"
-          title="Provider Resources"
+          title={<><span className="text-teal">Provider</span> Resources</>}
           subtitle="Everything you need to succeed on ILALI — from getting started to growing your activity business."
           image={HERO_IMAGES['provider-resources']}
         />

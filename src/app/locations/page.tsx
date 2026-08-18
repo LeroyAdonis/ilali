@@ -32,7 +32,7 @@ export default function LocationsPage() {
       <main className="flex-1">
         <InteriorHero
           eyebrow="Discover"
-          title="Find activities near you"
+          title={<>Find <span className="text-teal">activities</span> near you</>}
           subtitle="Select a location to discover trusted children's activities in your area."
           image={HERO_IMAGES['locations']}
         />

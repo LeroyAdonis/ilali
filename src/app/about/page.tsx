@@ -59,7 +59,7 @@ export default function AboutPage() {
       <main className="flex-1">
         <InteriorHero
           eyebrow="About"
-          title="About ILALI"
+          title={<>About <span className="text-teal">ILALI</span></>}
           subtitle="Connecting families with trusted kids' activities — because it takes a village."
           image={HERO_IMAGES['about']}
         />

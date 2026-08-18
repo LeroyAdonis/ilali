@@ -18,7 +18,7 @@ export default function ForParentsPage() {
       <main className="flex-1">
         <InteriorHero
           eyebrow="For Parents"
-          title="A parent's guide to ILALI"
+          title={<>A parent&apos;s guide to <span className="text-teal">ILALI</span></>}
           subtitle="Everything you need to know about finding safe, fun activities for your kids — how vetting works, what to expect, and what happens after you book."
           image={HERO_IMAGES['home']}
         />

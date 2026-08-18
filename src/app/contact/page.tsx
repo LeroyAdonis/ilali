@@ -18,7 +18,7 @@ export default function ContactPage() {
       <main className="flex-1">
         <InteriorHero
           eyebrow="Contact"
-          title="Get in touch"
+          title={<>Get in <span className="text-teal">touch</span></>}
           subtitle="Got a question, a suggestion, or need help? We're listening."
           image={HERO_IMAGES['contact']}
         />

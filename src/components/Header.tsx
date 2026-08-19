@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, Menu, X, LogOut, User, Heart, ChevronDown } from "lucide-react";
+import { Menu, X, LogOut, User, Heart, ChevronDown } from "lucide-react";
 import { navLinks, desktopMoreLinks } from "@/lib/constants";
 import { useSession, signOut } from "@/lib/auth-client";
 
@@ -14,8 +14,6 @@ export default function Header({
   rightSlot?: React.ReactNode;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [headerQuery, setHeaderQuery] = useState("");
-  const [mobileQuery, setMobileQuery] = useState("");
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -43,21 +41,6 @@ export default function Header({
   const isSignedIn = !!session;
   const role = user?.role;
   const displayName = user?.name?.split(" ")[0] || "You";
-
-  const handleHeaderSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && headerQuery.trim()) {
-      router.push(`/browse?q=${encodeURIComponent(headerQuery.trim())}`);
-      setHeaderQuery("");
-    }
-  };
-
-  const handleMobileSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && mobileQuery.trim()) {
-      router.push(`/browse?q=${encodeURIComponent(mobileQuery.trim())}`);
-      setMobileQuery("");
-      setMobileOpen(false);
-    }
-  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -151,17 +134,6 @@ export default function Header({
           >
             <Heart className="h-5 w-5" />
           </Link>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-soft/50" />
-            <input
-              type="text"
-              value={headerQuery}
-              onChange={(e) => setHeaderQuery(e.target.value)}
-              onKeyDown={handleHeaderSearch}
-              placeholder="Search activities..."
-              className="w-52 rounded-[10px] border border-ink/10 bg-paper-warm py-2 pl-9 pr-4 text-sm text-ink placeholder-ink-soft/50 focus:border-teal focus:outline-none focus:ring-2 focus:ring-teal/15 transition-colors"
-            />
-          </div>
           {isSignedIn ? (
             <div className="flex items-center gap-2">
               <span className="text-[13px] text-ink-faint hidden lg:inline">
@@ -250,17 +222,6 @@ export default function Header({
               Saved
             </Link>
           </nav>
-          <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-soft/50" />
-            <input
-              type="text"
-              value={mobileQuery}
-              onChange={(e) => setMobileQuery(e.target.value)}
-              onKeyDown={handleMobileSearch}
-              placeholder="Search activities..."
-              className="w-full rounded-[10px] border border-ink/10 bg-paper-warm py-2.5 pl-9 pr-4 text-sm text-ink placeholder-ink-soft/50 focus:border-teal focus:outline-none focus:ring-2 focus:ring-teal/15 transition-colors"
-            />
-          </div>
           {isSignedIn ? (
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 text-sm text-ink-faint mb-1">

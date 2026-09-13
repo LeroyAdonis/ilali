@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { chat } from "@/lib/ai/client";
+import { reportAiFailure } from "@/lib/ai-failure-report";
 import { getProviders, getCategories } from "@/lib/data-source";
 import { eq } from "drizzle-orm";
 import type { ChildProfile } from "@/lib/db/types";
@@ -280,7 +281,17 @@ Rules:
     purpose: "chat-match",
   });
 
-  if (!content) return null;
+  if (!content) {
+    // The caller falls back to a keyword match, so this failure is invisible to the
+    // parent — report it so a dead AI tier is caught instead of silently degrading.
+    await reportAiFailure({
+      feature: "chat-match",
+      errorMessage: "AI returned no content for the chat-match request",
+      model: CONCIERGE_MODEL,
+    });
+
+    return null;
+  }
 
   try {
     const cleaned = content

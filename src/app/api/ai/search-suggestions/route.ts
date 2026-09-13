@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { chat } from "@/lib/ai/client";
+import { reportAiFailure } from "@/lib/ai-failure-report";
 
 // AI route — OpenCode primary is slow (12-23s); allow up to 60s.
 export const maxDuration = 60;
@@ -45,6 +46,12 @@ Rules:
   });
 
   if (!content) {
+    // Silent fallback path — the parent sees suggestions, not the failure.
+    await reportAiFailure({
+      feature: "search-suggestions",
+      errorMessage: "AI returned no suggestions (empty response)",
+    });
+
     return NextResponse.json({
       message: "Try browsing our categories to find something your child will love!",
       suggestedCategories: availableCategories.slice(0, 3),

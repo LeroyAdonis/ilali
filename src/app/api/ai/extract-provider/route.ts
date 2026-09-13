@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { extractProviderDetails } from "@/lib/ai/extract-provider";
+import { reportAiFailure } from "@/lib/ai-failure-report";
 
 // AI route — OpenCode primary is slow (12-23s); allow up to 60s.
 export const maxDuration = 60;
@@ -23,6 +24,13 @@ export async function POST(request: Request) {
   const extracted = await extractProviderDetails(description);
 
   if (!extracted) {
+    // ILALI degrades gracefully here, so the parent never sees an error — report it
+    // or an AI outage would go completely unnoticed.
+    await reportAiFailure({
+      feature: "extract-provider",
+      errorMessage: "AI returned no extraction for the submitted description",
+    });
+
     return NextResponse.json(
       {
         fallback: true,
